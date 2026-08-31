@@ -1,0 +1,86 @@
+mcl_core_version: "0.0-draft"
+status: research-draft
+
+priority_classes:
+  P0_CRITICAL: 3
+  P1_HIGH: 2
+  P2_NORMAL: 1
+  P3_BULK: 0
+
+message_types:
+  PRESENCE:
+    category: contact
+    tier0_candidate: true
+  IDENTITY_CLAIM:
+    category: identity
+    tier0_candidate: true
+  AUTHORITY_CLAIM:
+    category: identity
+    tier0_candidate: true
+  CAPABILITY:
+    category: capability
+    tier0_candidate: true
+  TRANSPORT_CAPABILITY:
+    category: capability
+    tier0_candidate: true
+  OBSERVATION:
+    category: world_state
+    tier0_candidate: false
+  HAZARD:
+    category: world_state
+    tier0_candidate: true
+  INTENT:
+    category: intent
+    tier0_candidate: false
+  TRAJECTORY:
+    category: intent
+    tier0_candidate: false
+  CONSTRAINT:
+    category: coordination
+    tier0_candidate: true
+  REQUEST:
+    category: coordination
+    tier0_candidate: true
+  OFFER:
+    category: coordination
+    tier0_candidate: true
+  ACK:
+    category: coordination
+    tier0_candidate: true
+  REFUSE:
+    category: coordination
+    tier0_candidate: true
+  STATUS:
+    category: state
+    tier0_candidate: false
+  DEGRADED_STATE:
+    category: state
+    tier0_candidate: true
+  CHANNEL_STATE:
+    category: link_state
+    tier0_candidate: false
+  INTERFERENCE:
+    category: link_state
+    tier0_candidate: true
+  TRANSPORT_OFFER:
+    category: transport
+    tier0_candidate: true
+  TRANSPORT_ACCEPT:
+    category: transport
+    tier0_candidate: true
+
+shared_primitives:
+  - TIME
+  - TEMPORAL_SCOPE
+  - SPATIAL_SCOPE
+  - CONFIDENCE
+  - PRIORITY
+  - PROVENANCE_REFERENCE
+  - NODE_REFERENCE
+  - SESSION_REFERENCE
+  - TRANSPORT_ID
+
+notes:
+  - "This registry is pre-v0.1 and not a frozen numeric code assignment."
+  - "MCL Wire owns canonical binary representation."
+  - "Claims do not imply trust or authorization."
