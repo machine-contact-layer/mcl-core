@@ -1,0 +1,25 @@
+{
+  "status": "provisional",
+  "vectors": [
+    {"semantic":"PRESENCE","category":0,"opcode":0,"header_hex":"0006"},
+    {"semantic":"IDENTITY_CLAIM","category":1,"opcode":0,"header_hex":"0106"},
+    {"semantic":"AUTHORITY_CLAIM","category":1,"opcode":1,"header_hex":"010e"},
+    {"semantic":"CAPABILITY","category":2,"opcode":0,"header_hex":"0206"},
+    {"semantic":"TRANSPORT_CAPABILITY","category":2,"opcode":1,"header_hex":"020e"},
+    {"semantic":"OBSERVATION","category":3,"opcode":0,"header_hex":"0302"},
+    {"semantic":"HAZARD","category":3,"opcode":1,"header_hex":"030e"},
+    {"semantic":"INTENT","category":4,"opcode":0,"header_hex":"0402"},
+    {"semantic":"TRAJECTORY","category":4,"opcode":1,"header_hex":"040a"},
+    {"semantic":"CONSTRAINT","category":5,"opcode":0,"header_hex":"0506"},
+    {"semantic":"REQUEST","category":5,"opcode":1,"header_hex":"050e"},
+    {"semantic":"OFFER","category":5,"opcode":2,"header_hex":"0516"},
+    {"semantic":"ACK","category":5,"opcode":3,"header_hex":"051e"},
+    {"semantic":"REFUSE","category":5,"opcode":4,"header_hex":"0526"},
+    {"semantic":"STATUS","category":6,"opcode":0,"header_hex":"0602"},
+    {"semantic":"DEGRADED_STATE","category":6,"opcode":1,"header_hex":"060e"},
+    {"semantic":"CHANNEL_STATE","category":7,"opcode":0,"header_hex":"0702"},
+    {"semantic":"INTERFERENCE","category":7,"opcode":1,"header_hex":"070e"},
+    {"semantic":"TRANSPORT_OFFER","category":8,"opcode":0,"header_hex":"0806"},
+    {"semantic":"TRANSPORT_ACCEPT","category":8,"opcode":1,"header_hex":"080e"}
+  ]
+}
