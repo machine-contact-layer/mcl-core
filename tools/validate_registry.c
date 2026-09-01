@@ -115,12 +115,18 @@ static int read_file(const char *path, char *buf, size_t buf_size)
 {
     FILE *f = fopen(path, "rb");
     size_t n;
+    int extra;
     if (!f) {
         perror(path);
         return 0;
     }
     n = fread(buf, 1, buf_size - 1, f);
+    extra = fgetc(f);
     fclose(f);
+    if (extra != EOF) {
+        fprintf(stderr, "Error: file '%s' exceeds buffer capacity of %zu bytes\n", path, buf_size - 1);
+        return 0;
+    }
     buf[n] = '\0';
     return 1;
 }
@@ -235,6 +241,10 @@ int main(int argc, char **argv)
                     }
                     if (p >= end || *p != '}') return 1;
                     ++p;
+                    if (cat.opcode_count >= MAX_OPCODES) {
+                        fprintf(stderr, "Error: opcode count exceeds MAX_OPCODES (%d)\n", MAX_OPCODES);
+                        return 1;
+                    }
                     cat.opcodes[cat.opcode_count++] = op;
                     p = skip_ws(p, end);
                     if (p < end && *p == ',') ++p;
@@ -258,6 +268,10 @@ int main(int argc, char **argv)
         }
         if (p >= end || *p != '}') return 1;
         ++p;
+        if (reg.category_count >= MAX_CATEGORIES) {
+            fprintf(stderr, "Error: category count exceeds MAX_CATEGORIES (%d)\n", MAX_CATEGORIES);
+            return 1;
+        }
         reg.categories[reg.category_count++] = cat;
         p = skip_ws(p, end);
         if (p < end && *p == ',') ++p;
