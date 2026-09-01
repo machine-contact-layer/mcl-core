@@ -19,12 +19,12 @@
       "subject": "Fix wire major mask narrowing and enforce context lifecycle invariants"
     },
     "mcl-sdk": {
-      "commit": "397ecb400e81033dca27818b393b94e4a791af69",
-      "subject": "Implement low-level C SDK vertical slice"
+      "commit": "71be74755b821e40bbaefa1fd8c79e0f76be6884",
+      "subject": "Fix consumer dependency graph so Wire and Link are public to SDK library"
     },
     "mcl-ap": {
-      "commit": "9c5de1001fc47e2d5a0504132fe73ee27058cbb1",
-      "subject": "Ensure header portability and restore analytical boundary behavior"
+      "commit": "e36b52f4b6dc4c8b3f854a559f01efbfd5dd9f64",
+      "subject": "Implement Experiment 001 known-waveform acoustic modem testbed"
     },
     "mcl-ip": {
       "commit": "c3fcf49bdb76d426cc6b822aafa227f95492b6b5",
