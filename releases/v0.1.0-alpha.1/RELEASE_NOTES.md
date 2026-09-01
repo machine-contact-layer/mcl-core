@@ -43,17 +43,23 @@
 ### MCL-AP
 - Analytical channel model (ISO 9613-1 attenuation, spherical spreading, Doppler)
 - **Experiment 001 (LAB/EXPERIMENTAL)**:
-  - Freestanding binary FSK modulation (3000/5000 Hz, 300 baud, 48 kHz mono PCM)
+  - Host-side research testbed (uses hosted C math/WAV/stdio; protocol-facing Wire, Link, and SDK libraries remain freestanding C99)
+  - Binary FSK modulation (3000/5000 Hz, 300 baud, 48 kHz mono PCM)
   - 4 preamble candidates: LFM chirp, Zadoff-Chu derived, PN m-sequence (verified 7-bit LFSR, period 127), frequency-diverse
   - Exact length invariant: all preambles produce exactly $N = \text{round}(\text{duration} \times f_s)$ samples (N=4800 for 0.1s @ 48 kHz)
   - Equalized resource budget: identical RMS energy (0.6325), sample count, and peak amplitude limit
   - Quadrature magnitude detection ($\sqrt{C_I^2 + C_Q^2}$) guaranteeing polarity and phase invariance
-  - Empirical false-alarm rate calibration: noise trials establishing threshold $\gamma$ for target empirical $P_{fa} = 0.01$
+  - Preliminary small-sample empirical false-alarm calibration: 100 noise trials per candidate establishing threshold $\gamma$ for target empirical $P_{fa} = 0.010$
   - Symbol timing acquisition over 16-bit alternating training sequence
   - Out-of-place SRO resampler analytically verified across -500 to +500 ppm
-  - Expanded impairments: colored noise, 2-path multipath (5 ms), 5-path multipath (0-30 ms), band attenuation (-10 dB notch @ 4 kHz), clipping, and combined mild impairments
+  - Verified impairment harness:
+    - AWGN power verified across 30, 20, 10, 5, and true 0 dB (where noise power equals signal power within 0.5%)
+    - Colored noise power measured and scaled post-filter to achieve exact requested SNR (30, 20, 15, 10, 5, 0 dB)
+    - Deterministic 2nd-order IIR peaking/notch filter verified via sine probes (3000, 3800, 4000, 4200, 5000 Hz) with measured -10.00 dB center notch at 4000 Hz
+    - 2-path multipath (5 ms), 5-path multipath (0-30 ms), clipping, and combined mild impairments
+  - Hardened RIFF WAV chunk parser with unknown chunk skipping, mono/PCM16/48kHz enforcement, and strict format rejection
   - Clean channel Wire -> Acoustic -> Wire bit-perfect across all 6 Tier-0 kinds
-  - Offline WAV decoder tool (`decode_wav.c`)
+  - Offline WAV decoder tool (`decode_wav.c`) with strict sample rate checking
   - Retained E3 source WAV (`exp001_e3_source.wav`, SHA256: `1BCA567F7F68F5A18F41ADD8CDE03863C336D50F332097F8361262F56ECA1241`)
   - **NOT normative. AP-B0 is NOT selected.**
 
@@ -77,7 +83,7 @@
 | ID | Description | Status | Detail |
 |----|-------------|--------|--------|
 | E0 | Analytical model | AVAILABLE | ISO 9613-1 attenuation, delay, Doppler |
-| E1 | Deterministic simulation | LOCAL_EVIDENCE | Exp 001: Corrected bakeoff under equalized resources, empirical $P_{fa}$ calibration, SRO timing acquisition, expanded impairments. Prior uncalibrated comparison superseded. |
+| E1 | Deterministic simulation | LOCAL_EVIDENCE | Exp 001: Hosted C research testbed. Equalized resources, preliminary small-sample empirical $P_{fa}$ calibration (100 trials/candidate), verified 0 dB AWGN (measured noise power = signal power), scaled colored noise, verified -10 dB notch filter, hardened WAV chunk scanner. All 4 candidates achieved $P_d=1.000$, $0.00$ mean timing error, 12/12 CRC valid. Prior uncalibrated/unverified comparison superseded. |
 | E2 | Replay evidence | NOT_RUN | No acoustic replay captures |
 | E3 | Controlled over-air MCL frame | READY_FOR_EXECUTION | Source WAV generated with training sequence; awaiting physical speaker->air->mic session |
 | E4 | Multi-device | NOT_RUN | Not run |

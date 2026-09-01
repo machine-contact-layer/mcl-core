@@ -23,8 +23,8 @@
       "subject": "Fix consumer dependency graph so Wire and Link are public to SDK library"
     },
     "mcl-ap": {
-      "commit": "f2fa3182f00eb18e10b42454d94c6d4850c5d1f1",
-      "subject": "Correct Experiment 001 synchronization and impairment methodology"
+      "commit": "ac5bc5fdbfa4ba7612126280507f114f2c0021ce",
+      "subject": "Correct Experiment 001 noise power scaling, notch filter, and WAV reader"
     },
     "mcl-ip": {
       "commit": "c3fcf49bdb76d426cc6b822aafa227f95492b6b5",
@@ -45,7 +45,7 @@
     "mcl-wire": "Freestanding C99 reference codec. Bit-level encode/decode for 6 Tier-0 semantics. Extension framework present. Randomized fuzz decode. Known test vectors. Zero heap allocation.",
     "mcl-link": "C99 reference state machine. 9-state lifecycle. Context install/authorize/compare. Wire major mask without narrowing. Coexistence tested with Wire.",
     "mcl-sdk": "C99 reference SDK. Node init/reset, Tier-0 send/receive, Link lifecycle wrappers. Zero side-effect decode. Transport callback delivers raw Wire bytes only.",
-    "mcl-ap": "Analytical channel model (ISO 9613-1) + Experiment 001 (LAB/EXPERIMENTAL binary FSK modem testbed). No normative profile. AP-B0 NOT selected.",
+    "mcl-ap": "Analytical channel model (ISO 9613-1) + Experiment 001 (LAB/EXPERIMENTAL hosted binary FSK research testbed using host math and WAV I/O). No normative profile. AP-B0 NOT selected. Protocol-facing Wire, Link, and SDK libraries remain freestanding C99.",
     "mcl-ip": "Draft binding specification only. No implementation.",
     "mcl-ble": "Draft binding specification only. No implementation.",
     "mcl-uwb": "Draft binding specification only. No implementation."
@@ -89,7 +89,7 @@
     },
     "E1_deterministic_simulation": {
       "status": "LOCAL_EVIDENCE",
-      "detail": "Experiment 001: Binary FSK 300 baud, 48 kHz mono PCM, 4 preamble candidates (LFM chirp, Zadoff-Chu derived, PN m-sequence, frequency-diverse) evaluated with exact length invariant (N=4800, 0.1s), verified 7-bit m-sequence (period 127), equalized energy budgets, quadrature correlation magnitude, and empirical Pfa threshold calibration (target Pfa=0.01). All 4 candidates achieved Pd=1.000, MeanTimErr=0.00 across clean channel, AWGN sweep (30 to 0 dB), colored noise (15 dB), 2-path multipath (5 ms), 5-path multipath (0-30 ms), band attenuation (-10 dB notch @ 4 kHz), clipping (0.5), SRO (+50 ppm), and combined impairments. Out-of-place SRO resampler and symbol timing acquisition verified (-500 to +500 ppm). Clean channel Wire->FSK->Wire pipeline bit-perfect across all 6 Tier-0 kinds. Prior uncalibrated preamble/SRO comparison superseded due to measurement defects."
+      "detail": "Experiment 001: Binary FSK 300 baud, 48 kHz mono PCM, 4 preamble candidates (LFM chirp, Zadoff-Chu derived, PN m-sequence, frequency-diverse) evaluated with exact length invariant (N=4800, 0.1s), verified 7-bit m-sequence (period 127), equalized energy budgets, quadrature correlation magnitude, and preliminary small-sample empirical Pfa threshold calibration (target Pfa=0.010, exactly 100 noise trials per candidate). Corrected impairment harness with explicit enablement: measured AWGN power verified across 30, 20, 10, 5, 0 dB (at 0 dB SNR, noise power equals signal power within 0.5% and P_d=1.000, 12/12 payload CRC valid); post-filter colored noise power measured and scaled to requested SNR (30, 20, 15, 10, 5, 0 dB); band attenuation verified via pure sine probes (3000, 3800, 4000, 4200, 5000 Hz) with measured center notch attenuation of exactly -10.00 dB at 4000 Hz; hardened RIFF WAV chunk scanner and strict format rejection. Experiment 001 is a host-side research testbed using hosted C math/stdio/WAV; the protocol-facing Wire/Link/SDK C libraries remain freestanding C99."
     },
     "E2_replay": {
       "status": "NOT_RUN",
