@@ -1,0 +1,134 @@
+{
+  "release": "v0.1.0-alpha.1",
+  "tag_date": "2026-09-01",
+  "status": "ALPHA / PRE-RELEASE",
+  "license": "BLOCKED — awaiting owner license selection",
+  "visibility": "PRIVATE — no visibility changes made",
+
+  "repositories": {
+    "mcl-core": {
+      "commit": "53a76d9f089e5512e184087a176a528e70a71272",
+      "subject": "Harden registry validator against overflow and file truncation"
+    },
+    "mcl-wire": {
+      "commit": "5c8bdccff08287e9074538249dfca14433b0a11e",
+      "subject": "Eliminate compiler-synthesized memset in freestanding wire object"
+    },
+    "mcl-link": {
+      "commit": "689236ee408ab2441292b8bf3bbf350f60ef5dc7",
+      "subject": "Fix wire major mask narrowing and enforce context lifecycle invariants"
+    },
+    "mcl-sdk": {
+      "commit": "397ecb400e81033dca27818b393b94e4a791af69",
+      "subject": "Implement low-level C SDK vertical slice"
+    },
+    "mcl-ap": {
+      "commit": "9c5de1001fc47e2d5a0504132fe73ee27058cbb1",
+      "subject": "Ensure header portability and restore analytical boundary behavior"
+    },
+    "mcl-ip": {
+      "commit": "c3fcf49bdb76d426cc6b822aafa227f95492b6b5",
+      "subject": "Add initial MCL-IP binding draft"
+    },
+    "mcl-ble": {
+      "commit": "edd62336d064eec7d478dbc92f0ed0957ca8f68b",
+      "subject": "Add initial MCL-BLE binding draft"
+    },
+    "mcl-uwb": {
+      "commit": "f2d6c1f1d224160e707047f11376ecf3223d1bcd",
+      "subject": "Add initial MCL-UWB binding draft"
+    }
+  },
+
+  "layer_status": {
+    "mcl-core": "Provisional Tier-0 semantic registry (6 categories, 6 opcodes). C validator with overflow/truncation hardening.",
+    "mcl-wire": "Freestanding C99 reference codec. Bit-level encode/decode for 6 Tier-0 semantics. Extension framework present. Randomized fuzz decode. Known test vectors. Zero heap allocation.",
+    "mcl-link": "C99 reference state machine. 9-state lifecycle. Context install/authorize/compare. Wire major mask without narrowing. Coexistence tested with Wire.",
+    "mcl-sdk": "C99 reference SDK. Node init/reset, Tier-0 send/receive, Link lifecycle wrappers. Zero side-effect decode. Transport callback delivers raw Wire bytes only.",
+    "mcl-ap": "Analytical channel model (ISO 9613-1) + Experiment 001 (LAB/EXPERIMENTAL binary FSK modem testbed). No normative profile. AP-B0 NOT selected.",
+    "mcl-ip": "Draft binding specification only. No implementation.",
+    "mcl-ble": "Draft binding specification only. No implementation.",
+    "mcl-uwb": "Draft binding specification only. No implementation."
+  },
+
+  "conformance_evidence": {
+    "C0_static_registry": {
+      "status": "LOCAL_EVIDENCE",
+      "detail": "semantic-codes-v0.2.json validated by tools/validate_registry.c with overflow and truncation hardening."
+    },
+    "C1_canonical_encoding": {
+      "status": "LOCAL_EVIDENCE",
+      "detail": "6 Tier-0 semantics encode/decode bit-perfectly. Known test vectors retained in mcl-wire/tests/test_vectors.c."
+    },
+    "C2_negative_decoding": {
+      "status": "LOCAL_EVIDENCE",
+      "detail": "Truncated, malformed-opcode, noncanonical-padding, and oversized inputs tested. Randomized fuzz_decode exercised."
+    },
+    "C3_link_state_tests": {
+      "status": "LOCAL_EVIDENCE",
+      "detail": "9-state lifecycle transitions, context install/reject in forbidden states, wire major mask boundary (0..UINT32_MAX), context compare."
+    },
+    "C4_independent_interoperability": {
+      "status": "NOT_RUN",
+      "detail": "No independent implementation exists to test against."
+    },
+    "C5_ap_physical_profile_conformance": {
+      "status": "NOT_RUN",
+      "detail": "No normative AP profile defined. Analytical model and experimental lab testbed only."
+    },
+    "C6_device_ecosystem_robustness": {
+      "status": "NOT_RUN",
+      "detail": "No multi-device, multi-transport, or ecosystem-scale testing performed."
+    }
+  },
+
+  "ap_evidence": {
+    "E0_analytical": {
+      "status": "AVAILABLE",
+      "detail": "ISO 9613-1 attenuation, spherical spreading, Doppler, serialization time, bitrate-equal-to-propagation. Boundary conditions tested (distance=0, negative, payload=0)."
+    },
+    "E1_deterministic_simulation": {
+      "status": "LOCAL_EVIDENCE",
+      "detail": "Experiment 001: Binary FSK 300 baud, 48 kHz mono PCM, 4 preamble candidates (LFM chirp, Zadoff-Chu, PN/m-sequence, frequency-diverse). Evaluated under AWGN sweep (40-10 dB), clipping (0.9-0.3), SRO (10-500 ppm). Clean channel Wire->FSK->Wire bit-perfect across all 6 Tier-0 kinds."
+    },
+    "E2_replay": {
+      "status": "NOT_RUN",
+      "detail": "No recorded acoustic field captures replayed."
+    },
+    "E3_controlled_over_air_frame": {
+      "status": "READY_FOR_EXECUTION",
+      "detail": "Exact source WAV generated (exp001_e3_source.wav, SHA256: 7B4D7B038F4C6ABB496BAFBFFA4E307AAE70DFAAD1176E02BB0356225ECBBF69). Offline WAV decoder implemented (decode_wav.c). Physical speaker->air->mic playback/record awaiting physical human acoustic session."
+    },
+    "E4_multi_device": {
+      "status": "NOT_RUN",
+      "detail": "No multi-device acoustic experiment performed."
+    },
+    "E6_independent_interoperability": {
+      "status": "NOT_RUN",
+      "detail": "No independent AP implementation exists."
+    }
+  },
+
+  "compiler_verification": {
+    "msvc_19_51": {
+      "status": "PASS",
+      "detail": "Wire, Link, SDK compile and pass all tests under MSVC 19.51 /W4 /WX /std:c11."
+    },
+    "clang_17_host": {
+      "status": "PASS",
+      "detail": "Wire, Link, SDK compile with -std=c99 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wundef -Werror. All 8 host test suites pass 100%."
+    },
+    "arm_cortex_m0": {
+      "status": "PASS",
+      "detail": "Compiled wire.c, extension.c, link.c, sdk.c with --target=arm-none-eabi -mcpu=cortex-m0 -mthumb -std=c99 -Os -ffreestanding -fno-builtin -Werror. llvm-nm verified zero unexpected undefined symbols (no malloc/memcpy/stdio/OS). SDK retains only 7 lower-layer MCL symbols."
+    },
+    "riscv32_rv32im": {
+      "status": "PASS",
+      "detail": "Compiled wire.c, extension.c, link.c, sdk.c with --target=riscv32-none-elf -march=rv32im -mabi=ilp32 -std=c99 -Os -ffreestanding -fno-builtin -Werror. llvm-nm verified zero unexpected undefined symbols. SDK retains only 7 lower-layer MCL symbols."
+    },
+    "gcc": {
+      "status": "UNVERIFIED",
+      "detail": "GCC not installed on host."
+    }
+  }
+}

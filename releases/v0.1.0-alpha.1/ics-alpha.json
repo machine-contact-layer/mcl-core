@@ -1,0 +1,102 @@
+{
+  "ics_version": "alpha-draft-1",
+  "release": "v0.1.0-alpha.1",
+  "implementation": "MCL Reference SDK (C99)",
+  "date": "2026-09-01",
+
+  "disclaimer": "This is a PRE-RELEASE alpha Implementation Conformance Statement. MCL is NOT a stable specification, NOT an adopted standard, and has NOT been independently validated for interoperability. No acoustic physical-layer profile has been experimentally confirmed. This ICS documents only the current state of the reference implementation.",
+
+  "wire": {
+    "major_version": 0,
+    "major_version_status": "EXPERIMENTAL",
+    "tier0_semantics": [
+      {
+        "kind": "PRESENCE",
+        "category": 0,
+        "opcode": 0,
+        "encoded_size_bytes": 11,
+        "status": "IMPLEMENTED"
+      },
+      {
+        "kind": "HAZARD",
+        "category": 3,
+        "opcode": 1,
+        "encoded_size_bytes": 15,
+        "status": "IMPLEMENTED"
+      },
+      {
+        "kind": "REQUEST",
+        "category": 5,
+        "opcode": 1,
+        "encoded_size_bytes": 17,
+        "status": "IMPLEMENTED"
+      },
+      {
+        "kind": "AUTHORITY_CLAIM",
+        "category": 1,
+        "opcode": 1,
+        "encoded_size_bytes": 14,
+        "status": "IMPLEMENTED"
+      },
+      {
+        "kind": "DEGRADED_STATE",
+        "category": 6,
+        "opcode": 1,
+        "encoded_size_bytes": 10,
+        "status": "IMPLEMENTED"
+      },
+      {
+        "kind": "TRANSPORT_OFFER",
+        "category": 8,
+        "opcode": 0,
+        "encoded_size_bytes": 13,
+        "status": "IMPLEMENTED"
+      }
+    ],
+    "extension_support": true,
+    "extension_status": "Framework present, no registered extensions"
+  },
+
+  "link": {
+    "states_implemented": [
+      "IDLE", "DISCOVERED", "CAPABILITIES", "NEGOTIATING",
+      "ESTABLISHED", "ADAPTING", "HANDOFF", "FALLBACK", "CLOSED"
+    ],
+    "context_install": true,
+    "context_authorize": true,
+    "context_compression": false,
+    "wire_major_mask_width": "uint32_t input, uint16_t output, 0..15 valid"
+  },
+
+  "sdk": {
+    "node_init": true,
+    "node_reset": true,
+    "tier0_send": true,
+    "tier0_receive": true,
+    "link_transition": true,
+    "link_install_context": true,
+    "link_authorize_context": true,
+    "transport_binding": "Generic implementation callback (mcl_sdk_tx_fn). Raw canonical Wire bytes only. No normative Link binary frame.",
+    "policy_sovereignty": "AUTHORITY_CLAIM and REQUEST produce decoded objects only. No automatic privilege escalation, context installation, or action callbacks.",
+    "memory_model": "Zero heap allocation. Zero global mutable state. Caller-owned node and scratch buffers."
+  },
+
+  "node_roles": {
+    "transmitter": true,
+    "receiver": true,
+    "relay": false,
+    "coordinator": false
+  },
+
+  "ap_profile": {
+    "normative_profile_id": "NONE",
+    "status": "No physical acoustic profile has been defined or experimentally validated."
+  },
+
+  "transport_bindings": {
+    "ip": "SPECIFICATION_DRAFT_ONLY",
+    "ble": "SPECIFICATION_DRAFT_ONLY",
+    "uwb": "SPECIFICATION_DRAFT_ONLY",
+    "acoustic": "ANALYTICAL_MODEL_ONLY"
+  }
+}
