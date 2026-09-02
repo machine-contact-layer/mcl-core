@@ -1,42 +1,91 @@
 # Machine Contact Layer
 
-**A transport-independent layer for machines that have never met.**
+**A transport-independent layer for machines to meet, and to keep talking.**
 
-Two machines, built by different companies, that were never designed to work
-together, end up in the same place. Neither knows what the other is, what it can
-do, whether it is safe to be near, or whether anything it says should be
-believed. There is no shared network, no common credential system, and nobody
-around to introduce them.
+Two machines end up in the same place. They may have been built by different
+companies and never designed to work together; or they may both be yours, and
+simply have no network in common at this moment. Either way there is no shared
+bus, no common credential system, and nobody around to introduce them.
 
-MCL is the layer that gets them from *I do not know you* to *I know enough about
-you to decide what happens next* — and then out of the way.
+**MCL is what they speak first.** What happens after that is yours to decide.
 
 ```text
-UNKNOWN MACHINE
-      │  acoustic, BLE advertisement, or whatever medium exists
+ANOTHER MACHINE
+      │  acoustic, BLE advertisement, Wi-Fi — whatever medium exists
       ▼
 FIRST CONTACT ............ presence, capabilities, hazards
       │
-      │  negotiate a better transport
+      │  optional: negotiate a better transport
       ▼
-PERSISTENT CONTACT ....... richer, private, higher rate
+PERSISTENT CONTACT ....... richer, more private, higher rate
       │
-      │  authenticate, verify, decide
-      ▼
-LOCAL AUTHORIZATION ...... your policy, your machine, your call
-      │
-      ▼
-YOUR OWN PROTOCOL ........ MCL steps aside
+      ├─▶ STAY ON MCL ......... MCL remains the channel, indefinitely
+      ├─▶ SECURITY PROFILE .... optional: establish who you are talking to
+      └─▶ HAND OFF ............ your own protocol takes over
 ```
+
+Those three endings are alternatives, not stages. A deployment may take any of
+them, or more than one, or stop at first contact and never migrate at all.
 
 MCL is infrastructure for builders. It is not a product, a fleet manager, an
 autonomy stack, a credential authority, or a modem.
 
+## The same layer, configured differently
+
+A gatekeeper machine at an office entrance, a domestic assistant, and a
+warehouse quadruped can all use MCL as their first interaction layer while
+agreeing on almost none of their behaviour:
+
+| | Gatekeeper | House agent | Warehouse quadruped |
+|---|---|---|---|
+| **First contact** | acoustic | acoustic | acoustic or BLE |
+| **Migrates transport** | yes, to verify | rarely | yes, fleet Wi-Fi |
+| **Authenticates the peer** | always | for anything privileged | already known peers |
+| **Hands off** | to the access system | almost never | to the fleet protocol |
+| **Typical ending** | handoff | stay on MCL | handoff |
+
+None of that is protocol. It is configuration, and it is the deployment's to
+choose — Architecture Charter §2.10.1. Differently configured peers stay
+interoperable at the frame and semantic layers; they simply refuse each other at
+different points, which is a policy outcome rather than an interoperability
+failure.
+
+What you configure:
+
+- **Which transports** you will speak, and whether you will migrate at all
+- **What may be disclosed** at each stage, and over which medium
+- **Whether a security profile runs**, and what must pass before it does
+- **Whether you hand off**, or keep MCL as the ongoing channel
+
+## Three ways people use it
+
+All three are first-class. None is a degraded version of another.
+
+**Open contact, no security.** Presence, hazard broadcast and capability
+discovery in a shared space. You are addressing unknown listeners on purpose, so
+authenticating them is not meaningful. The real machine stays behind the MCL
+boundary and only MCL talks — which is the point.
+
+**Machines that already know each other.** Same owner, same fleet, provisioned
+at manufacture, or trusted by some means entirely outside MCL. They need a way
+to meet when no network is shared, and a way to move to a better one. They do
+not need MCL to authenticate anything.
+
+**Unrelated machines that do need to establish trust.** MCL carries an optional
+security profile, so that sensitive material never has to cross the exposed
+first-contact medium. Two machines can introduce themselves acoustically, agree
+how to reach each other over BLE or Wi-Fi, and complete verification there.
+
+> Today MCL supports the first two shapes and the transport migration the third
+> one needs. **The security profile itself does not exist yet** — no
+> cryptography is implemented in any repository. See [`SECURITY.md`](SECURITY.md).
+
 ## What makes this different from just picking a protocol
 
-**It assumes no prior relationship.** Not a shared network, not a common PKI,
-not a pairing step someone performed in a factory. That assumption is what
-everything else follows from.
+**It requires no prior relationship — and does not forbid one.** No shared
+network, no common PKI, no pairing step someone performed in a factory. Machines
+that already know each other are equally at home here; they just skip the parts
+they do not need.
 
 **Meaning does not depend on the medium.** A `HAZARD` means the same thing
 whether it arrived through a loudspeaker, a Bluetooth advertisement, or a UDP
@@ -65,14 +114,18 @@ is worse than dropping a valid one.
 
 Stated plainly, because scope creep is how interoperability layers die.
 
-- **Not an authentication protocol.** It makes strong authentication *possible*
-  without sensitive material crossing an exposed channel. It does not own
-  credential ecosystems, and it never will.
 - **Not a robot ontology.** It standardizes the minimum physical-world meaning
   unrelated machines need at contact, not a world model.
-- **Not a replacement for your protocol.** After authorization, hand off. MCL
-  may remain as a narrow safety and control side-channel, but that is a
-  capability, not a requirement.
+- **Not an authentication protocol.** MCL can be configured to *carry* one, and
+  is designed so that strong authentication is possible without sensitive
+  material crossing an exposed channel. It does not define the exchange and does
+  not own credential ecosystems. Authentication is a thing MCL can do, not what
+  MCL is for.
+- **Not a mandated sequence.** MCL does not tell you when to disclose what, when
+  to migrate, or whether to verify anything at all. That is your design.
+- **Not obliged to leave.** Handing off to your own protocol is one supported
+  ending. Remaining as the channel between two machines that share no other
+  protocol is another, and it is not a lesser one.
 - **Not a modem.** MCL-AP is one binding among several. Acoustics is a
   universally available rendezvous medium, not the definition of MCL.
 - **Not adopted, not standardized, not stable.** See Status.
@@ -104,9 +157,11 @@ developer API. The integration model that matters:
              unknown machines
 ```
 
-An unknown peer talks to MCL. It does not talk to your actuators, your CAN bus,
-your filesystem, or your fleet credentials. MCL is a quarantine boundary as much
-as a protocol. The specification recommends this isolation and deliberately does
+A peer talks to MCL. It does not talk to your actuators, your CAN bus, your
+filesystem, or your fleet credentials — and that holds whether the peer is a
+stranger or a machine you own. MCL is a quarantine boundary as much as a
+protocol, and in a deployment that never authenticates anyone, the boundary is
+doing all of the work. The specification recommends this isolation and deliberately does
 not mandate an MPU, TEE, or separate MCU — hardware neutrality outlives any
 current hardware.
 
@@ -171,8 +226,10 @@ and E6 require a second implementation written from the specification by someone
 else.
 
 **MCL currently provides no confidentiality, no cryptographic authenticity, and
-no peer authentication.** See [`SECURITY.md`](SECURITY.md) before assuming
-otherwise.
+no peer authentication.** The two shapes that do not need them — open contact,
+and machines that already know each other — are usable today. A deployment that
+needs the security profile is waiting on work that has not been done. See
+[`SECURITY.md`](SECURITY.md) before assuming otherwise.
 
 ## Repositories
 

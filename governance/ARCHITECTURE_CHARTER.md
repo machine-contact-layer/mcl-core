@@ -8,7 +8,9 @@ MCL is intended to remain useful across decades of changing hardware and transpo
 
 ## 1. Mission
 
-Machine Contact Layer (MCL) is a transport-independent interoperability layer for bounded first contact and physical-world coordination between previously unrelated machines.
+Machine Contact Layer (MCL) is a transport-independent interoperability layer for bounded first contact and physical-world coordination between machines that share no common protocol at the moment they meet.
+
+Those machines may be unrelated, or may already be known to each other; MCL does not distinguish, and the deployment decides what follows from the difference. A contact may end at first exchange, persist over MCL indefinitely, or hand off to another protocol.
 
 MCL is infrastructure for builders. It is not a product, fleet manager, autonomy stack, credential authority, modem brand, or application.
 
@@ -74,26 +76,60 @@ They MUST NOT become Core invariants.
 A bug or shortcut in the reference implementation does not redefine the protocol.
 Normative text, registries, and conformance vectors define the candidate specification.
 
-### 2.10 MCL operates before trust exists
+### 2.10 MCL neither requires nor establishes trust
 
-MCL's normal condition is that neither machine yet has a reason to trust the
-other. First contact MUST therefore be possible without disclosing sensitive
-identity material, credentials, or private network configuration, because the
-first-contact medium MUST be assumed observable by anyone in range.
+MCL MUST be usable whether or not the two machines have a prior relationship,
+and MUST NOT itself create one.
+
+Both halves of that bind. A deployment whose peers already know each other —
+same owner, same fleet, provisioned at manufacture, or trusted by some means
+entirely outside MCL — is as normal a use of MCL as a contact between strangers,
+and MUST NOT be specified as a degenerate case of it. Equally, no transport,
+message class, or profile MAY cause trust to come into existence: establishing a
+transport, completing a pairing, or joining a network MUST NOT by itself
+establish identity, authority, or trust.
+
+Because a first-contact medium MUST be assumed observable by anyone in range,
+first contact MUST be possible without disclosing sensitive identity material,
+credentials, or private network configuration. This requirement follows from the
+medium being open, not from the peers being unknown to each other, and therefore
+holds equally for machines that are already mutually known.
 
 MCL MAY negotiate migration of an existing contact to a more private or more
 capable transport, and the same MCL contact MAY continue across that change.
-Establishing a transport, completing a pairing, or joining a network MUST NOT by
-itself establish identity, authority, or trust. Where a contact migrates, a
-security profile MUST be able to bind the new channel to the original contact,
-so that a peer appearing on the richer transport can be shown to be the peer the
-contact began with rather than merely a peer that arrived at the right moment.
+Where a deployment uses a security profile and a contact migrates, that profile
+MUST be able to bind the new channel to the original contact, so that a peer
+appearing on the second transport can be shown to be the peer the contact began
+with rather than merely a peer that arrived at the right moment.
 
-MCL is not an authentication protocol and MUST NOT become one. It is the layer
-on which unrelated machines interact before trust, and its obligation is to make
-strong authentication possible without requiring sensitive material to cross an
-exposed channel — not to own the credential ecosystems that authentication
-depends on.
+### 2.10.1 The interaction sequence belongs to the deployment
+
+MCL MUST NOT mandate an interaction sequence.
+
+What a machine discloses, in what order, over which transports, whether it
+migrates transports at all, whether it authenticates, whether it encrypts, and
+whether it eventually hands off to another protocol are **configuration**, not
+protocol. A gatekeeper at a building entrance, a domestic assistant, and a
+quadruped in a warehouse can each use MCL as their first interaction layer while
+agreeing on none of those choices.
+
+Two MCL implementations configured differently MUST remain interoperable at the
+frame and semantic layers. They will refuse each other at different points, and
+refusing early is a policy outcome, not an interoperability failure. A profile
+MAY constrain a sequence within its own domain; Core MUST NOT.
+
+A configuration that never migrates transports, never authenticates, and never
+hands off is a complete and valid use of MCL.
+
+### 2.10.2 MCL is not an authentication protocol
+
+MCL MUST NOT become one. Where a deployment needs authentication, MCL's
+obligation is to make a reviewed authenticated key exchange possible without
+requiring sensitive material to cross an exposed channel — not to define that
+exchange, and not to own the credential ecosystems it depends on.
+
+Authentication is one thing MCL can be configured to carry. It is not what MCL
+is for.
 
 ### 2.11 Security properties are separate and are never summarised
 

@@ -1,12 +1,28 @@
 # Security
 
+## Scope: security in MCL is optional, and currently absent
+
+MCL is a contact and communication layer. Whether a deployment authenticates
+anything is a configuration choice it makes for itself — Architecture Charter
+§2.10.1. Plenty of legitimate deployments never authenticate at all: presence,
+hazard broadcast and capability discovery among unknown listeners, or machines
+that already know each other through means entirely outside MCL.
+
+This document is therefore not a description of what MCL *is*. It is a
+description of what MCL does and does not give you if you need it to.
+
 ## Read this before building on MCL
 
 **MCL currently provides no confidentiality, no cryptographic authenticity, and
 no peer authentication.** Not weak versions of them — none.
 
-This is not an oversight, and it is stated first because the alternative is that
-somebody assumes otherwise and ships it.
+That is a statement of implementation status, not of intent: MCL is designed to
+be able to carry a reviewed security profile, and that profile has not been
+built. It is stated first because the alternative is that somebody assumes
+otherwise and ships it.
+
+**If your deployment does not need those properties, MCL is usable today.** If
+it does, it is not yet.
 
 | Property | Status today |
 |---|---|
@@ -21,7 +37,8 @@ somebody assumes otherwise and ships it.
 If you deploy MCL today, assume every frame you receive may have been written by
 anyone within range, and treat it accordingly. That is a legitimate way to use
 it — presence, hazard broadcast and capability discovery are useful without
-authentication — but it must be a decision, not a surprise.
+authentication, and designing for exactly those conditions is a first-class use
+of MCL rather than a compromise. But it must be a decision, not a surprise.
 
 ### The frame check is not integrity
 
@@ -59,8 +76,11 @@ Record and reason about the properties separately. They fail independently.
 
 ## What is being worked on
 
-The security track is deliberately specification-first. No cryptographic code
-exists in any repository, and none will be written before the design is settled.
+The security track designs an **optional profile**. It is not MCL's roadmap, and
+MCL is not blocked on it — the deployments that do not need it are usable now.
+
+It is deliberately specification-first. No cryptographic code exists in any
+repository, and none will be written before the design is settled.
 
 - [`mcl-link/research/secure-contact-threat-model.md`](https://github.com/machine-contact-layer/mcl-link) — adversaries, and what cannot be achieved without a trust anchor
 - [`mcl-link/research/secure-contact-candidate.md`](https://github.com/machine-contact-layer/mcl-link) — prior art to adopt rather than reinvent
