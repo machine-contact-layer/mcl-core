@@ -2,8 +2,9 @@
   "release": "v0.1.0-alpha.1",
   "prepared_date": "2026-09-02",
   "status": "ALPHA / PRE-RELEASE",
-  "license": "BLOCKED — awaiting owner license selection",
-  "visibility": "PRIVATE — no visibility changes made",
+  "license": "Apache-2.0 — selected by owner 2026-09-02; identical canonical text (SHA-256 cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30) present in all eight repositories",
+  "visibility": "PRIVATE — no visibility changes made. Owner has deferred all publication until v1.0.",
+  "tag_status": "NOT TAGGED — owner has deferred release to v1.0. This manifest is an internal engineering snapshot, not a published release.",
 
   "repositories": {
     "mcl-core": {
@@ -92,12 +93,12 @@
       "detail": "Experiment 001: Binary FSK 300 baud, 48 kHz mono PCM, 4 preamble candidates (LFM chirp, Zadoff-Chu derived, PN m-sequence, frequency-diverse) evaluated with exact length invariant (N=4800, 0.1s), verified 7-bit m-sequence (period 127), equalized energy budgets, quadrature correlation magnitude, and preliminary small-sample empirical Pfa threshold calibration (target Pfa=0.010, exactly 100 noise trials per candidate). Corrected impairment harness with explicit enablement: measured AWGN power verified across 30, 20, 10, 5, 0 dB (at 0 dB SNR, noise power equals signal power within 0.5% and P_d=1.000, 12/12 payload CRC valid); post-filter colored noise power measured and scaled to requested SNR (30, 20, 15, 10, 5, 0 dB); band attenuation verified via pure sine probes (3000, 3800, 4000, 4200, 5000 Hz) with measured center notch attenuation of exactly -10.00 dB at 4000 Hz; hardened RIFF WAV chunk scanner and strict format rejection. Experiment 001 is a host-side research testbed using hosted C math/stdio/WAV; the protocol-facing Wire/Link/SDK C libraries remain freestanding C99."
     },
     "E2_replay": {
-      "status": "LOCAL_NEGATIVE_EVIDENCE",
-      "detail": "Retained same-laptop physical captures were replayed through the unmodified offline decoder. No capture achieved valid frame CRC, exact Wire bytes, or semantic recovery."
+      "status": "LOCAL_EVIDENCE",
+      "detail": "Retained physical capture evidence/e3-dfr1154-20260902/capture-005-crc-verified.wav (DFR1154 ESP32-S3 PDM microphone, 48 kHz PCM16 mono, board CRC-32 DF6E6D65 verified host-side) replays through the offline decoder to valid frame CRC 0x219A, exact Wire bytes 00 02 00 00 00 01 01 00 00 01 3C, and exact PRESENCE semantic recovery. This required a receiver change made after the capture (symbol-boundary rounding rather than truncation), so it is replay evidence only and does NOT establish E3. Retained same-laptop Realtek captures still achieve no recovery."
     },
     "E3_controlled_over_air_frame": {
-      "status": "RUN_NOT_RECOVERED",
-      "detail": "The exact hashed source was played through the built-in Realtek speaker and captured by the built-in Realtek microphone array. One retained RAW channel acquired the preamble at correlation 0.624806 but decoded an invalid header; later fixed-source repetitions, including operator-reported Nahimic-disabled and microphone-boosted conditions, did not reacquire. No valid frame CRC, exact Wire bytes, or semantic recovery was achieved. Evidence is retained in mcl-ap commit ae76c37d05aaaca234d322ff1adb811b0e8189e7."
+      "status": "LOCAL_EVIDENCE",
+      "detail": "First over-air recovery of an exact MCL frame. The hashed source exp001_e3_source.wav was played through the laptop Realtek speaker and captured by the DFR1154 ESP32-S3 onboard PDM microphone at 48 kHz PCM16 mono, returned over native USB CDC with board-side IEEE CRC-32 verified host-side. Ten trials taken against the frozen receiver after the symbol-boundary rounding change, decoded with no further modification: 10/10 preamble acquisition (correlation 0.874086 to 0.877460), 10/10 PHY header recovery, 8/10 exact Wire bytes and exact PRESENCE semantic object. A separate 3-trial pilot under identical conditions recovered 3/3, giving 13 trials with 13/13 acquisition and 11/13 exact recovery. Both failures acquired cleanly and decoded all 24 header bits correctly, failing only on payload symbols; the measured cause is transducer response, the PDM microphone attenuating the 5 kHz mark tone approximately 12.4 dB relative to the 3 kHz space tone and leaving roughly 0.3 of log-energy decision margin on the weakest end-of-frame symbols. Evidence, per-trial table, and SHA-256 manifests are retained in mcl-ap under experiments/001-known-waveform/evidence/e3-dfr1154-20260902-frozen-rx and -frozen-rx-pilot. Same-laptop Realtek microphone attempts still achieve no recovery. This is single-operator, single-device-pair, short-range evidence; it is not multi-device (E4) and does not select AP-B0."
     },
     "E4_multi_device": {
       "status": "NOT_RUN",

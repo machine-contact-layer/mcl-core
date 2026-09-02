@@ -2,14 +2,16 @@
 
 **Status**: ALPHA / PRE-RELEASE  
 **Date**: 2026-09-02
-**License**: BLOCKED — awaiting owner license selection  
-**Visibility**: PRIVATE — no visibility changes made  
+**License**: Apache-2.0 (selected 2026-09-02)  
+**Visibility**: PRIVATE — publication deferred by owner until v1.0. Not tagged.  
 
 > [!WARNING]
 > MCL is NOT a stable specification, NOT an adopted standard, and has NOT been
 > independently validated for interoperability. No acoustic physical-layer profile
-> has been experimentally confirmed. This release documents the current state of
-> the reference implementation only.
+> has been selected: AP-B0 remains open. A single experimental waveform has now
+> survived a controlled over-air path on one device pair, which is E3 evidence and
+> nothing more. This document records the current state of the reference
+> implementation only.
 
 ## What This Release Contains
 
@@ -62,8 +64,10 @@
   - Offline WAV decoder tool (`decode_wav.c`) with strict sample rate checking
   - Retained E3 source WAV (`exp001_e3_source.wav`, SHA256: `1BCA567F7F68F5A18F41ADD8CDE03863C336D50F332097F8361262F56ECA1241`)
   - Retained same-laptop frequency-response, raw-capture, decoder, and SHA-256 evidence
-  - **E3 RUN — NOT RECOVERED**: one raw channel acquired at correlation 0.624806 but no capture achieved valid frame CRC, exact Wire bytes, or semantic recovery
-  - **NOT normative. AP-B0 is NOT selected.**
+  - Symbol boundaries rounded to nearest rather than truncated (fractional samples-per-symbol is unavoidable once transmit and receive clocks are independent)
+  - **E3 RECOVERED**: first over-air recovery of an exact MCL frame. Laptop speaker -> air -> DFR1154 ESP32-S3 PDM microphone -> USB CDC (CRC-32 verified) -> offline decoder. 10 trials against the frozen receiver: 10/10 preamble acquisition (correlation 0.874086-0.877460), 10/10 PHY header, 8/10 exact Wire bytes and exact PRESENCE object; 3/3 on a prior pilot
+  - Residual failure mode measured, not guessed: the PDM microphone attenuates the 5 kHz mark tone ~12.4 dB relative to 3 kHz, leaving ~0.3 log-energy margin on end-of-frame symbols. Both failures acquired cleanly and decoded all 24 header bits correctly
+  - **NOT normative. AP-B0 is NOT selected.** Single operator, single device pair, short range. Not multi-device (E4).
 
 ### MCL-IP / MCL-BLE / MCL-UWB
 - Draft binding specifications only, no implementation
@@ -86,8 +90,8 @@
 |----|-------------|--------|--------|
 | E0 | Analytical model | AVAILABLE | ISO 9613-1 attenuation, delay, Doppler |
 | E1 | Deterministic simulation | LOCAL_EVIDENCE | Exp 001: Hosted C research testbed. Equalized resources, preliminary small-sample empirical $P_{fa}$ calibration (100 trials/candidate), verified 0 dB AWGN (measured noise power = signal power), scaled colored noise, verified -10 dB notch filter, hardened WAV chunk scanner. All 4 candidates achieved $P_d=1.000$, $0.00$ mean timing error, 12/12 CRC valid. Prior uncalibrated/unverified comparison superseded. |
-| E2 | Replay evidence | LOCAL_NEGATIVE_EVIDENCE | Retained physical captures replayed through the decoder; exact recovery failed |
-| E3 | Controlled over-air MCL frame | RUN_NOT_RECOVERED | Same-laptop speaker/air/microphone attempts retained; no valid frame CRC, exact Wire bytes, or semantic recovery |
+| E2 | Replay evidence | LOCAL_EVIDENCE | Retained DFR1154 capture replays to exact Wire bytes, but through a receiver changed after capture — replay only |
+| E3 | Controlled over-air MCL frame | LOCAL_EVIDENCE | 10 fresh trials vs frozen receiver: 10/10 acquisition, 10/10 header, **8/10 exact Wire + semantic**. 3/3 pilot. Same-laptop Realtek mic still fails |
 | E4 | Multi-device | NOT_RUN | Not run |
 | E6 | Independent interoperability | NOT_RUN | Not run |
 
@@ -106,8 +110,8 @@
 - ❌ Stable specification
 - ❌ Adopted standard
 - ❌ Independent interoperability
-- ❌ Successful physical acoustic validation (E3 run; exact recovery not achieved)
-- ❌ Public availability (license not selected)
+- ❌ A selected or normative acoustic profile (E3 achieved on one device pair; AP-B0 still unselected)
+- ❌ Public availability (Apache-2.0 selected, but publication deferred to v1.0)
 - ❌ Multi-device or ecosystem-scale testing
 - ❌ Transport binding implementation (IP, BLE, UWB)
 
