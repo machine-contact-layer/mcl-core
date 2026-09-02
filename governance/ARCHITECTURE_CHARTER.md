@@ -74,7 +74,43 @@ They MUST NOT become Core invariants.
 A bug or shortcut in the reference implementation does not redefine the protocol.
 Normative text, registries, and conformance vectors define the candidate specification.
 
-### 2.10 Evidence maturity must be visible
+### 2.10 MCL operates before trust exists
+
+MCL's normal condition is that neither machine yet has a reason to trust the
+other. First contact MUST therefore be possible without disclosing sensitive
+identity material, credentials, or private network configuration, because the
+first-contact medium MUST be assumed observable by anyone in range.
+
+MCL MAY negotiate migration of an existing contact to a more private or more
+capable transport, and the same MCL contact MAY continue across that change.
+Establishing a transport, completing a pairing, or joining a network MUST NOT by
+itself establish identity, authority, or trust. Where a contact migrates, a
+security profile MUST be able to bind the new channel to the original contact,
+so that a peer appearing on the richer transport can be shown to be the peer the
+contact began with rather than merely a peer that arrived at the right moment.
+
+MCL is not an authentication protocol and MUST NOT become one. It is the layer
+on which unrelated machines interact before trust, and its obligation is to make
+strong authentication possible without requiring sensitive material to cross an
+exposed channel — not to own the credential ecosystems that authentication
+depends on.
+
+### 2.11 Security properties are separate and are never summarised
+
+Contact continuity, channel confidentiality, channel authenticity, peer
+identity, attestation, proximity evidence, and local authorization are distinct
+properties established by distinct means.
+
+An implementation MUST NOT collapse them into a single trust indicator. No
+representation of the form `trusted = true` may appear in a normative MCL
+interface, because every such field eventually invites a shortcut from one
+property to a stronger one that was never established.
+
+Correspondingly, a mechanism MUST NOT be named for a property it does not
+provide. An error-detecting code is not integrity; an encrypted channel is not
+an authenticated peer; a verified credential is not an authorization.
+
+### 2.12 Evidence maturity must be visible
 
 Analytical, simulated, replayed-channel, controlled over-air, multi-device, and independent-interoperability results MUST be labeled separately.
 
