@@ -5,53 +5,50 @@
   "license": "Apache-2.0 — selected by owner 2026-09-02; identical canonical text (SHA-256 cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30) present in all eight repositories",
   "visibility": "PRIVATE — no visibility changes made. Owner has deferred all publication until v1.0.",
   "tag_status": "NOT TAGGED — owner has deferred release to v1.0. This manifest is an internal engineering snapshot, not a published release.",
-
   "repositories": {
     "mcl-core": {
       "release_ref": "v0.1.0-alpha.1",
       "subject": "Core registry, six currently implemented Tier-0 reference semantics, C validator, and release packaging"
     },
     "mcl-wire": {
-      "commit": "6b33344939326f0a9ee2ec75ef683b840a0c19eb",
-      "subject": "test: enforce release benchmark validation"
+      "commit": "fd928dab88a25e15363dd322fb4bc56445da5710",
+      "subject": "Add Apache-2.0 LICENSE"
     },
     "mcl-link": {
-      "commit": "689236ee408ab2441292b8bf3bbf350f60ef5dc7",
-      "subject": "Fix wire major mask narrowing and enforce context lifecycle invariants"
+      "commit": "9894375e2648882509292e30534e8e0276f4648b",
+      "subject": "Add Apache-2.0 LICENSE"
     },
     "mcl-sdk": {
-      "commit": "1bad79d81a549e89c8a783e66c3a57064b831896",
-      "subject": "test: initialize negative-case config"
+      "commit": "c75a1d8b1d2ec0ce95635852d8e766bca350e86e",
+      "subject": "Add Apache-2.0 LICENSE"
     },
     "mcl-ap": {
-      "commit": "ae76c37d05aaaca234d322ff1adb811b0e8189e7",
-      "subject": "test: harden E3 decoding and retain laptop evidence"
+      "commit": "adcb2da230b2592759a259e06371bb900783ffa9",
+      "subject": "Experiment 002 part A: measure real transducer path response"
     },
     "mcl-ip": {
-      "commit": "c3fcf49bdb76d426cc6b822aafa227f95492b6b5",
-      "subject": "Add initial MCL-IP binding draft"
+      "commit": "75b2ad3a23053360e1eb5e584a9bfe7a9e779840",
+      "subject": "Add Apache-2.0 LICENSE"
     },
     "mcl-ble": {
-      "commit": "edd62336d064eec7d478dbc92f0ed0957ca8f68b",
-      "subject": "Add initial MCL-BLE binding draft"
+      "commit": "b486960b35eb5a523dbe72af1754cbc820dcad7b",
+      "subject": "Add Apache-2.0 LICENSE"
     },
     "mcl-uwb": {
-      "commit": "f2d6c1f1d224160e707047f11376ecf3223d1bcd",
-      "subject": "Add initial MCL-UWB binding draft"
+      "commit": "1c1cd3f8dffb42f0eeb7bd959908e1db1077bd31",
+      "subject": "Add Apache-2.0 LICENSE"
     }
   },
-
   "layer_status": {
     "mcl-core": "Provisional semantic normalization assignments and opcode registries, with six currently implemented Tier-0 reference semantics. C validator with overflow and truncation hardening.",
     "mcl-wire": "Freestanding C99 reference codec. Bit-level encode/decode for 6 Tier-0 semantics. Extension framework present. Randomized fuzz decode. Known test vectors. Zero heap allocation.",
     "mcl-link": "C99 reference state machine. 9-state lifecycle. Context install/authorize/compare. Wire major mask without narrowing. Coexistence tested with Wire.",
     "mcl-sdk": "C99 reference SDK. Node init/reset, Tier-0 send/receive, Link lifecycle wrappers. Zero side-effect decode. Transport callback delivers raw Wire bytes only.",
-    "mcl-ap": "Analytical channel model (ISO 9613-1) + Experiment 001 (LAB/EXPERIMENTAL hosted binary FSK research testbed using host math and WAV I/O). No normative profile. AP-B0 NOT selected. Protocol-facing Wire, Link, and SDK libraries remain freestanding C99.",
+    "mcl-ap": "Analytical channel model (ISO 9613-1); Experiment 001 (LAB/EXPERIMENTAL hosted binary FSK research testbed, frozen at 3/5 kHz as the instrument holding the E3 result); Experiment 002 part A (real transducer path characterization, first measurement taken). No normative profile. AP-B0 NOT selected. Protocol-facing Wire, Link, and SDK libraries remain freestanding C99.",
     "mcl-ip": "Draft binding specification only. No implementation.",
     "mcl-ble": "Draft binding specification only. No implementation.",
     "mcl-uwb": "Draft binding specification only. No implementation."
   },
-
   "conformance_evidence": {
     "C0_static_registry": {
       "status": "LOCAL_EVIDENCE",
@@ -82,7 +79,6 @@
       "detail": "No multi-device, multi-transport, or ecosystem-scale testing performed."
     }
   },
-
   "ap_evidence": {
     "E0_analytical": {
       "status": "AVAILABLE",
@@ -109,7 +105,6 @@
       "detail": "No independent AP implementation exists."
     }
   },
-
   "compiler_verification": {
     "msvc_19_51": {
       "status": "PASS",
