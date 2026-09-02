@@ -27,9 +27,11 @@
 - Zero heap allocation, zero global mutable state
 
 ### MCL-Link
-- **Link frame v0 canonical layout**, the carriage unit every binding maps onto: 8 bytes minimum, flag-selected destination, session, sequence, freshness and CRC-32 integrity
-- Strict decoding: unknown link major, unassigned frame class, reserved flag bits, truncation at any length, and integrity failure are all rejected rather than interpreted
-- Absence of an integrity field makes a frame unverified, not trusted
+- **Link frame v0 canonical layout**, the carriage unit every binding maps onto: 8 bytes minimum, flag-selected destination, session, sequence, freshness and a CRC-32 frame check; maximum 1048 bytes, which every binding sizes its carriage against
+- Strict decoding: unknown link major, unassigned frame class, reserved flag bits, truncation at any length, and frame-check failure are all rejected rather than interpreted. Truncation is reported distinctly from permanent malformation, because a stream carriage must tell "wait for more bytes" apart from "resynchronise"
+- Absence of a frame check makes a frame unchecked, not trusted. Presence of one makes it undamaged, not authentic
+
+**Renamed since the snapshot was first prepared.** `MCL_LINK_FLAG_INTEGRITY` is now `MCL_LINK_FLAG_FRAME_CHECK`, and `MCL_LINK_ERR_INTEGRITY` is `MCL_LINK_ERR_FRAME_CHECK`. A CRC-32 detects accidental corruption and stops no attacker, who simply recomputes it. The wire bit is unchanged. This is an API-breaking rename, taken deliberately while nothing is tagged, under Architecture Charter §2.11: a mechanism is never named for a property it does not provide
 - C99 reference state machine: 9-state lifecycle
 - Context install/authorize/compare
 - Wire major mask: `uint32_t` input, no narrowing
@@ -97,6 +99,33 @@
 - No distance bounding implemented or claimed; relay and distance-reduction attacks remain possible
 - Freestanding C99, no UWB driver, no libc symbols
 
+## Transport Evidence
+
+Added after this snapshot was first prepared. Kept separate from AP Evidence so
+it stays clear which medium each result describes.
+
+| Binding | Level | Result |
+|---|---|---|
+| **mcl-ip** | `E4 MULTI_DEVICE_OVER_AIR` | 2.4 GHz UDP, Windows host ↔ ESP32-S3 SoftAP. 28 checks, 0 failed. 111 datagrams each way, 103 accepted, **8 malformed refused**, zero loss |
+| **mcl-ble** | `E4 MULTI_DEVICE_OVER_AIR` | Bluetooth LE, connectionless and GATT. 35 checks, 0 failed, 20/20 sustained. Fragmented at MTU 23, the minimum BLE permits. **4 malformed fragment sequences discarded rather than spliced**, plus recovery asserted afterward |
+| **mcl-uwb** | none | Unit-tested carriage mapping only |
+
+In both runs the refusals are the result that matters. A binding that accepted
+any of those inputs would have passed a happy-path demonstration and failed in
+the field.
+
+**Both ends compile the same sources.** A shared misreading of the specification
+would be accepted by both peers and would be invisible in these numbers. None of
+this is independent interoperability.
+
+Two failures recorded in the evidence directories were ours rather than the
+bindings': a 24-bit field initialised with a 32-bit constant on both ends, which
+the Wire range check correctly refused; and a firmware logger that blocked on a
+full USB CDC buffer and overflowed the receive queue while it stalled,
+presenting as 36% packet loss. An independent ICMP baseline over the same link
+measured 0% loss on 200 packets, which is what separated the instrument from the
+radio.
+
 ## Conformance Evidence
 
 | ID | Description | Status | Detail |
@@ -137,8 +166,10 @@
 - ❌ Independent interoperability
 - ❌ A selected or normative acoustic profile (E3 achieved on one device pair; AP-B0 still unselected)
 - ❌ Public availability (Apache-2.0 selected, but publication deferred to v1.0)
-- ❌ Multi-device or ecosystem-scale testing
-- ❌ Any transport binding exercised against real IP, BLE or UWB hardware (the carriage mappings are implemented and unit-tested; only the acoustic binding has run over the air)
+- ❌ Ecosystem-scale testing (three transports have run between two machines, but with one board model, one host, no third-party peer and no multi-node contention)
+- ❌ Any UWB hardware (that binding is unit-tested C99 that has never met a radio)
+- ❌ **Any security property whatsoever** — no confidentiality, no cryptographic authenticity, no peer authentication, no contact continuity. The BLE run used Bluetooth Just Works pairing: encrypted against a passive listener, unauthenticated against an active one
+- ❌ A normative transport profile for IP or BLE (their over-air runs are evidence toward a future C5, not a C5 pass)
 
 ## Files
 

@@ -8,35 +8,36 @@
   "repositories": {
     "mcl-core": {
       "release_ref": "v0.1.0-alpha.1",
-      "subject": "Core registry, six currently implemented Tier-0 reference semantics, C validator, and release packaging"
+      "subject": "charter: MCL operates before trust, and security properties stay separate",
+      "commit": "c3a26ab6ff32c61d9268eb0c3047ed4f82915d45"
     },
     "mcl-wire": {
-      "commit": "fd928dab88a25e15363dd322fb4bc56445da5710",
-      "subject": "Add Apache-2.0 LICENSE"
+      "commit": "3ef2642dd107bc93019b96e84f8cefae42ab8c43",
+      "subject": "docs: remove AGENTS.md in favour of the shared implementation contract"
     },
     "mcl-link": {
-      "commit": "255ec8036539fd1b6a095662a9150f560d75e54b",
-      "subject": "Define the Link frame v0 canonical layout"
+      "commit": "5e8ff4cd3308809f1aa400e15ecc5a8875a17dec",
+      "subject": "link: correct the continuity model, a transcript hash proves nothing"
     },
     "mcl-sdk": {
-      "commit": "c2a7305b2ef370239f08c8fa25028a43f9e6b899",
-      "subject": "Add the framed contact path to the SDK"
+      "commit": "e93e55a185c0a10d8dde03ce3f8492a2ec472609",
+      "subject": "align with the Link frame-check rename"
     },
     "mcl-ap": {
-      "commit": "28a752e39da968c6cf5254f31dd7f30ccb01f05e",
-      "subject": "E4: recover MCL frame over air on a reversed device pair (8/10)"
+      "commit": "7d8a0235f062cc97c0194ce291b1022ee5c9ca37",
+      "subject": "exp001: parameterise the post-capture host audio restore hook"
     },
     "mcl-ip": {
-      "commit": "41033c8595c743ec9405ad721378bf3401ef5d97",
-      "subject": "Implement the MCL-IP binding"
+      "commit": "c3159e90cbc68f57dce474a1d8489a411e945a38",
+      "subject": "align with the Link frame-check rename"
     },
     "mcl-ble": {
-      "commit": "6146f914dc7bc487a17d71ac3d293d09659ee2b0",
-      "subject": "Implement the MCL-BLE binding"
+      "commit": "65755ac06937ffd153c540997deba915f62964eb",
+      "subject": "align with the Link frame-check rename"
     },
     "mcl-uwb": {
-      "commit": "a5033e9e1806e880b985b39ebda72ce18173f87a",
-      "subject": "Implement the MCL-UWB binding, with the security boundary enforced"
+      "commit": "12e97387a6086891fb0a6bceba3f35fb698dacad",
+      "subject": "align with the Link frame-check rename"
     }
   },
   "layer_status": {
@@ -70,13 +71,13 @@
       "status": "NOT_RUN",
       "detail": "No independent implementation exists to test against."
     },
-    "C5_ap_physical_profile_conformance": {
-      "status": "NOT_RUN",
-      "detail": "No normative AP profile defined; AP-B0 is not selected. Analytical model, experimental lab testbed, and measured path characterization only. Transport binding carriage mappings for IP, BLE and UWB are implemented and unit-tested, but no binding has been exercised against real hardware."
-    },
     "C6_device_ecosystem_robustness": {
-      "status": "NOT_RUN",
-      "detail": "No multi-transport or ecosystem-scale testing performed. Only the acoustic binding has run over real hardware."
+      "status": "PARTIAL_LOCAL_EVIDENCE",
+      "detail": "Three transport families have now run between two physically distinct machines: acoustic (mcl-ap), 2.4 GHz UDP (mcl-ip) and Bluetooth LE (mcl-ble). Each run included deliberate malformed input and each peer refused it as specified. This is device diversity across transports, not ecosystem scale: one board model, one host, no third-party peer, and no multi-node contention testing."
+    },
+    "C5_transport_profile_conformance": {
+      "status": "PARTIAL_LOCAL_EVIDENCE",
+      "detail": "mcl-ip and mcl-ble carriage rules were exercised over real radios against a second machine. IP: datagram boundary equals frame boundary, trailing bytes refused, truncation distinguished from malformation, future major version reported as unsupported. BLE: fragmentation and reassembly at the minimum 23-byte MTU, with gap, orphan, non-canonical START and post-refusal recovery all verified. No normative profile is defined for either binding, so this is evidence toward a future C5 rather than a C5 pass. AP remains NOT_RUN because AP-B0 is not selected."
     }
   },
   "ap_evidence": {
@@ -131,9 +132,46 @@
     "summary": "All eight repositories now contain implementation, not only specification. 20 test targets pass across the family under strict warnings-as-errors.",
     "freestanding_verification": "Link, Wire, SDK, IP, BLE and UWB objects compiled and inspected for undefined externals: no memcpy, memset, malloc or stdio. Byte copies use a volatile-destination helper because optimising compilers rewrite plain indexed loops into memcpy, which would reintroduce a libc dependency.",
     "not_implemented": [
-      "No transport binding has been exercised against real IP, BLE or UWB hardware.",
-      "No independent implementation exists, so C4 and E6 remain unreachable.",
-      "AP-B0 is not selected and no acoustic profile is normative."
-    ]
+      "mcl-uwb has never been exercised against real UWB hardware.",
+      "No independent implementation exists, so C4 and E6 are unreachable by construction.",
+      "AP-B0 is not selected; no normative acoustic profile is defined.",
+      "No normative transport profile is defined for IP or BLE either, so their over-air runs are evidence toward a future C5 rather than a C5 pass.",
+      "No cryptographic capability of any kind exists. See security_posture.",
+      "The reverse acoustic path has never been swept with Experiment 002; the 3000/6000 Hz pair is optimised for the forward path only."
+    ],
+    "audit_2026_09_02": "A file-by-file audit fixed seven defects that would otherwise have shipped: a compiler-synthesised memset in mcl-link that broke the freestanding contract; truncation conflated with permanent malformation in Link decode and then mistranslated by two bindings; a BLE reassembly bound below the largest legal Link frame; an unguarded fragment-sequence wrap; an unenforced exact payload boundary in the SDK; an unbounded IP stream length prefix; and an MTU accounting function that contradicted its own documented contract. Two session-scaffolding documents were removed and their durable content promoted to governance/IMPLEMENTATION_CONTRACT.md."
+  },
+  "transport_evidence": {
+    "note": "Evidence levels for the non-acoustic bindings, kept separate from ap_evidence because the ladder describes physical reality per transport and merging them would obscure which medium was used.",
+    "mcl-ip": {
+      "level": "E4_MULTI_DEVICE_OVER_AIR",
+      "status": "LOCAL_EVIDENCE",
+      "detail": "2026-09-02. Windows host on a Realtek RTL8188EU USB adapter and an ESP32-S3 SoftAP peer, 2.4 GHz channel 6, one Link frame per UDP datagram. 28 checks, 0 failed, 0 retries. Host sent 111 datagrams, board received 111, accepted 103, refused 8, replied 111, zero loss in either direction. The eight refusals covered truncation, a trailing byte, an unknown class, a reserved bit, a future major version, a corrupted frame check, a corrupted payload and an overstated payload length.",
+      "artifact": "mcl-ip/evidence/e4-udp-2g4-20260902/"
+    },
+    "mcl-ble": {
+      "level": "E4_MULTI_DEVICE_OVER_AIR",
+      "status": "LOCAL_EVIDENCE",
+      "detail": "2026-09-02. Windows host over a MediaTek Bluetooth adapter and an ESP32-S3 peripheral, connectionless and connected. 35 checks, 0 failed, 20/20 sustained exchanges. Fragmentation was performed at MTU 23, the smallest BLE permits, rather than the large MTU Windows negotiates, which would have carried every test frame in a single PDU. Four malformed fragment sequences were discarded rather than spliced and recovery was then asserted; a fifth carried a frame with a corrupted frame check inside well-formed fragments, which reassembly accepted and Link refused one layer up. A 19-byte Tier-0 PRESENCE Link frame was also carried in the scan response and decoded by the host.",
+      "artifact": "mcl-ble/evidence/e4-ble-gatt-20260902/"
+    },
+    "mcl-uwb": {
+      "level": "NONE",
+      "status": "NOT_RUN",
+      "detail": "Unit-tested C99 carriage mapping. Has never met UWB hardware."
+    },
+    "shared_limit": "Both ends of every run compile the same mcl-link, mcl-wire and binding sources. A shared misreading of the specification would be accepted by both peers and would not appear in any of these results. None of this is independent interoperability."
+  },
+  "security_posture": {
+    "provides_today": "Nothing cryptographic. No confidentiality, no cryptographic authenticity, no peer authentication and no contact continuity exist in any repository.",
+    "frame_check_rename": "MCL_LINK_FLAG_INTEGRITY was renamed to MCL_LINK_FLAG_FRAME_CHECK, and MCL_LINK_ERR_INTEGRITY to MCL_LINK_ERR_FRAME_CHECK. The field is a CRC-32: it detects accidental corruption and provides no protection against deliberate modification, because an attacker recomputes it over the altered bytes. The wire bit is unchanged. This is an API-breaking rename taken deliberately while nothing is tagged, under Architecture Charter 2.11: a mechanism is never named for a property it does not provide.",
+    "ble_run_caveat": "The BLE evidence used Bluetooth Just Works pairing: encrypted against a passive listener, unauthenticated against an active one. No peer identity was established by that run.",
+    "charter_additions": "Charter 2.10 (MCL operates before trust; establishing a transport never by itself establishes identity, authority or trust; a migrated channel must be bindable to the original contact) and 2.11 (security properties are separate and are never summarised into one indicator).",
+    "research_track": [
+      "mcl-link/research/secure-contact-threat-model.md",
+      "mcl-link/research/secure-contact-candidate.md",
+      "mcl-link/research/contact-continuity-experiment.md"
+    ],
+    "correction_recorded": "An earlier revision of the threat model proposed proving knowledge of a hash over the first-contact exchange. That is unsound: first contact is observable, so any listener computes the same value, and an attacker can bind a valid session of its own to a contact it merely watched. The corrected requirement is that a continuity proof depend on secret state both peers committed during the contact, which forces the key exchange to begin on the first medium and finish on the second."
   }
 }
