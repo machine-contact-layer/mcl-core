@@ -41,6 +41,7 @@ MCL Core does **not** define acoustic modulation, Bluetooth, UWB, IP transport, 
 - [`governance/ORGANIZATION_MODEL.md`](governance/ORGANIZATION_MODEL.md) — future multi-party standards model
 - [`governance/PUBLICATION_POLICY.md`](governance/PUBLICATION_POLICY.md) — immutable releases and persistence
 - [`governance/IPR_PRINCIPLES.md`](governance/IPR_PRINCIPLES.md) — intended royalty-free implementation direction
+- [`governance/IMPLEMENTATION_CONTRACT.md`](governance/IMPLEMENTATION_CONTRACT.md) — runtime constraints and validation gates binding on reference implementations
 - [`conformance/CONFORMANCE_MODEL.md`](conformance/CONFORMANCE_MODEL.md) — conformance classes and evidence levels
 - [`registries/semantic-codes-v0.2.json`](registries/semantic-codes-v0.2.json) — provisional machine-readable semantic assignments
 
