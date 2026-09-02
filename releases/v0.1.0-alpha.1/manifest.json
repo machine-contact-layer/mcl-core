@@ -6,18 +6,19 @@
   "visibility": "PRIVATE — no visibility changes made. Owner has deferred all publication until v1.0.",
   "tag_status": "NOT TAGGED — owner has deferred release to v1.0. This manifest is an internal engineering snapshot, not a published release.",
   "repositories": {
+    "_note": "Snapshot of each repository at the time this manifest was written. The mcl-core entry necessarily names the commit preceding the one that records it, because the manifest lives in mcl-core and cannot contain its own hash. Nothing is tagged; these are provenance references, not immutable release pointers.",
     "mcl-core": {
       "release_ref": "v0.1.0-alpha.1",
-      "subject": "charter: MCL operates before trust, and security properties stay separate",
-      "commit": "c3a26ab6ff32c61d9268eb0c3047ed4f82915d45"
+      "subject": "charter, readme: MCL is trust-agnostic, and the sequence belongs to the deployment",
+      "commit": "506dbe0650244070e06b99cb844a6a400d1db15d"
     },
     "mcl-wire": {
       "commit": "3ef2642dd107bc93019b96e84f8cefae42ab8c43",
       "subject": "docs: remove AGENTS.md in favour of the shared implementation contract"
     },
     "mcl-link": {
-      "commit": "5e8ff4cd3308809f1aa400e15ecc5a8875a17dec",
-      "subject": "link: correct the continuity model, a transcript hash proves nothing"
+      "commit": "b94d65203a5b6cedecaad1dc9f9e7583dd71377d",
+      "subject": "research: scope the security track as an optional profile"
     },
     "mcl-sdk": {
       "commit": "e93e55a185c0a10d8dde03ce3f8492a2ec472609",
@@ -28,22 +29,22 @@
       "subject": "exp001: parameterise the post-capture host audio restore hook"
     },
     "mcl-ip": {
-      "commit": "c3159e90cbc68f57dce474a1d8489a411e945a38",
-      "subject": "align with the Link frame-check rename"
+      "commit": "a0ebe820eb47fc11d55be3a805e78dd8c8b0c107",
+      "subject": "docs: record over-air evidence and security status in the README"
     },
     "mcl-ble": {
-      "commit": "65755ac06937ffd153c540997deba915f62964eb",
-      "subject": "align with the Link frame-check rename"
+      "commit": "d031da5f597d3667df5900d5865e0de3fd78b523",
+      "subject": "docs: record over-air evidence and security status in the README"
     },
     "mcl-uwb": {
-      "commit": "12e97387a6086891fb0a6bceba3f35fb698dacad",
-      "subject": "align with the Link frame-check rename"
+      "commit": "1c770628c9936cddec42285951910245ea27b238",
+      "subject": "docs: record over-air evidence and security status in the README"
     }
   },
   "layer_status": {
     "mcl-core": "Provisional semantic normalization assignments and opcode registries, with six currently implemented Tier-0 reference semantics. C validator with overflow and truncation hardening.",
     "mcl-wire": "Freestanding C99 reference codec. Bit-level encode/decode for 6 Tier-0 semantics. Extension framework present. Randomized fuzz decode. Known test vectors. Zero heap allocation.",
-    "mcl-link": "C99 reference state machine (9-state lifecycle, context install/authorize/compare, wire major mask without narrowing) plus the Link frame v0 canonical layout: 8 bytes minimum, flag-selected destination/session/sequence/freshness/CRC-32 integrity, strict rejection of unknown version, unknown frame class, reserved flag bits, truncation and integrity failure. This is the carriage unit every transport binding maps onto.",
+    "mcl-link": "C99 reference state machine (9-state lifecycle, context install/authorize/compare, wire major mask without narrowing) plus the Link frame v0 canonical layout: 8 bytes minimum, flag-selected destination/session/sequence/freshness/CRC-32 frame check, strict rejection of unknown version, unknown frame class, reserved flag bits, truncation and frame-check failure, with truncation reported distinctly from permanent malformation so a stream carriage can tell 'wait for more bytes' from 'resynchronise'. This is the carriage unit every transport binding maps onto.",
     "mcl-sdk": "C99 reference SDK. Node init/reset, Tier-0 send/receive over raw Wire bytes, and a framed contact path over Link frames for the IP/BLE/UWB bindings. Transmit sequence advances only on transport success; a session reference requires an installed context; malformed frames are rejected before semantic decoding; reception has zero side effects on link state. Zero heap allocation, caller-owned buffers.",
     "mcl-ap": "Analytical channel model (ISO 9613-1); Experiment 001 (LAB/EXPERIMENTAL hosted binary FSK testbed, frozen at 3/5 kHz as the instrument holding the E3 result); Experiment 002 part A (real transducer path characterization); Experiment 003 (band-informed AP-B0 candidate, 3/6 kHz, with a same-session control and a reverse-direction E4 result). No normative profile. AP-B0 NOT selected. Protocol-facing Wire, Link, and SDK libraries remain freestanding C99.",
     "mcl-ip": "Reference implementation. Endpoint offer with family-consistent address sizing and an opaque local reference so first contact need not force address disclosure; datagram carriage where the datagram boundary is the frame boundary; length-prefixed stream carriage that preserves synchronisation across an undecodable frame; MTU accounting. Freestanding C99, no sockets, no libc symbols.",
