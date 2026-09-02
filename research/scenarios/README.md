@@ -45,4 +45,4 @@ The corpus intentionally contains ordinary peer coordination, authority claims, 
 
 SHA-256 of `corpus-v0.1.json`:
 
-`ac1f8ba0474d2def22b736a737305681144d6fae86ce327ce978ec1b24c783d5`
+`305b16c96d951404066f686533be00e9f4dc199daeec0e618a04f2385aebe4ec`

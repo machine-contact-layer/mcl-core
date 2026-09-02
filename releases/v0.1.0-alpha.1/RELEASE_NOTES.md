@@ -1,7 +1,7 @@
 # MCL v0.1.0-alpha.1
 
 **Status**: ALPHA / PRE-RELEASE  
-**Date**: 2026-09-01  
+**Date**: 2026-09-02
 **License**: BLOCKED — awaiting owner license selection  
 **Visibility**: PRIVATE — no visibility changes made  
 
@@ -14,7 +14,7 @@
 ## What This Release Contains
 
 ### MCL-Core
-- Provisional Tier-0 semantic normalization assignments spanning 6 core message categories and associated opcode registries (`semantic-codes-v0.2.json`)
+- Core semantic normalization registry with six currently implemented Tier-0 reference semantics (`semantic-codes-v0.2.json`)
 - C validator with overflow and file-truncation hardening
 
 ### MCL-Wire
@@ -61,6 +61,8 @@
   - Clean channel Wire -> Acoustic -> Wire bit-perfect across all 6 Tier-0 kinds
   - Offline WAV decoder tool (`decode_wav.c`) with strict sample rate checking
   - Retained E3 source WAV (`exp001_e3_source.wav`, SHA256: `1BCA567F7F68F5A18F41ADD8CDE03863C336D50F332097F8361262F56ECA1241`)
+  - Retained same-laptop frequency-response, raw-capture, decoder, and SHA-256 evidence
+  - **E3 RUN — NOT RECOVERED**: one raw channel acquired at correlation 0.624806 but no capture achieved valid frame CRC, exact Wire bytes, or semantic recovery
   - **NOT normative. AP-B0 is NOT selected.**
 
 ### MCL-IP / MCL-BLE / MCL-UWB
@@ -84,8 +86,8 @@
 |----|-------------|--------|--------|
 | E0 | Analytical model | AVAILABLE | ISO 9613-1 attenuation, delay, Doppler |
 | E1 | Deterministic simulation | LOCAL_EVIDENCE | Exp 001: Hosted C research testbed. Equalized resources, preliminary small-sample empirical $P_{fa}$ calibration (100 trials/candidate), verified 0 dB AWGN (measured noise power = signal power), scaled colored noise, verified -10 dB notch filter, hardened WAV chunk scanner. All 4 candidates achieved $P_d=1.000$, $0.00$ mean timing error, 12/12 CRC valid. Prior uncalibrated/unverified comparison superseded. |
-| E2 | Replay evidence | NOT_RUN | No acoustic replay captures |
-| E3 | Controlled over-air MCL frame | READY_FOR_EXECUTION | Source WAV generated with training sequence; awaiting physical speaker->air->mic session |
+| E2 | Replay evidence | LOCAL_NEGATIVE_EVIDENCE | Retained physical captures replayed through the decoder; exact recovery failed |
+| E3 | Controlled over-air MCL frame | RUN_NOT_RECOVERED | Same-laptop speaker/air/microphone attempts retained; no valid frame CRC, exact Wire bytes, or semantic recovery |
 | E4 | Multi-device | NOT_RUN | Not run |
 | E6 | Independent interoperability | NOT_RUN | Not run |
 
@@ -93,18 +95,18 @@
 
 | Compiler / Target | Status | Detail |
 |-------------------|--------|--------|
-| MSVC 19.51 (Host x64) | PASS | All test suites pass under `/W4 /WX /std:c11` |
-| Clang 17 (Host x64) | PASS | Strict `-Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wundef -Werror` — all test suites pass 100% |
+| MSVC 19.51 (Host x64) | PASS | Core/Wire/Link/SDK/AP: 15/15 CTests under `/W4 /WX` |
+| Clang 18.1.3 (WSL host) | PASS | Strict C99 warnings as errors; Core/Wire/Link/SDK/AP: 15/15 CTests |
+| GCC 13.3.0 (WSL host) | PASS | Strict C99 warnings as errors; 15/15 CTests; Wire 5/5 under ASan+UBSan |
 | Clang ARM Cortex-M0 | PASS | `--target=arm-none-eabi -mcpu=cortex-m0 -mthumb -std=c99 -Os -ffreestanding -fno-builtin` — `llvm-nm` verified zero libc/OS undefined symbols |
 | Clang RV32IM | PASS | `--target=riscv32-none-elf -march=rv32im -mabi=ilp32 -std=c99 -Os -ffreestanding -fno-builtin` — `llvm-nm` verified zero libc/OS undefined symbols |
-| GCC | UNVERIFIED | GCC not installed on host |
 
 ## What This Release Does NOT Claim
 
 - ❌ Stable specification
 - ❌ Adopted standard
 - ❌ Independent interoperability
-- ❌ Physical acoustic validation (E3 pending physical audio session)
+- ❌ Successful physical acoustic validation (E3 run; exact recovery not achieved)
 - ❌ Public availability (license not selected)
 - ❌ Multi-device or ecosystem-scale testing
 - ❌ Transport binding implementation (IP, BLE, UWB)
