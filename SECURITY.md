@@ -57,9 +57,19 @@ not an authenticated peer, and a verified credential is not an authorization.
 
 ### Transport security is not MCL security
 
-A BLE connection, a completed pairing, a joined Wi-Fi network, or a TLS session
-establishes something about the *channel*. None of them establishes anything
-about the *peer*.
+**Transport establishment alone does not imply an authenticated MCL peer.** A
+transport security mechanism may establish confidentiality, channel
+authenticity, or even credential-based peer authentication, depending entirely
+on how it is configured — and MCL must surface only the properties actually
+established, never the ones the mechanism is capable of.
+
+An earlier revision of this section said no transport mechanism "establishes
+anything about the peer." That was too absolute: a properly configured TLS
+session authenticates a peer under its own credential and trust model, and
+Bluetooth's authenticated association methods — Passkey Entry, Numeric
+Comparison, OOB — are meaningfully different from Just Works. The warning was
+right; the wording overstated it, and an overstated security claim is a defect
+in the same way an understated one is.
 
 The published BLE evidence used Bluetooth "Just Works" pairing: encrypted
 against a passive listener, unauthenticated against an active one. The evidence
@@ -89,6 +99,22 @@ repository, and none will be written before the design is settled.
 The governing principle: **MCL adopts reviewed cryptographic constructions and
 invents none.** Cryptography is the worst possible place to be original.
 
+The architectural consequence, now charter §2.10.2: **MCL defines the interface,
+not the cryptography.** A builder supplies the mechanism — their own stack, a
+secure element, a platform crypto API, or a reviewed key exchange — and MCL
+defines only what must be bound, and how the resulting properties are surfaced
+separately. MCL is implementable without ever holding a private key.
+
+What MCL contributes there is not cryptographic. It is the precise definition of
+*what must be bound* so that a contact migrating from one medium to another
+cannot be stolen. That definition is algorithm-independent, and no existing
+standard supplies it, because none spans an acoustic first contact and a later
+radio channel.
+
+Because two strangers with no mechanism in common cannot negotiate at all, at
+least one fully specified named profile will eventually be needed as well — as a
+profile, never as a precondition for using MCL.
+
 ## Reporting a vulnerability
 
 This is a private pre-v0.1 research project with no deployed users, so there is
@@ -116,13 +142,22 @@ Specific, and roughly in order of how much damage a mistake would do:
    committed *during* the contact. If there is a flaw in the corrected model, it
    is the most valuable flaw to find.
 
-2. **Anything that lets a security property be inferred from a weaker one.** A
+2. **Multi-peer cross-binding.** A machine hears several peers at once, each
+   advertising an endpoint, and an attacker swaps which contact is associated
+   with which endpoint. No key is broken and no peer is impersonated — only the
+   pairing is wrong. Every diagram in this project so far assumes a clean
+   two-party encounter; a factory floor, warehouse aisle or road junction is not
+   one. This is the least-examined problem here.
+
+3. **Anything that lets a security property be inferred from a weaker one.** A
    place where receiving implies identity, where a channel implies a peer, where
    a credential implies authorization, or where a measurement implies proximity.
+   Including the self-inflicted case: treating "the peer appears not to support
+   security" as grounds to proceed without it (charter §2.11.2).
 
-3. **Decoder behaviour on hostile input.** Truncation, reserved bits, unknown
+4. **Decoder behaviour on hostile input.** Truncation, reserved bits, unknown
    classes, oversized declared lengths, fragment sequence manipulation. These are
    the paths an attacker reaches first, and they run before any policy does.
 
-4. **Anything a name promises that the mechanism does not deliver.** The
+5. **Anything a name promises that the mechanism does not deliver.** The
    `INTEGRITY` rename was the first instance found. It will not be the last.

@@ -131,6 +131,19 @@ exchange, and not to own the credential ecosystems it depends on.
 Authentication is one thing MCL can be configured to carry. It is not what MCL
 is for.
 
+Accordingly, MCL MUST NOT define cryptographic primitives or a key exchange of
+its own. Where MCL supports a security capability, it defines the **interface** a
+mechanism plugs into, the **context that must be bound**, and how the resulting
+properties are **surfaced separately** (§2.11). Algorithms, credentials, trust
+anchors and key storage belong to the deployment, and MCL MUST be implementable
+without ever holding a private key.
+
+Because two machines with no mechanism in common cannot negotiate at all, a
+provider interface alone does not serve first contact between strangers. MCL MAY
+therefore additionally specify named security profiles so that unrelated
+implementations can interoperate. Such a profile MUST remain optional, MUST be
+separately identified, and MUST NOT become a precondition for using MCL.
+
 ### 2.11 Security properties are separate and are never summarised
 
 Contact continuity, channel confidentiality, channel authenticity, peer
@@ -145,6 +158,36 @@ property to a stronger one that was never established.
 Correspondingly, a mechanism MUST NOT be named for a property it does not
 provide. An error-detecting code is not integrity; an encrypted channel is not
 an authenticated peer; a verified credential is not an authorization.
+
+### 2.11.1 Communication state, security state and authorization are orthogonal
+
+The Link lifecycle describes communication state and MUST continue to describe
+only that. Security-profile state and local authorization are separate axes that
+vary independently of it, and of each other.
+
+An implementation MUST NOT extend the communication lifecycle into a ladder such
+as `ESTABLISHED -> AUTHENTICATED -> TRUSTED -> AUTHORIZED`. A contact that is
+fully established while establishing no security properties and permitting only
+the narrowest operations is an ordinary, valid contact — not an incomplete one.
+Collapsing the axes into a single progression reintroduces the summarised trust
+indicator forbidden above, in the form of a state machine rather than a field.
+
+### 2.11.2 Absent security MUST NOT silently satisfy a policy that requires it
+
+Where a deployment's local policy requires a property for a given operation, the
+failure, absence or suppression of the mechanism that would establish that
+property MUST result in the operation being refused, never in the operation
+proceeding without it.
+
+This invariant is what allows MCL to be trust-agnostic without being
+exploitable. An adversary can suppress every security capability advertisement
+so that no negotiation occurs and no later transcript can reveal the
+suppression. The correct outcome is that the contact proceeds normally and the
+privileged operation is refused: an open contact is legitimate, and an open
+contact requesting a privileged action is not.
+
+A machine that treats "the peer appears not to support security" as grounds to
+proceed without it has implemented a downgrade attack on itself.
 
 ### 2.12 Evidence maturity must be visible
 

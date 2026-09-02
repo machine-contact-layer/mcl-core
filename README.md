@@ -7,7 +7,8 @@ companies and never designed to work together; or they may both be yours, and
 simply have no network in common at this moment. Either way there is no shared
 bus, no common credential system, and nobody around to introduce them.
 
-**MCL is what they speak first.** What happens after that is yours to decide.
+**MCL gives them something they can speak first** — a common language available
+when no better shared channel exists. What happens after that is yours to decide.
 
 ```text
 ANOTHER MACHINE
@@ -15,9 +16,9 @@ ANOTHER MACHINE
       ▼
 FIRST CONTACT ............ presence, capabilities, hazards
       │
-      │  optional: negotiate a better transport
+      │  optional: negotiate a different transport
       ▼
-PERSISTENT CONTACT ....... richer, more private, higher rate
+CONTINUING CONTACT ....... often richer or more private — or still acoustic
       │
       ├─▶ STAY ON MCL ......... MCL remains the channel, indefinitely
       ├─▶ SECURITY PROFILE .... optional: establish who you are talking to
@@ -55,6 +56,9 @@ What you configure:
 - **Which transports** you will speak, and whether you will migrate at all
 - **What may be disclosed** at each stage, and over which medium
 - **Whether a security profile runs**, and what must pass before it does
+- **Which cryptography, if any** — MCL defines the interface a mechanism plugs
+  into, never the mechanism. Bring your own stack, your secure element, or a
+  named profile for talking to strangers. MCL never holds a private key
 - **Whether you hand off**, or keep MCL as the ongoing channel
 
 ## Three ways people use it
