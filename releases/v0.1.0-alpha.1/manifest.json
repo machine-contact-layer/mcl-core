@@ -23,8 +23,8 @@
       "subject": "Add Apache-2.0 LICENSE"
     },
     "mcl-ap": {
-      "commit": "adcb2da230b2592759a259e06371bb900783ffa9",
-      "subject": "Experiment 002 part A: measure real transducer path response"
+      "commit": "28a752e39da968c6cf5254f31dd7f30ccb01f05e",
+      "subject": "E4: recover MCL frame over air on a reversed device pair (8/10)"
     },
     "mcl-ip": {
       "commit": "75b2ad3a23053360e1eb5e584a9bfe7a9e779840",
@@ -44,7 +44,7 @@
     "mcl-wire": "Freestanding C99 reference codec. Bit-level encode/decode for 6 Tier-0 semantics. Extension framework present. Randomized fuzz decode. Known test vectors. Zero heap allocation.",
     "mcl-link": "C99 reference state machine. 9-state lifecycle. Context install/authorize/compare. Wire major mask without narrowing. Coexistence tested with Wire.",
     "mcl-sdk": "C99 reference SDK. Node init/reset, Tier-0 send/receive, Link lifecycle wrappers. Zero side-effect decode. Transport callback delivers raw Wire bytes only.",
-    "mcl-ap": "Analytical channel model (ISO 9613-1); Experiment 001 (LAB/EXPERIMENTAL hosted binary FSK research testbed, frozen at 3/5 kHz as the instrument holding the E3 result); Experiment 002 part A (real transducer path characterization, first measurement taken). No normative profile. AP-B0 NOT selected. Protocol-facing Wire, Link, and SDK libraries remain freestanding C99.",
+    "mcl-ap": "Analytical channel model (ISO 9613-1); Experiment 001 (LAB/EXPERIMENTAL hosted binary FSK testbed, frozen at 3/5 kHz as the instrument holding the E3 result); Experiment 002 part A (real transducer path characterization); Experiment 003 (band-informed AP-B0 candidate, 3/6 kHz, with a same-session control and a reverse-direction E4 result). No normative profile. AP-B0 NOT selected. Protocol-facing Wire, Link, and SDK libraries remain freestanding C99.",
     "mcl-ip": "Draft binding specification only. No implementation.",
     "mcl-ble": "Draft binding specification only. No implementation.",
     "mcl-uwb": "Draft binding specification only. No implementation."
@@ -86,7 +86,7 @@
     },
     "E1_deterministic_simulation": {
       "status": "LOCAL_EVIDENCE",
-      "detail": "Experiment 001: Binary FSK 300 baud, 48 kHz mono PCM, 4 preamble candidates (LFM chirp, Zadoff-Chu derived, PN m-sequence, frequency-diverse) evaluated with exact length invariant (N=4800, 0.1s), verified 7-bit m-sequence (period 127), equalized energy budgets, quadrature correlation magnitude, and preliminary small-sample empirical Pfa threshold calibration (target Pfa=0.010, exactly 100 noise trials per candidate). Corrected impairment harness with explicit enablement: measured AWGN power verified across 30, 20, 10, 5, 0 dB (at 0 dB SNR, noise power equals signal power within 0.5% and P_d=1.000, 12/12 payload CRC valid); post-filter colored noise power measured and scaled to requested SNR (30, 20, 15, 10, 5, 0 dB); band attenuation verified via pure sine probes (3000, 3800, 4000, 4200, 5000 Hz) with measured center notch attenuation of exactly -10.00 dB at 4000 Hz; hardened RIFF WAV chunk scanner and strict format rejection. Experiment 001 is a host-side research testbed using hosted C math/stdio/WAV; the protocol-facing Wire/Link/SDK C libraries remain freestanding C99."
+      "detail": "Experiment 001: Binary FSK 300 baud, 48 kHz mono PCM, 4 preamble candidates (LFM chirp, Zadoff-Chu derived, PN m-sequence, frequency-diverse) evaluated with exact length invariant (N=4800, 0.1s), verified 7-bit m-sequence (period 127), equalized energy budgets, quadrature correlation magnitude, and preliminary small-sample empirical Pfa threshold calibration (target Pfa=0.010, exactly 100 noise trials per candidate). Corrected impairment harness with explicit enablement: measured AWGN power verified across 30, 20, 10, 5, 0 dB (at 0 dB SNR, noise power equals signal power within 0.5% and P_d=1.000, 12/12 payload CRC valid); post-filter colored noise power measured and scaled to requested SNR (30, 20, 15, 10, 5, 0 dB); band attenuation verified via pure sine probes (3000, 3800, 4000, 4200, 5000 Hz) with measured center notch attenuation of exactly -10.00 dB at 4000 Hz; hardened RIFF WAV chunk scanner and strict format rejection. Experiment 001 is a host-side research testbed using hosted C math/stdio/WAV; the protocol-facing Wire/Link/SDK C libraries remain freestanding C99. Experiment 003 adds a band-informed candidate that changes only the FSK mark tone (5000 -> 6000 Hz) on the measurement from Experiment 002 part A; against a same-session 3000/5000 control it took exact recovery from 0/10 to 9/10 on the DFR1154 receiver and 0/10 to 4/10 on the laptop Realtek receiver."
     },
     "E2_replay": {
       "status": "LOCAL_EVIDENCE",
@@ -97,8 +97,8 @@
       "detail": "First over-air recovery of an exact MCL frame. The hashed source exp001_e3_source.wav was played through the laptop Realtek speaker and captured by the DFR1154 ESP32-S3 onboard PDM microphone at 48 kHz PCM16 mono, returned over native USB CDC with board-side IEEE CRC-32 verified host-side. Ten trials taken against the frozen receiver after the symbol-boundary rounding change, decoded with no further modification: 10/10 preamble acquisition (correlation 0.874086 to 0.877460), 10/10 PHY header recovery, 8/10 exact Wire bytes and exact PRESENCE semantic object. A separate 3-trial pilot under identical conditions recovered 3/3, giving 13 trials with 13/13 acquisition and 11/13 exact recovery. Both failures acquired cleanly and decoded all 24 header bits correctly, failing only on payload symbols; the measured cause is transducer response, the PDM microphone attenuating the 5 kHz mark tone approximately 12.4 dB relative to the 3 kHz space tone and leaving roughly 0.3 of log-energy decision margin on the weakest end-of-frame symbols. Evidence, per-trial table, and SHA-256 manifests are retained in mcl-ap under experiments/001-known-waveform/evidence/e3-dfr1154-20260902-frozen-rx and -frozen-rx-pilot. Same-laptop Realtek microphone attempts still achieve no recovery. This is single-operator, single-device-pair, short-range evidence; it is not multi-device (E4) and does not select AP-B0."
     },
     "E4_multi_device": {
-      "status": "NOT_RUN",
-      "detail": "No multi-device acoustic experiment performed."
+      "status": "LOCAL_EVIDENCE",
+      "detail": "First multi-device over-air recovery, in the reverse direction from E3. The DFR1154 MAX98357 amplifier and onboard speaker transmitted the Experiment 003 candidate frame (FSK 3000/6000 Hz) and the laptop Realtek microphone array received it: 10/10 preamble acquisition at correlation 0.883-0.889 and 8/10 exact Wire bytes plus exact PRESENCE semantic recovery; a 3-trial pilot recovered 1/3. Neither transducer is shared with E3 and the emitting device is now the embedded one. Acquisition on this path (0.883-0.889) is far stronger than laptop-speaker to laptop-microphone measured the same day (0.35-0.53) with the same microphone, which separates transmitter from receiver response and confirms the Experiment 002 finding that the notch is in the laptop speaker. Evidence in mcl-ap under experiments/003-band-informed-candidate/evidence/e4-board-speaker-to-laptop-mic-20260902/. Limits: the 3000/6000 pair was chosen from a forward-path sweep and this reverse path has not been swept; two physical devices in reversed roles rather than a third independent device; one operator, one room, one geometry, one session; AP-B0 remains NOT selected."
     },
     "E6_independent_interoperability": {
       "status": "NOT_RUN",
