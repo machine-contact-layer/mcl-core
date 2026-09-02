@@ -15,39 +15,39 @@
       "subject": "Add Apache-2.0 LICENSE"
     },
     "mcl-link": {
-      "commit": "9894375e2648882509292e30534e8e0276f4648b",
-      "subject": "Add Apache-2.0 LICENSE"
+      "commit": "255ec8036539fd1b6a095662a9150f560d75e54b",
+      "subject": "Define the Link frame v0 canonical layout"
     },
     "mcl-sdk": {
-      "commit": "c75a1d8b1d2ec0ce95635852d8e766bca350e86e",
-      "subject": "Add Apache-2.0 LICENSE"
+      "commit": "c2a7305b2ef370239f08c8fa25028a43f9e6b899",
+      "subject": "Add the framed contact path to the SDK"
     },
     "mcl-ap": {
       "commit": "28a752e39da968c6cf5254f31dd7f30ccb01f05e",
       "subject": "E4: recover MCL frame over air on a reversed device pair (8/10)"
     },
     "mcl-ip": {
-      "commit": "75b2ad3a23053360e1eb5e584a9bfe7a9e779840",
-      "subject": "Add Apache-2.0 LICENSE"
+      "commit": "41033c8595c743ec9405ad721378bf3401ef5d97",
+      "subject": "Implement the MCL-IP binding"
     },
     "mcl-ble": {
-      "commit": "b486960b35eb5a523dbe72af1754cbc820dcad7b",
-      "subject": "Add Apache-2.0 LICENSE"
+      "commit": "6146f914dc7bc487a17d71ac3d293d09659ee2b0",
+      "subject": "Implement the MCL-BLE binding"
     },
     "mcl-uwb": {
-      "commit": "1c1cd3f8dffb42f0eeb7bd959908e1db1077bd31",
-      "subject": "Add Apache-2.0 LICENSE"
+      "commit": "a5033e9e1806e880b985b39ebda72ce18173f87a",
+      "subject": "Implement the MCL-UWB binding, with the security boundary enforced"
     }
   },
   "layer_status": {
     "mcl-core": "Provisional semantic normalization assignments and opcode registries, with six currently implemented Tier-0 reference semantics. C validator with overflow and truncation hardening.",
     "mcl-wire": "Freestanding C99 reference codec. Bit-level encode/decode for 6 Tier-0 semantics. Extension framework present. Randomized fuzz decode. Known test vectors. Zero heap allocation.",
-    "mcl-link": "C99 reference state machine. 9-state lifecycle. Context install/authorize/compare. Wire major mask without narrowing. Coexistence tested with Wire.",
-    "mcl-sdk": "C99 reference SDK. Node init/reset, Tier-0 send/receive, Link lifecycle wrappers. Zero side-effect decode. Transport callback delivers raw Wire bytes only.",
+    "mcl-link": "C99 reference state machine (9-state lifecycle, context install/authorize/compare, wire major mask without narrowing) plus the Link frame v0 canonical layout: 8 bytes minimum, flag-selected destination/session/sequence/freshness/CRC-32 integrity, strict rejection of unknown version, unknown frame class, reserved flag bits, truncation and integrity failure. This is the carriage unit every transport binding maps onto.",
+    "mcl-sdk": "C99 reference SDK. Node init/reset, Tier-0 send/receive over raw Wire bytes, and a framed contact path over Link frames for the IP/BLE/UWB bindings. Transmit sequence advances only on transport success; a session reference requires an installed context; malformed frames are rejected before semantic decoding; reception has zero side effects on link state. Zero heap allocation, caller-owned buffers.",
     "mcl-ap": "Analytical channel model (ISO 9613-1); Experiment 001 (LAB/EXPERIMENTAL hosted binary FSK testbed, frozen at 3/5 kHz as the instrument holding the E3 result); Experiment 002 part A (real transducer path characterization); Experiment 003 (band-informed AP-B0 candidate, 3/6 kHz, with a same-session control and a reverse-direction E4 result). No normative profile. AP-B0 NOT selected. Protocol-facing Wire, Link, and SDK libraries remain freestanding C99.",
-    "mcl-ip": "Draft binding specification only. No implementation.",
-    "mcl-ble": "Draft binding specification only. No implementation.",
-    "mcl-uwb": "Draft binding specification only. No implementation."
+    "mcl-ip": "Reference implementation. Endpoint offer with family-consistent address sizing and an opaque local reference so first contact need not force address disclosure; datagram carriage where the datagram boundary is the frame boundary; length-prefixed stream carriage that preserves synchronisation across an undecodable frame; MTU accounting. Freestanding C99, no sockets, no libc symbols.",
+    "mcl-ble": "Reference implementation. Fixed-size endpoint offer; explicit fragmentation and reassembly for the 20-byte default ATT payload, with START/END/sequence framing that discards rather than splices on loss, reordering, orphaned continuations or restart; connectionless presence confirmed to fit 31-byte advertising data. Freestanding C99, no Bluetooth stack, no libc symbols.",
+    "mcl-uwb": "Reference implementation. Fixed-size endpoint offer; one Link frame per UWB data frame; ranging-evidence record that deliberately exposes no verified distance and no proximity-proved flag. Admissibility as proximity evidence requires performed ranging, a drift-cancelling method, authenticated scrambled timestamps and moderate radio confidence; overflow in distance conversion is refused rather than wrapped. No distance bounding is implemented or claimed. Freestanding C99, no UWB driver, no libc symbols."
   },
   "conformance_evidence": {
     "C0_static_registry": {
@@ -72,11 +72,11 @@
     },
     "C5_ap_physical_profile_conformance": {
       "status": "NOT_RUN",
-      "detail": "No normative AP profile defined. Analytical model and experimental lab testbed only."
+      "detail": "No normative AP profile defined; AP-B0 is not selected. Analytical model, experimental lab testbed, and measured path characterization only. Transport binding carriage mappings for IP, BLE and UWB are implemented and unit-tested, but no binding has been exercised against real hardware."
     },
     "C6_device_ecosystem_robustness": {
       "status": "NOT_RUN",
-      "detail": "No multi-device, multi-transport, or ecosystem-scale testing performed."
+      "detail": "No multi-transport or ecosystem-scale testing performed. Only the acoustic binding has run over real hardware."
     }
   },
   "ap_evidence": {
@@ -126,5 +126,14 @@
       "status": "PASS",
       "detail": "Core, Wire, Link, SDK, and AP compile under GCC 13.3.0 in WSL with strict C99 warnings as errors. All 15 registered tests pass; the five Wire tests also pass under ASan and UBSan."
     }
+  },
+  "codebase_status": {
+    "summary": "All eight repositories now contain implementation, not only specification. 20 test targets pass across the family under strict warnings-as-errors.",
+    "freestanding_verification": "Link, Wire, SDK, IP, BLE and UWB objects compiled and inspected for undefined externals: no memcpy, memset, malloc or stdio. Byte copies use a volatile-destination helper because optimising compilers rewrite plain indexed loops into memcpy, which would reintroduce a libc dependency.",
+    "not_implemented": [
+      "No transport binding has been exercised against real IP, BLE or UWB hardware.",
+      "No independent implementation exists, so C4 and E6 remain unreachable.",
+      "AP-B0 is not selected and no acoustic profile is normative."
+    ]
   }
 }

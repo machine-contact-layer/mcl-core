@@ -27,6 +27,9 @@
 - Zero heap allocation, zero global mutable state
 
 ### MCL-Link
+- **Link frame v0 canonical layout**, the carriage unit every binding maps onto: 8 bytes minimum, flag-selected destination, session, sequence, freshness and CRC-32 integrity
+- Strict decoding: unknown link major, unassigned frame class, reserved flag bits, truncation at any length, and integrity failure are all rejected rather than interpreted
+- Absence of an integrity field makes a frame unverified, not trusted
 - C99 reference state machine: 9-state lifecycle
 - Context install/authorize/compare
 - Wire major mask: `uint32_t` input, no narrowing
@@ -38,7 +41,9 @@
 - Narrow Link lifecycle wrappers
 - Correctly modelled CMake consumer dependencies (`mcl_wire_dep` and `mcl_link_dep` public to `mcl_sdk`)
 - Transport callback delivers raw canonical Wire bytes only (no Link binary frame)
-- Policy sovereignty: AUTHORITY_CLAIM and REQUEST produce decoded objects only
+- Framed contact path over Link frames, alongside the raw-Wire path a bearer like MCL-AP uses
+- Transmit sequence advances only after the transport accepted the frame; a session reference requires an installed context
+- Policy sovereignty: AUTHORITY_CLAIM and REQUEST produce decoded objects only, and reception changes no link state
 - Zero heap allocation, caller-owned buffers
 - Freestanding binary metrics: `.text`: 521 bytes, `.data`: 0, `.bss`: 0
 
@@ -69,8 +74,28 @@
   - Residual failure mode measured, not guessed: the PDM microphone attenuates the 5 kHz mark tone ~12.4 dB relative to 3 kHz, leaving ~0.3 log-energy margin on end-of-frame symbols. Both failures acquired cleanly and decoded all 24 header bits correctly
   - **NOT normative. AP-B0 is NOT selected.** Single operator, single device pair, short range. Not multi-device (E4).
 
-### MCL-IP / MCL-BLE / MCL-UWB
-- Draft binding specifications only, no implementation
+### MCL-IP
+- Endpoint offer with family-consistent address sizing; an IPv4 family claiming 16 address bytes is rejected, not half-accepted
+- Opaque local reference, so first contact need not force a peer to disclose a routable address
+- Datagram carriage: the datagram boundary is the frame boundary, trailing bytes rejected
+- Stream carriage: length-prefixed, preserving synchronisation across a frame that cannot be decoded
+- MTU accounting for IPv4 and IPv6
+- Freestanding C99, no sockets, no libc symbols
+
+### MCL-BLE
+- Fixed 14-byte endpoint offer; a resolvable private address is documented as never being an identity
+- Explicit fragmentation and reassembly for the 20-byte default ATT payload: START/END plus a sequence modulo 64
+- Reassembly discards rather than splices on a sequence gap, reordering, an orphaned continuation, a non-zero START or overflow
+- A Tier-0 PRESENCE Link frame fits 31-byte connectionless advertising data
+- Freestanding C99, no Bluetooth stack, no libc symbols
+
+### MCL-UWB
+- Fixed 16-byte endpoint offer; one Link frame per UWB data frame
+- Ranging-evidence record exposing **no** verified distance and **no** proximity-proved flag
+- Admissibility requires performed ranging, a drift-cancelling method, authenticated scrambled timestamps and moderate confidence
+- Distance conversion refuses overflow rather than wrapping into a small, plausible distance
+- No distance bounding implemented or claimed; relay and distance-reduction attacks remain possible
+- Freestanding C99, no UWB driver, no libc symbols
 
 ## Conformance Evidence
 
@@ -113,7 +138,7 @@
 - ❌ A selected or normative acoustic profile (E3 achieved on one device pair; AP-B0 still unselected)
 - ❌ Public availability (Apache-2.0 selected, but publication deferred to v1.0)
 - ❌ Multi-device or ecosystem-scale testing
-- ❌ Transport binding implementation (IP, BLE, UWB)
+- ❌ Any transport binding exercised against real IP, BLE or UWB hardware (the carriage mappings are implemented and unit-tested; only the acoustic binding has run over the air)
 
 ## Files
 
