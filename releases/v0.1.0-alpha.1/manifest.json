@@ -43,7 +43,7 @@
   },
   "layer_status": {
     "mcl-core": "Provisional semantic normalization assignments and opcode registries, with seven currently implemented Tier-0 reference semantics. C validator with overflow and truncation hardening.",
-    "mcl-wire": "Freestanding C99 reference codec. Bit-level encode/decode for 7 Tier-0 semantics (PRESENCE, HAZARD, REQUEST, AUTHORITY_CLAIM, DEGRADED_STATE, TRANSPORT_OFFER, TRANSPORT_ACCEPT). TRANSPORT_OFFER and TRANSPORT_ACCEPT carry a 32-bit migration_ref transaction correlator. Extension framework present but NOT reachable from the Tier-0 API, which hard-sets extension_present to 0; closing that is required before v1. Randomized fuzz decode. Versioned vectors: tier0-v0.1/v0.2/v0.3, none edited after publication. Zero heap allocation.",
+    "mcl-wire": "Freestanding C99 reference codec. Bit-level encode/decode for 7 Tier-0 semantics (PRESENCE, HAZARD, REQUEST, AUTHORITY_CLAIM, DEGRADED_STATE, TRANSPORT_OFFER, TRANSPORT_ACCEPT). TRANSPORT_OFFER and TRANSPORT_ACCEPT carry a 32-bit migration_ref transaction correlator. Extensions are now reachable from the Tier-0 API: mcl_wire_tier0_encode_ext and mcl_wire_tier0_decode_ext carry a canonical TLV block after the fixed body, specified in tier0-extensions-v0.1.md with vectors in extensions-v0.1.json. The block carries its own length so a Tier-0 object stays self-delimiting, which the raw-Wire path over AP requires. An empty extension list encodes with the bit clear and no block, so every existing vector is unchanged byte for byte. An unknown CRITICAL extension makes the whole object undecodable, and since no extension id is registered, every critical extension is currently unknown; a decoder that cannot read extensions refuses an object carrying them rather than returning the body and discarding the rest. No extension id is assigned and no extension registry policy exists yet, so extensions are usable only between parties that agreed an id out of band. Randomized fuzz decode. Versioned vectors: tier0-v0.1/v0.2/v0.3, none edited after publication. Zero heap allocation.",
     "mcl-link": "C99 reference state machine (9-state lifecycle, context install/authorize/compare, wire major mask without narrowing); the Link frame v0 canonical layout, 8 bytes minimum, flag-selected destination/session/sequence/freshness/CRC-32 frame check, with truncation reported distinctly from permanent malformation; a contact-migration state machine (ACTIVE/OFFERED/AGREED/VALIDATING/VALIDATED/COMMITTING) with transaction correlation, candidate-path validation before commit, and deterministic simultaneous-offer resolution; the transport-neutral rendezvous beacon that resolves an endpoint_token to a concrete endpoint; and the canonical HANDOFF control payload (link-handoff-control-v0.1.md, operation registry handoff-ops-v0.1.json, vectors handoff-v0.1.json) that puts PATH_CHALLENGE, PATH_RESPONSE, COMMIT and CONFIRM on the wire as bytes rather than as local function calls. A COMMIT that repeats a completed transaction is answered with CONFIRM again and changes nothing, because without that a single dropped CONFIRM leaves the two peers on different transports permanently with no adversary involved. No ABORT operation is assigned; negative outcomes are expressed by absence and by the caller-enforced offer validity. Migration is deliberately non-cryptographic: it establishes correlation and reachability, never identity.",
     "mcl-sdk": "C99 reference SDK. Node init/reset, Tier-0 send/receive over raw Wire bytes, and a framed contact path over Link frames for the IP/BLE/UWB bindings. Transmit sequence advances only on transport success; a session reference comes from the contact and requires an agreed migration, never from the Wire context_id; malformed frames are rejected before semantic decoding; reception has zero side effects on link state. A handoff control path sends, receives and applies the Link HANDOFF controls as three separate steps: receiving decodes and changes nothing, and applying is an explicit caller decision that drives the existing mcl_contact_* API rather than a duplicate state machine. A control carried in any frame class other than HANDOFF, or in a frame whose session_ref contradicts its payload, is refused. tests/test_sdk_handoff.c completes a migration between two nodes whose only shared object is a byte buffer, including recovery from a CONFIRM dropped after a successful send. Zero heap allocation, caller-owned buffers.",
     "mcl-ap": "Analytical channel model (ISO 9613-1); Experiment 001 (LAB/EXPERIMENTAL hosted binary FSK testbed, frozen at 3/5 kHz as the instrument holding the E3 result); Experiment 002 part A (real transducer path characterization); Experiment 003 (band-informed AP-B0 candidate, 3/6 kHz, with a same-session control and a reverse-direction E4 result). No normative profile. AP-B0 NOT selected. Protocol-facing Wire, Link, and SDK libraries remain freestanding C99.",
@@ -108,29 +108,38 @@
     }
   },
   "compiler_verification": {
+    "_note": "Re-verified 2026-09-03 by mcl-core/tools/local-gates.sh, which runs every gate below in one pass. This project has no hosted CI and will not gain any; the gates are run by hand and the script is what running them means. Passing them establishes nothing about physical evidence.",
     "msvc_19_51": {
       "status": "PASS",
-      "detail": "Core, Wire, Link, SDK, and AP compile and pass 15/15 registered tests under MSVC 19.51 /W4 /WX."
+      "detail": "All eight repositories compile and pass their full test suites under MSVC 19.51 with /W4 /WX. 28 test targets."
     },
-    "clang_18_host": {
+    "gcc_13_strict": {
       "status": "PASS",
-      "detail": "Core, Wire, Link, SDK, and AP compile under Clang 18.1.3 with strict C99 warnings as errors. All 15 registered tests pass."
+      "detail": "All eight repositories compile and pass their full test suites under GCC 13.3.0 with -std=c99 -Wall -Wextra -Wpedantic -Wconversion -Wsign-conversion -Wshadow -Wundef -Werror."
+    },
+    "clang_18_strict": {
+      "status": "PASS",
+      "detail": "All eight repositories compile and pass their full test suites under Clang 18.1.3 with the same strict flag set. Clang's -Wunneeded-internal-declaration found a BLE test constant that was consumed only for its length while reading as though it carried a real PRESENCE frame; the test now carries the actual bytes and compares them after reassembly."
+    },
+    "asan_ubsan": {
+      "status": "PASS",
+      "detail": "Core, Wire, Link and SDK build and pass their full suites under Clang with -fsanitize=address,undefined and -fno-sanitize-recover=undefined. These decoders parse attacker-reachable input, so a bounds error here would not be a crash but a remote one."
     },
     "arm_cortex_m0": {
       "status": "PASS",
-      "detail": "Compiled wire.c, extension.c, link.c, sdk.c with --target=arm-none-eabi -mcpu=cortex-m0 -mthumb -std=c99 -Os -ffreestanding -fno-builtin -Werror. llvm-nm verified zero unexpected undefined symbols (no malloc/memcpy/stdio/OS). SDK retains only 7 lower-layer MCL symbols."
+      "detail": "wire.c, extension.c, link.c, contact.c, rendezvous.c, handoff.c, sdk.c and the IP/BLE/UWB bindings compiled with --target=arm-none-eabi -mcpu=cortex-m0 -mthumb -std=c99 -Os -ffreestanding -fno-builtin -Werror. llvm-nm reports no memcpy, memset, malloc, free or stdio symbol in any object. wire.o, link.o, contact.o, rendezvous.o and handoff.o have zero undefined externals. ble_binding.o and uwb_binding.o each reference __aeabi_uidiv, because Cortex-M0 has no divide instruction and both perform a division on a runtime value; per IMPLEMENTATION_CONTRACT.md 2.2 an AEABI compiler-runtime helper is a toolchain artifact rather than a libc dependency, so an integrator targeting this core links compiler-rt or libgcc as is normal for freestanding ARM. RV32IM needs no such helper because the M extension provides hardware divide."
     },
     "riscv32_rv32im": {
       "status": "PASS",
-      "detail": "Compiled wire.c, extension.c, link.c, sdk.c with --target=riscv32-none-elf -march=rv32im -mabi=ilp32 -std=c99 -Os -ffreestanding -fno-builtin -Werror. llvm-nm verified zero unexpected undefined symbols. SDK retains only 7 lower-layer MCL symbols."
+      "detail": "The same translation units compiled with --target=riscv32-none-elf -march=rv32im -mabi=ilp32 -std=c99 -Os -ffreestanding -fno-builtin -Werror. llvm-nm reports no libc symbol and no compiler-runtime helper in any object; every undefined external is an mcl_* symbol from a lower layer."
     },
-    "gcc_13_wsl_host": {
+    "cpp_headers": {
       "status": "PASS",
-      "detail": "Core, Wire, Link, SDK, and AP compile under GCC 13.3.0 in WSL with strict C99 warnings as errors. All 15 registered tests pass; the five Wire tests also pass under ASan and UBSan."
+      "detail": "Every public header compiles together in one C++17 translation unit under both g++ and clang++ with -Wall -Wextra -Werror, since integrators embed these headers in C++ sources."
     }
   },
   "codebase_status": {
-    "summary": "All eight repositories contain implementation, not only specification. 26 test targets pass across the family under strict warnings-as-errors.",
+    "summary": "All eight repositories contain implementation, not only specification. 28 test targets pass across the family under strict warnings-as-errors.",
     "freestanding_verification": "Link, Wire, SDK, IP, BLE and UWB objects compiled and inspected for undefined externals: no memcpy, memset, malloc or stdio. Byte copies use a volatile-destination helper because optimising compilers rewrite plain indexed loops into memcpy, which would reintroduce a libc dependency.",
     "not_implemented": [
       "mcl-uwb has never been exercised against real UWB hardware, and no UWB profile is assigned.",
@@ -139,7 +148,8 @@
       "No normative transport profile is defined for IP or BLE. Their profile registries assign Experimental Use values only, because the profiles are defined by reference-implementation behaviour rather than by specification.",
       "No cryptographic capability of any kind exists. See security_posture.",
       "The reverse acoustic path has never been swept with Experiment 002; the 3/6 kHz pair is optimised for the forward path only.",
-      "The Wire extension framework is implemented but unreachable from the Tier-0 API, which hard-sets extension_present to 0. Either it is integrated or it is explicitly excluded from the first stable Tier-0 contract before v1.",
+      "No Wire extension id is assigned and no extension registry policy exists. Before any id becomes normative the registry must state owner, range policy, application procedure, change controller, provisional-to-permanent promotion, deprecation behaviour and the no-reuse rule. Until then extensions interoperate only between parties that agreed an id out of band, and neither may claim interoperability from it.",
+      "Extensions are reachable from the Wire API but are not yet exposed through the SDK's framed path, so an SDK caller cannot attach or read them without dropping to mcl-wire directly.",
       "The semantic registry marks 15 opcodes as Tier-0 candidates while 7 are implemented. The registry must not imply executable support that does not exist.",
       "Contact migration is now specified as bytes and exercised between two nodes that share only a buffer, but it has still never crossed a real radio. Doing so requires a single peer holding two transports open at once rather than separate firmwares. A hardware run driven by direct calls to mcl_contact_* on both machines would prove the radios work and must not be recorded as on-wire migration.",
       "Of the ten assigned Link frame classes, only HANDOFF has a defined payload contract of its own; CONTACT, DATA, CAPABILITY and NEGOTIATION carry a canonical Wire object, and ACK, NACK, KEEPALIVE, ADAPT and CLOSE have no specified payload or behaviour. Before a stable Link major each must be defined, given an explicitly empty contract, or reserved.",
