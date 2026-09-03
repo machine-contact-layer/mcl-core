@@ -9,46 +9,46 @@
     "_note": "Snapshot of each repository at the time this manifest was written. The mcl-core entry necessarily names the commit preceding the one that records it, because the manifest lives in mcl-core and cannot contain its own hash. Nothing is tagged; these are provenance references, not immutable release pointers.",
     "mcl-core": {
       "release_ref": "v0.1.0-alpha.1",
-      "subject": "charter, readme: MCL is trust-agnostic, and the sequence belongs to the deployment",
-      "commit": "506dbe0650244070e06b99cb844a6a400d1db15d"
+      "subject": "charter, security: MCL defines the interface, not the cryptography",
+      "commit": "8349b8b3fb58cf488c5ce062d98e1675962a6f98"
     },
     "mcl-wire": {
-      "commit": "3ef2642dd107bc93019b96e84f8cefae42ab8c43",
-      "subject": "docs: remove AGENTS.md in favour of the shared implementation contract"
+      "commit": "7d70fb81ef035c4c735073b8f5085f4b752ed934",
+      "subject": "spec: close two pieces of drift between wire-v0.md and the implementation"
     },
     "mcl-link": {
-      "commit": "b94d65203a5b6cedecaad1dc9f9e7583dd71377d",
-      "subject": "research: scope the security track as an optional profile"
+      "commit": "672518fdd29b1aa01bb5589cfeaef6d97012e64f",
+      "subject": "link: define endpoint rendezvous, resolving a token to a real endpoint"
     },
     "mcl-sdk": {
-      "commit": "e93e55a185c0a10d8dde03ce3f8492a2ec472609",
-      "subject": "align with the Link frame-check rename"
+      "commit": "a9a707a3d07822ba861192ead5d0e872d977c669",
+      "subject": "sdk: extend the registry cross-check to the per-binding profile registries"
     },
     "mcl-ap": {
-      "commit": "7d8a0235f062cc97c0194ce291b1022ee5c9ca37",
-      "subject": "exp001: parameterise the post-capture host audio restore hook"
+      "commit": "0541e6f6777978524ea8da608fc49d03bf96de1a",
+      "subject": "ap: profile registry recording the laboratory instrument, not a candidate profile"
     },
     "mcl-ip": {
-      "commit": "a0ebe820eb47fc11d55be3a805e78dd8c8b0c107",
-      "subject": "docs: record over-air evidence and security status in the README"
+      "commit": "b38605524a0fd1b619187487089b11616a4e5f3d",
+      "subject": "ip: rendezvous discovery datagram, and assign profiles"
     },
     "mcl-ble": {
-      "commit": "d031da5f597d3667df5900d5865e0de3fd78b523",
-      "subject": "docs: record over-air evidence and security status in the README"
+      "commit": "4ab810b6539d54347bf6f582a1664d68b93dbbfc",
+      "subject": "ble: place the rendezvous beacon in advertising service data, and assign profiles"
     },
     "mcl-uwb": {
-      "commit": "1c770628c9936cddec42285951910245ea27b238",
-      "subject": "docs: record over-air evidence and security status in the README"
+      "commit": "2abb9b92b8344c57ba51da10c3a3511173c123a7",
+      "subject": "uwb: profile registry that assigns nothing, and says why"
     }
   },
   "layer_status": {
-    "mcl-core": "Provisional semantic normalization assignments and opcode registries, with six currently implemented Tier-0 reference semantics. C validator with overflow and truncation hardening.",
-    "mcl-wire": "Freestanding C99 reference codec. Bit-level encode/decode for 6 Tier-0 semantics. Extension framework present. Randomized fuzz decode. Known test vectors. Zero heap allocation.",
-    "mcl-link": "C99 reference state machine (9-state lifecycle, context install/authorize/compare, wire major mask without narrowing) plus the Link frame v0 canonical layout: 8 bytes minimum, flag-selected destination/session/sequence/freshness/CRC-32 frame check, strict rejection of unknown version, unknown frame class, reserved flag bits, truncation and frame-check failure, with truncation reported distinctly from permanent malformation so a stream carriage can tell 'wait for more bytes' from 'resynchronise'. This is the carriage unit every transport binding maps onto.",
-    "mcl-sdk": "C99 reference SDK. Node init/reset, Tier-0 send/receive over raw Wire bytes, and a framed contact path over Link frames for the IP/BLE/UWB bindings. Transmit sequence advances only on transport success; a session reference requires an installed context; malformed frames are rejected before semantic decoding; reception has zero side effects on link state. Zero heap allocation, caller-owned buffers.",
+    "mcl-core": "Provisional semantic normalization assignments and opcode registries, with seven currently implemented Tier-0 reference semantics. C validator with overflow and truncation hardening.",
+    "mcl-wire": "Freestanding C99 reference codec. Bit-level encode/decode for 7 Tier-0 semantics (PRESENCE, HAZARD, REQUEST, AUTHORITY_CLAIM, DEGRADED_STATE, TRANSPORT_OFFER, TRANSPORT_ACCEPT). TRANSPORT_OFFER and TRANSPORT_ACCEPT carry a 32-bit migration_ref transaction correlator. Extension framework present but NOT reachable from the Tier-0 API, which hard-sets extension_present to 0; closing that is required before v1. Randomized fuzz decode. Versioned vectors: tier0-v0.1/v0.2/v0.3, none edited after publication. Zero heap allocation.",
+    "mcl-link": "C99 reference state machine (9-state lifecycle, context install/authorize/compare, wire major mask without narrowing); the Link frame v0 canonical layout, 8 bytes minimum, flag-selected destination/session/sequence/freshness/CRC-32 frame check, with truncation reported distinctly from permanent malformation; a contact-migration state machine (ACTIVE/OFFERED/AGREED/VALIDATING/VALIDATED/COMMITTING) with transaction correlation, candidate-path validation before commit, and deterministic simultaneous-offer resolution; and the transport-neutral rendezvous beacon that resolves an endpoint_token to a concrete endpoint. Migration is deliberately non-cryptographic: it establishes correlation and reachability, never identity.",
+    "mcl-sdk": "C99 reference SDK. Node init/reset, Tier-0 send/receive over raw Wire bytes, and a framed contact path over Link frames for the IP/BLE/UWB bindings. Transmit sequence advances only on transport success; a session reference comes from the contact and requires an agreed migration, never from the Wire context_id; malformed frames are rejected before semantic decoding; reception has zero side effects on link state. Zero heap allocation, caller-owned buffers.",
     "mcl-ap": "Analytical channel model (ISO 9613-1); Experiment 001 (LAB/EXPERIMENTAL hosted binary FSK testbed, frozen at 3/5 kHz as the instrument holding the E3 result); Experiment 002 part A (real transducer path characterization); Experiment 003 (band-informed AP-B0 candidate, 3/6 kHz, with a same-session control and a reverse-direction E4 result). No normative profile. AP-B0 NOT selected. Protocol-facing Wire, Link, and SDK libraries remain freestanding C99.",
-    "mcl-ip": "Reference implementation. Endpoint offer with family-consistent address sizing and an opaque local reference so first contact need not force address disclosure; datagram carriage where the datagram boundary is the frame boundary; length-prefixed stream carriage that preserves synchronisation across an undecodable frame; MTU accounting. Freestanding C99, no sockets, no libc symbols.",
-    "mcl-ble": "Reference implementation. Fixed-size endpoint offer; explicit fragmentation and reassembly for the 20-byte default ATT payload, with START/END/sequence framing that discards rather than splices on loss, reordering, orphaned continuations or restart; connectionless presence confirmed to fit 31-byte advertising data. Freestanding C99, no Bluetooth stack, no libc symbols.",
+    "mcl-ip": "Reference implementation. Endpoint offer with family-consistent address sizing and an opaque local reference so first contact need not force address disclosure; datagram carriage where the datagram boundary is the frame boundary; length-prefixed stream carriage that preserves synchronisation across an undecodable frame; MTU accounting; a rendezvous discovery datagram that resolves an endpoint_token to a concrete address, on the provisional unregistered port 49913. Freestanding C99, no sockets, no libc symbols.",
+    "mcl-ble": "Reference implementation. Fixed-size endpoint offer; explicit fragmentation and reassembly for the 20-byte default ATT payload, with START/END/sequence framing that discards rather than splices on loss, reordering, orphaned continuations or restart; connectionless presence confirmed to fit 31-byte advertising data; a rendezvous advertising structure carrying the beacon in Service Data for the MCL 128-bit service UUID, with an AD walk that tolerates arbitrary scan results. Freestanding C99, no Bluetooth stack, no libc symbols.",
     "mcl-uwb": "Reference implementation. Fixed-size endpoint offer; one Link frame per UWB data frame; ranging-evidence record that deliberately exposes no verified distance and no proximity-proved flag. Admissibility as proximity evidence requires performed ranging, a drift-cancelling method, authenticated scrambled timestamps and moderate radio confidence; overflow in distance conversion is refused rather than wrapped. No distance bounding is implemented or claimed. Freestanding C99, no UWB driver, no libc symbols."
   },
   "conformance_evidence": {
@@ -58,7 +58,7 @@
     },
     "C1_canonical_encoding": {
       "status": "LOCAL_EVIDENCE",
-      "detail": "6 Tier-0 semantics encode/decode bit-perfectly. Known test vectors retained in mcl-wire/tests/test_vectors.c."
+      "detail": "7 Tier-0 semantics encode/decode bit-perfectly. Vectors retained in mcl-wire/tests/test_vectors.c and conformance/vectors/tier0-v0.3.json; the v0.1 and v0.2 vector files remain exactly as published."
     },
     "C2_negative_decoding": {
       "status": "LOCAL_EVIDENCE",
@@ -130,17 +130,22 @@
     }
   },
   "codebase_status": {
-    "summary": "All eight repositories now contain implementation, not only specification. 20 test targets pass across the family under strict warnings-as-errors.",
+    "summary": "All eight repositories contain implementation, not only specification. 23 test targets pass across the family under strict warnings-as-errors.",
     "freestanding_verification": "Link, Wire, SDK, IP, BLE and UWB objects compiled and inspected for undefined externals: no memcpy, memset, malloc or stdio. Byte copies use a volatile-destination helper because optimising compilers rewrite plain indexed loops into memcpy, which would reintroduce a libc dependency.",
     "not_implemented": [
-      "mcl-uwb has never been exercised against real UWB hardware.",
+      "mcl-uwb has never been exercised against real UWB hardware, and no UWB profile is assigned.",
       "No independent implementation exists, so C4 and E6 are unreachable by construction.",
       "AP-B0 is not selected; no normative acoustic profile is defined.",
-      "No normative transport profile is defined for IP or BLE either, so their over-air runs are evidence toward a future C5 rather than a C5 pass.",
+      "No normative transport profile is defined for IP or BLE. Their profile registries assign Experimental Use values only, because the profiles are defined by reference-implementation behaviour rather than by specification.",
       "No cryptographic capability of any kind exists. See security_posture.",
-      "The reverse acoustic path has never been swept with Experiment 002; the 3000/6000 Hz pair is optimised for the forward path only."
+      "The reverse acoustic path has never been swept with Experiment 002; the 3/6 kHz pair is optimised for the forward path only.",
+      "The Wire extension framework is implemented but unreachable from the Tier-0 API, which hard-sets extension_present to 0. Either it is integrated or it is explicitly excluded from the first stable Tier-0 contract before v1.",
+      "The semantic registry marks 15 opcodes as Tier-0 candidates while 7 are implemented. The registry must not imply executable support that does not exist.",
+      "Contact migration has been closed in software only. No migration has crossed real radios, and doing so requires a single peer holding two transports open at once rather than separate firmwares.",
+      "MCL_IP_RENDEZVOUS_PORT 49913 is unregistered and provisional; this project holds no IANA assignment."
     ],
-    "audit_2026_09_02": "A file-by-file audit fixed seven defects that would otherwise have shipped: a compiler-synthesised memset in mcl-link that broke the freestanding contract; truncation conflated with permanent malformation in Link decode and then mistranslated by two bindings; a BLE reassembly bound below the largest legal Link frame; an unguarded fragment-sequence wrap; an unenforced exact payload boundary in the SDK; an unbounded IP stream length prefix; and an MTU accounting function that contradicted its own documented contract. Two session-scaffolding documents were removed and their durable content promoted to governance/IMPLEMENTATION_CONTRACT.md."
+    "audit_2026_09_02": "A file-by-file audit fixed seven defects that would otherwise have shipped: a compiler-synthesised memset in mcl-link that broke the freestanding contract; truncation conflated with permanent malformation in Link decode and then mistranslated by two bindings; a BLE reassembly bound below the largest legal Link frame; an unguarded fragment-sequence wrap; an unenforced exact payload boundary in the SDK; an unbounded IP stream length prefix; and an MTU accounting function that contradicted its own documented contract. Two session-scaffolding documents were removed and their durable content promoted to governance/IMPLEMENTATION_CONTRACT.md.",
+    "audit_2026_09_03": "Acted on an external protocol review. Fixed the SDK emitting the Wire context_id as a frame's session_ref, two unrelated identifiers sharing an integer; a test had asserted that behaviour, which is why it survived. Added a migration transaction correlator, without which a delayed acceptance from an abandoned offer was indistinguishable from the live one. Added candidate-path validation, because acceptance is not arrival. Fixed a genuine deadlock where simultaneous offers left both peers rejecting and waiting. Defined endpoint_token resolution, without which a hardware migration would have proved only that the harness knew where the peer was. Created per-binding profile registries, because profile_id=1 meant nothing in three bindings and was about to fossilize."
   },
   "transport_evidence": {
     "note": "Evidence levels for the non-acoustic bindings, kept separate from ap_evidence because the ladder describes physical reality per transport and merging them would obscure which medium was used.",
