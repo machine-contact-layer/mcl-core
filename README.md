@@ -214,14 +214,25 @@ standard.
 
 | Layer | Implementation | Physical evidence |
 |---|---|---|
-| Core — semantics | Registries, validator | — |
-| Wire — canonical bytes | C99, 5 test targets | — |
-| Link — contact and framing | C99, 4 test targets | — |
-| SDK — developer API | C99, 3 test targets | — |
+| Core — semantics | Registries, 2 validators | — |
+| Wire — canonical bytes | C99, 7 test targets | — |
+| Link — contact and framing | C99, 9 test targets | — |
+| SDK — developer API | C99, 5 test targets | **E4** — one contact across 104 changes of medium |
 | AP — acoustic | C99 + experiments | **E3 / E4** |
 | IP — network | C99, host tool | **E4** — 2.4 GHz UDP, two machines |
 | BLE — Bluetooth LE | C99, host tool | **E4** — GATT fragmentation, two machines |
 | UWB — ultra-wideband | C99 | none — software binding only |
+
+Test counts are read from `ctest -N`, not remembered. A count written from
+memory has been wrong twice in this project's history, in both directions.
+
+The SDK row is the newest and the least obvious: migration was exercised between
+two machines with **both media live on both peers at once**, which is the only
+arrangement in which a contact can actually change medium. A single-transport
+rig cannot construct the case that matters.
+
+What the v1.0 release will and will not claim about each of these is decided in
+[`governance/V1_SCOPE.md`](governance/V1_SCOPE.md).
 
 What that table does **not** say: nothing here is independent interoperability.
 Both ends of every over-air run compile the same sources, so a shared
