@@ -63,7 +63,7 @@ unrelated vendors would read every field identically.
 
 | Object | Disposition | Why |
 |---|---|---|
-| `PRESENCE` | **Stable** | The first-contact announcement. Nothing else in the protocol works without it. The duration encoding and the `capability_tag` rename (§4.2) are closed; `machine_class` is subject to a necessity audit recommending removal from the major-1 body (§5.1). |
+| `PRESENCE` | **Stable** | The first-contact announcement. Nothing else in the protocol works without it. The duration encoding and the `capability_tag` rename (§4.2) are closed; `machine_class` is **removed from the major-1 body** (§4.8), so the Stable `PRESENCE` is 10 bytes. |
 | `TRANSPORT_OFFER` | **Stable** | Migration is proven over real radios and is the property that makes MCL a contact layer rather than a message format. Requires the duration encoding and Stable profile identifiers. |
 | `TRANSPORT_ACCEPT` | **Stable** | The other half of the same exchange. Without it two implementations cannot complete a migration. |
 | `HAZARD` | **Candidate** | `hazard_class` has no cross-vendor vocabulary; `severity` and `confidence` have ranges but no calibration. Keeps its v0 layout, coordinates included; §4.1 governs the Stable surface only and does not reach a Candidate object. Layout is frozen-quality; **meaning is not**. |
@@ -308,6 +308,47 @@ be written into the Wire specification and enforced by the decoder **before**
 major-1 vectors are generated (§5.8). Freezing vectors first would fix the
 ambiguity into the artifacts that define the release.
 
+### 4.8 `machine_class` leaves the Stable body
+
+**Decision:** Wire major-1 `PRESENCE` does not carry `machine_class`. 11 bytes
+become 10. Major 0 keeps the field permanently, along with its published vectors
+and the E3/E4 over-air evidence recorded against it.
+
+**Decided from evidence, not preference.** `MACHINE_CLASS_AUDIT.md` asked what
+Stable-v1 decision becomes impossible without the field. The answer was none:
+
+- All 21 references across the eight repositories are constant writes, codec
+  plumbing, or round-trip asserts. Nothing dispatches, filters or negotiates on
+  the value. Five different constants are in use with no shared meaning, because
+  none exists.
+- The research corpus contains three `PRESENCE` messages carrying two distinct
+  classes — no basis for a 256-value cross-vendor taxonomy.
+- Both specifications that mention the field already wrote it `machine_class?`,
+  optional, independently and before the audit.
+- A flat 8-bit code over orthogonal axes (mobile/stationary,
+  ground/aerial/surface/underwater, autonomous/remote/worn) encodes their
+  cross-product, which grows every time a new axis is recognised. A
+  first-contact field that must be updated to meet a new kind of machine defeats
+  the purpose of first contact.
+
+**This is §4.1 applied consistently.** That decision rejected keeping a Stable
+field under a permanent "MUST NOT act on this" rule, because *a Stable field
+nobody may act on is an invitation to act on it*. A `machine_class` with no
+assigned values is precisely that field, and the argument is stronger here, not
+weaker: a Candidate object can still change, a Stable one cannot.
+
+**No replacement taxonomy is defined.** Machine typing moves to capability
+metadata exchanged after contact, where a vocabulary can be domain-scoped and
+versioned instead of universal and frozen. Mature interoperability standards
+layer domain identity over common infrastructure rather than enumerating it in
+the base; MCL does the same.
+
+**Propagated to:** `mcl-wire/spec/tier0-layout-v0.2.md` §4.1 (both layouts),
+`mcl_wire_tier0_encoded_size_at_major`, `mcl-wire/tests/test_major_rule.c`, and
+the field registry's `v1_disposition`. The registry `status` deliberately stays
+`provisional`: the meaning was never settled, and deleting a field does not
+settle it.
+
 ## 5. Work this scope requires
 
 Everything below is a consequence of the dispositions above. This is the v1
@@ -321,21 +362,15 @@ objects' vocabularies explicitly need not.
 |---|---|
 | shared `ttl` / `validity` duration encoding | **done** — `mcl-wire/spec/duration-v0.1.md` |
 | `capability_tag` rename and semantics (§4.2) | **done** — no bytes changed |
-| `machine_class` vocabulary | **superseded by an audit finding** — see below |
+| `machine_class` vocabulary | **resolved: removed from major-1 PRESENCE** — §4.8 |
 | Stable `profile_id` semantics | open, and coupled to §5.6 |
 
 `machine_class` was listed here as "write the vocabulary". A necessity audit was
-run first and recommends against writing one:
-[`MACHINE_CLASS_AUDIT.md`](MACHINE_CLASS_AUDIT.md). No code in any of the eight
-repositories consumes the value — all 21 references are constant writes, codec
-plumbing, or round-trip asserts — the research corpus contains three `PRESENCE`
-messages carrying two distinct classes, and both specifications that mention the
-field already mark it optional. The recommendation is to remove it from major-1
-`PRESENCE` (v0 untouched), on the same reasoning §4.1 used to remove
-coordinates: a Stable field nobody may act on is an invitation to act on it.
+run first, found no consumer, and the field was **removed from the major-1
+`PRESENCE` body** rather than given a taxonomy. Decision and reasoning in §4.8;
+evidence in [`MACHINE_CLASS_AUDIT.md`](MACHINE_CLASS_AUDIT.md).
 
-**Owner decision required.** Until it is taken, no `machine_class` vocabulary is
-written, and §5.1 is blocked only on `profile_id`.
+§5.1 is therefore closed except for `profile_id`, which §5.6 carries.
 
 ### 5.2 Registry governance and the extension registry
 Every Stable registry gets a named change controller, an application procedure,
@@ -514,7 +549,17 @@ historical evidence to look current.
 
 ### 5.8 The gates that cannot be skipped
 Cut Wire major 1 and Link major 1 only after the meanings close. Generate a new
-immutable major-1 vector family rather than editing the v0 vectors. Then an
+immutable major-1 vector family rather than editing the v0 vectors.
+
+**The major-1 vectors MUST carry expected field values, not only `name`,
+`length` and `hex`.** The clean-room implementation proved why: it decoded
+`AUTHORITY_CLAIM` with an 8-bit `authority_class` and a 16-bit `jurisdiction`
+instead of 6 and 12, and because the object also carries 6 bits of padding
+*both* layouts consume exactly 14 bytes. Every length check, every "bytes
+consumed" assertion and the published vector itself passed while every field
+after `source_ref` was being misread. A vector that is a length and a hex string
+cannot catch that; only comparing decoded values can. See
+`mcl-core/conformance/independent/SPEC_GAPS.md`. Then an
 independent clean-room implementation, and C4/C5 cross-implementation testing.
 The charter does not permit going from private research to Stable without
 passing Candidate and Interoperability Candidate.

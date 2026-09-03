@@ -1,8 +1,19 @@
 # MCL v1.0.0 release gate
 
-**No `v1.0.0` tag exists while any mandatory row below is OPEN, PARTIAL,
-NOT_RUN, "owner decision required", or supported only by the reference
-implementation itself.**
+**No `v1.0.0` tag exists while any row is `ACTIVE`, `WAIT_DEP`, or `EXTERNAL`.**
+
+## States
+
+| State | Meaning |
+|---|---|
+| `DONE` | Evidence exists in the tree and passes. |
+| `DONE + REVERIFY_AT_RC` | Complete, and re-run once more at the release candidate. A passing gate is a measurement, not a property — this is finished work, not unfinished work. |
+| `ACTIVE` | Executable now. Work it. |
+| `WAIT_DEP` | Names the exact prerequisite row IDs. Not a blocker on the session — the prerequisites are themselves rows. |
+| `EXTERNAL` | Literally impossible with this repository and these tools. **Must state the exact external act still required.** A technical or specification question is never `EXTERNAL`: it gets researched, tested and resolved where the evidence gives a dominant answer. |
+
+There is no `OWNER`, `PARTIAL` or `BLOCKED` state. A question that can be
+answered from evidence is answered.
 
 Status: living document. Updated only when the evidence that closes a row
 actually exists.
@@ -23,55 +34,42 @@ Stable is not.
 
 ## Status
 
-| # | Gate | State | Evidence |
+| # | Gate | State | Evidence / next act |
 |--:|---|---|---|
-| 1 | Final v1 scope approval | **OPEN — owner** | `V1_SCOPE.md` exists and is complete. Two owner decisions outstanding: the three-object Stable Tier-0 subset, and `machine_class` (`MACHINE_CLASS_AUDIT.md`). |
-| 2 | Stable semantic closure | **PARTIAL** | Closed: `ttl`, `validity` (`duration-v0.1.md`), `capability_tag`, refs, `transport_id`. Open: `profile_id` (blocked on 7/8); `machine_class` pending item 1. |
-| 3 | Registry governance closure | **OPEN** | Extension-ID registry + validator done. Semantic codes, transport IDs, profile IDs still need change controllers and promotion/deprecation procedures. |
-| 4 | Link class disposition | **DONE** | `mcl-link/spec/link-class-disposition-v1.md`. Nine Stable, one reserved, none excluded. |
-| 5 | Minimum capability/version negotiation | **DONE** | `link-negotiation-v1.md`, `src/negotiation.c`, `tests/test_negotiation.c` — 4241 checks, 0 failed. Symmetry exhaustive over 675 ordered pairs, 0 disagreements. |
-| 6 | Candidate-vs-Stable major enforcement | **DONE** | `common-header-v0.2.md` §3.1, `mcl_wire_kind_allowed_at_major`, `tests/test_major_rule.c` — 149 checks. Major 1 defined, deliberately not yet cut. |
-| 7 | Stable IP-DATAGRAM profile | **PARTIAL — spec done, promotion pending** | `mcl-ip/spec/ip-datagram-profile-v1.md`, normative, at Candidate. Carriage only, no port assigned, discovery deferred. Frame check now required and enforced. Steps 2–5 of the promotion sequence need item 15. |
-| 8 | Stable BLE-GATT profile | **PARTIAL — spec done, promotion pending** | `mcl-ble/spec/ble-gatt-profile-v1.md`, normative, at Candidate. Service, characteristics, fragmentation, MTU floor, discard table frozen. Frame check required (reassembly, not radio). Steps 2–5 need item 15. |
-| 9 | Multi-contact isolation campaign | **DONE** | `mcl-sdk/tests/test_multi_contact.c` — 50 checks, 9 cases, broadcast bus. Mutation-tested: `MULTI_CONTACT_MUTATIONS.md`, one escape found and closed. Host-side only; several real peers on one radio is not claimed. |
-| 10 | Final Wire major 1 | **BLOCKED** on 1, 2, 7, 8 | Rule already in place (item 6). |
-| 11 | Final Link major 1 | **BLOCKED** on 10 | |
-| 12 | Immutable major-1 vectors | **BLOCKED** on 10, 11 | v0 vectors never rewritten. |
-| 13 | SDK release engineering | **OPEN** | Installable package, exported targets, external consumer build. |
-| 14 | Public API freeze | **OPEN** | Source/API compatibility, **not** binary ABI (§4.5). Symbol baseline + diff before release. |
-| 15 | Clean-room independent implementation | **OPEN** | From specs and vectors, never by translating the reference C. |
-| 16 | C4 independent interoperability | **BLOCKED** on 15 | One implementation on two machines does not count. |
-| 17 | C5 Stable-profile interoperability | **BLOCKED** on 7, 8, 15 | Re-run on final assigned profile bytes — see §5.6 ordering. |
-| 18 | Full robustness gates | **PASSING, re-run at RC** | GCC/Clang/MSVC `-Werror`, ASan/UBSan, ARM-M0, RV32IM, C++ headers, freestanding symbol inspection. Both halves green today. |
-| 19 | Specification synchronization audit | **PARTIAL** | Four stale READMEs, two hardcoded counts and three rename artifacts fixed. Full pass not yet run. |
-| 20 | Specification index + compatibility matrix | **OPEN** | |
-| 21 | Feature traceability ledger | **OPEN** | This document is the gate ledger, not yet the per-feature trace. |
-| 22 | ICS / conformance declaration | **OPEN** | Conformance must not be inferred from passing unit tests. |
-| 23 | Public security process | **OPEN** | Protocol limits are already conspicuous; the disclosure channel is not. |
-| 24 | Legal / IPR / contribution closure | **OPEN — owner** | Apache-2.0 on code alone does not finish this. |
-| 25 | Licensing / provenance audit | **OPEN** | |
-| 26 | Governance operationalization | **OPEN** | Procedures that work, not research-governance drafts. |
-| 27 | Public Candidate release | **BLOCKED** | |
-| 28 | Interoperability Candidate gate | **BLOCKED** on 16, 17 | |
-| 29 | Public review and errata pass | **BLOCKED** on 27 | |
-| 30 | Final release bundle | **BLOCKED** | `releases/v1.0.0/`. Historical alpha manifest stays historical. |
-| 31 | Reconstructability check | **BLOCKED** on 30 | Rebuild from the bundle alone. Fixes the cross-repository self-reference problem. |
-| 32 | Final clean-room release rehearsal | **BLOCKED** on 30 | |
-| 33 | Final go/no-go audit | **BLOCKED** | Sweep for `draft`, `TODO`, `TBD`, `provisional`, stale counts, old signatures, experimental values in Stable examples. |
-| 34 | Create `v1.0.0` | **BLOCKED** on all above | |
-
-## Counts
-
-```text
-DONE       4   (4, 5, 6, 9)
-PARTIAL    5   (2, 7, 8, 18, 19)
-OPEN      12
-BLOCKED   13
-```
-
-`18` is counted PARTIAL rather than DONE on purpose: the gates pass **today**,
-and anything added before the release candidate re-runs them. A passing gate is
-a measurement, not a property.
+| 1 | v1 scope, technically resolved | `ACTIVE` | Resolve `machine_class` on the evidence in `MACHINE_CLASS_AUDIT.md` rather than deferring it. |
+| 2 | Stable semantic closure | `WAIT_DEP` 1, 7, 8 | `ttl`, `validity`, `capability_tag`, refs, `transport_id` closed. |
+| 3 | Registry governance closure | `ACTIVE` | Change controllers and promotion/deprecation procedures for every Stable registry. |
+| 4 | Link class disposition | `DONE` | `mcl-link/spec/link-class-disposition-v1.md`. Nine Stable, one reserved. |
+| 5 | Minimum capability/version negotiation | `DONE` | `link-negotiation-v1.md` + `tests/test_negotiation.c`, 4241 checks. |
+| 6 | Candidate-vs-Stable major enforcement | `DONE` | `common-header-v0.2.md` §3.1, `test_major_rule.c`, 149 checks. |
+| 7 | IP-DATAGRAM profile | `WAIT_DEP` 15, 16 | Normative spec done at Candidate. Promotion needs independent interop. |
+| 8 | BLE-GATT profile | `WAIT_DEP` 15, 16 | Normative spec done at Candidate. Promotion needs independent interop. |
+| 9 | Multi-contact isolation campaign | `DONE` | `test_multi_contact.c`, 50 checks, mutation-tested. |
+| 10 | Final Wire major 1 | `WAIT_DEP` 1, 2 | Rule already enforced (row 6). |
+| 11 | Final Link major 1 | `WAIT_DEP` 10 | |
+| 12 | Immutable major-1 vectors | `WAIT_DEP` 10, 11 | v0 vectors never rewritten. |
+| 13 | SDK release engineering | `ACTIVE` | Install rules, exported package, external consumer build. |
+| 14 | Public API freeze | `ACTIVE` | Symbol baseline + diff tool. |
+| 15 | Clean-room independent implementation | `ACTIVE` | From specs and vectors, different language, zero shared code. |
+| 16 | C4 independent interoperability | `WAIT_DEP` 15 | |
+| 17 | C5 Stable-profile interoperability | `WAIT_DEP` 15, 16 | Re-run on final assigned profile bytes. |
+| 18 | Full robustness gates | `DONE + REVERIFY_AT_RC` | Both halves green. GCC/Clang/MSVC `-Werror`, ASan/UBSan, ARM-M0, RV32IM, C++ headers, symbol inspection. |
+| 19 | Specification synchronization audit | `ACTIVE` | Full mechanical pass. |
+| 20 | Specification index + compatibility matrix | `ACTIVE` | |
+| 21 | Feature traceability ledger | `ACTIVE` | Per-feature trace, machine-checked. |
+| 22 | ICS / conformance declaration | `ACTIVE` | |
+| 23 | Public security process | `ACTIVE` | `SECURITY.md` with commitments the project can meet. |
+| 24 | Legal / IPR / contribution closure | `ACTIVE` | Draft everything; only the licence *selection* is a product choice. |
+| 25 | Licensing / provenance audit | `ACTIVE` | Every releasable artifact, machine-checked. |
+| 26 | Governance operationalization | `ACTIVE` | Procedures, not drafts. |
+| 27 | Public Candidate release | `WAIT_DEP` 19, 20, 22, 23, 26 | |
+| 28 | Interoperability Candidate gate | `WAIT_DEP` 16, 17 | |
+| 29 | Public review and errata pass | `EXTERNAL` | **Exact external act:** third parties outside this project must read the published Candidate and report. No tool here can supply an independent reviewer. Errata handling itself is row 26. |
+| 30 | Final release bundle | `WAIT_DEP` 10, 11, 12, 21 | |
+| 31 | Reconstructability check | `WAIT_DEP` 30 | |
+| 32 | Final clean-room release rehearsal | `WAIT_DEP` 30 | |
+| 33 | Final go/no-go audit | `ACTIVE` | Mechanical sweep, runnable now and again at RC. |
+| 34 | Create `v1.0.0` | `WAIT_DEP` all | |
 
 ## What "not on the critical path" means
 

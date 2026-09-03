@@ -18,7 +18,11 @@
       "status": "provisional",
       "meaning": "What kind of machine is announcing itself.",
       "gap": "No values are assigned. A receiver learns that the sender considers itself class N and has no way to look N up.",
-      "before_stable": "Assign a range with an allocation policy and a change controller, as semantic-codes-v0.2.json does for category/opcode. The list should be short and coarse: this is a first-contact field, and a taxonomy that needs updating to meet a new machine defeats the purpose."
+      "before_stable": "Assign a range with an allocation policy and a change controller, as semantic-codes-v0.2.json does for category/opcode. The list should be short and coarse: this is a first-contact field, and a taxonomy that needs updating to meet a new machine defeats the purpose.",
+      "v1_disposition": "removed_from_stable_v1",
+      "v1_decision": "Removed from the Wire major-1 PRESENCE body. Decided from the evidence in mcl-core/governance/MACHINE_CLASS_AUDIT.md: no code in any of the eight repositories consumes the value, the research corpus offers two distinct classes, and both specs that mention the field already marked it optional. Same reasoning as the coordinate decision (V1_SCOPE 4.1) -- a Stable field nobody may act on is an invitation to act on it. This is a SCOPE decision and deliberately does not change \"status\": the meaning is unsettled, not settled by deletion.",
+      "future_path": "Machine typing belongs to capability metadata exchanged after contact, where a vocabulary can be domain-scoped and versioned rather than universal and frozen into a first-contact object. No replacement taxonomy is defined here, deliberately.",
+      "still_live_for": "Wire major 0 keeps the field permanently: its layout, its published vectors and the E3/E4 over-air evidence recorded against it are unchanged."
     },
     {
       "name": "capability_tag",

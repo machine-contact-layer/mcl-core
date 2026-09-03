@@ -1,6 +1,6 @@
 # `machine_class` — necessity audit for Stable v1 PRESENCE
 
-Status: **finding, pending owner decision**
+Status: **RESOLVED — Option A adopted**, recorded as `V1_SCOPE.md` §4.8
 Date: 2026-09-04
 Applies to: `V1_SCOPE.md` §5.1, which lists the `machine_class` vocabulary as a
 blocker for a Stable `PRESENCE`.
@@ -117,12 +117,29 @@ ontologies map into; W3C WoT keeps a small core interaction vocabulary and
 attaches richer semantic types separately. Each keeps domain identity *out* of
 the base.
 
-## Recommendation
+## Outcome
 
-**Do not write a `machine_class` vocabulary for v1.** Two options remain, and
-the choice is the owner's.
+**Option A was adopted.** `machine_class` is removed from the Wire major-1
+`PRESENCE` body; major 0 keeps it permanently along with its vectors and its
+over-air evidence. No replacement taxonomy was defined.
 
-### Option A — remove from major-1 PRESENCE (recommended)
+The decision follows from the findings above rather than from preference: the
+audit asked what Stable-v1 decision becomes impossible without the field, the
+answer was none, and §4.1 of the scope had already settled what to do with a
+Stable field nobody may act on. Option B required producing a concrete
+first-contact requirement that coarse machine typing satisfies before capability
+exchange; none exists anywhere in the tree.
+
+Propagated to `mcl-wire/spec/tier0-layout-v0.2.md` §4.1 (which now carries both
+layouts), `mcl_wire_tier0_encoded_size_at_major`,
+`mcl-wire/tests/test_major_rule.c`, the field registry's `v1_disposition`, and
+the independent implementation.
+
+## Recommendation, as it stood before the decision
+
+Two options were open.
+
+### Option A — remove from major-1 PRESENCE — **ADOPTED**
 
 ```text
 Wire major 0 PRESENCE       unchanged, permanently
