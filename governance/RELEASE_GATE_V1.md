@@ -31,8 +31,8 @@ Stable is not.
 | 4 | Link class disposition | **DONE** | `mcl-link/spec/link-class-disposition-v1.md`. Nine Stable, one reserved, none excluded. |
 | 5 | Minimum capability/version negotiation | **DONE** | `link-negotiation-v1.md`, `src/negotiation.c`, `tests/test_negotiation.c` — 4241 checks, 0 failed. Symmetry exhaustive over 675 ordered pairs, 0 disagreements. |
 | 6 | Candidate-vs-Stable major enforcement | **DONE** | `common-header-v0.2.md` §3.1, `mcl_wire_kind_allowed_at_major`, `tests/test_major_rule.c` — 149 checks. Major 1 defined, deliberately not yet cut. |
-| 7 | Stable IP-DATAGRAM profile | **OPEN** | Carriage only, no Stable claim on UDP 49913, no discovery requirement (§4.3). |
-| 8 | Stable BLE-GATT profile | **OPEN** | |
+| 7 | Stable IP-DATAGRAM profile | **PARTIAL — spec done, promotion pending** | `mcl-ip/spec/ip-datagram-profile-v1.md`, normative, at Candidate. Carriage only, no port assigned, discovery deferred. Frame check now required and enforced. Steps 2–5 of the promotion sequence need item 15. |
+| 8 | Stable BLE-GATT profile | **PARTIAL — spec done, promotion pending** | `mcl-ble/spec/ble-gatt-profile-v1.md`, normative, at Candidate. Service, characteristics, fragmentation, MTU floor, discard table frozen. Frame check required (reassembly, not radio). Steps 2–5 need item 15. |
 | 9 | Multi-contact isolation campaign | **DONE** | `mcl-sdk/tests/test_multi_contact.c` — 50 checks, 9 cases, broadcast bus. Mutation-tested: `MULTI_CONTACT_MUTATIONS.md`, one escape found and closed. Host-side only; several real peers on one radio is not claimed. |
 | 10 | Final Wire major 1 | **BLOCKED** on 1, 2, 7, 8 | Rule already in place (item 6). |
 | 11 | Final Link major 1 | **BLOCKED** on 10 | |
@@ -64,8 +64,8 @@ Stable is not.
 
 ```text
 DONE       4   (4, 5, 6, 9)
-PARTIAL    3   (2, 18, 19)
-OPEN      14
+PARTIAL    5   (2, 7, 8, 18, 19)
+OPEN      12
 BLOCKED   13
 ```
 

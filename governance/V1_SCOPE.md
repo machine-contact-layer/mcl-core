@@ -451,7 +451,21 @@ dual-transport evidence covers one contact across two media, a different
 property.
 
 ### 5.6 Freeze the two Stable transport profiles
-IP datagram carriage per §4.3, and the BLE GATT profile as one frozen unit.
+**Specifications done, at Candidate.** Promotion to Stable is steps 2–5 below
+and needs the independent implementation (§5.8).
+
+- `mcl-ip/spec/ip-datagram-profile-v1.md` — carriage only per §4.3, no port
+  assigned, discovery deferred to a separate profile.
+- `mcl-ble/spec/ble-gatt-profile-v1.md` — service, two directional
+  characteristics, fragmentation, the 23-byte MTU floor, the discard table.
+
+Writing them closed the homeless `frame_check` requirement that
+`link-class-disposition-v1.md` §6 recorded: it is now **required by each
+profile** and enforced, for different reasons. IP because the UDP checksum is
+optional over IPv4 and weak; BLE because a frame crosses up to 56 PDUs that are
+each individually correct, so a mis-spliced *fragment* corrupts a frame that no
+link-layer CRC can catch. Neither change contradicts recorded evidence — both
+over-air harnesses already set the flag on every frame.
 
 **A dependency loop has to be broken here, and the order matters.** Both
 transport profile registries state that an experimental profile may be proposed
