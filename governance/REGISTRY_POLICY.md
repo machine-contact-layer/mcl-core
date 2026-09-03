@@ -80,12 +80,39 @@ These ranges are provisional until a Candidate Specification is published.
 
 Category `0xF` is reserved as an escape mechanism for semantics that should not consume Core opcode space.
 
-The final extension envelope is not frozen yet. It MUST provide:
-- globally unambiguous namespace identification for public extensions;
-- an explicit critical/non-critical interpretation rule;
-- deterministic length/framing;
-- collision avoidance;
-- a Private/Experimental path.
+**The extension envelope is now specified and implemented.** This section
+previously said it was not frozen and listed five properties it would have to
+provide. All five are provided by `mcl-wire/spec/tier0-extensions-v0.1.md`,
+which is normative for the bytes:
+
+| Required property | Where it is met |
+|---|---|
+| globally unambiguous namespace identification | the `id` field, allocated by the registry below |
+| explicit critical/non-critical interpretation rule | the low bit of the TLV key; an unknown **critical** extension rejects the whole object rather than being skipped |
+| deterministic length/framing | uvarint `block_length` plus per-TLV `value_length`, so an object stays self-delimiting on the raw-Wire path where no outer envelope exists |
+| collision avoidance | the registry, plus strictly increasing ids so a set of extensions has exactly one encoding |
+| a Private/Experimental path | the Experimental Use and Private Use ranges in that registry |
+
+### Extension identifier registry
+
+Assignments live in `mcl-wire/registries/extension-ids-v0.1.json`, machine-checked
+by `mcl-wire/tools/validate_extension_registry.c`. The tool enforces that the
+declared ranges **partition** the identifier space: a gap is a value with no
+policy and an overlap is a value with two, and both would otherwise be
+discovered by whoever requests that number rather than by whoever wrote the
+table. It also refuses to let identifier 0 become assignable, because zero being
+reserved is a property of the encoding — a zeroed buffer must never decode as an
+extension — and not a policy that governance may revisit.
+
+The space is not uniformly priced. The TLV key is `uvarint((id << 1) | critical)`,
+so ids 1..63 cost one byte on the wire and 64..8191 cost two. The cheap range is
+therefore allocated under the strictest policy rather than first-come: wanting a
+short identifier is not a reason to receive one.
+
+**Zero assigned extensions is the expected state at v1.0 and is not a defect.**
+No extension has yet demonstrated cross-vendor necessity, and inventing one to
+populate the table would be inventing it wrongly. What a release requires is
+that the mechanism and its governance are ready on the day somebody first asks.
 
 ## 5. Review criteria
 
