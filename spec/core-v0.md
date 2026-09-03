@@ -203,7 +203,7 @@ Fixed or tightly bounded meanings for:
 - identity or authority claim reference
 - basic hazard
 - basic request
-- capability digest
+- capability tag
 - transport offer
 - acknowledgement
 

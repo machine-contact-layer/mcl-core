@@ -63,11 +63,11 @@ unrelated vendors would read every field identically.
 
 | Object | Disposition | Why |
 |---|---|---|
-| `PRESENCE` | **Stable** | The first-contact announcement. Nothing else in the protocol works without it. Requires `machine_class` vocabulary, the duration encoding, and the `capability_tag` rename (§4.2). |
+| `PRESENCE` | **Stable** | The first-contact announcement. Nothing else in the protocol works without it. The duration encoding and the `capability_tag` rename (§4.2) are closed; `machine_class` is subject to a necessity audit recommending removal from the major-1 body (§5.1). |
 | `TRANSPORT_OFFER` | **Stable** | Migration is proven over real radios and is the property that makes MCL a contact layer rather than a message format. Requires the duration encoding and Stable profile identifiers. |
 | `TRANSPORT_ACCEPT` | **Stable** | The other half of the same exchange. Without it two implementations cannot complete a migration. |
-| `HAZARD` | **Candidate** | `hazard_class` has no cross-vendor vocabulary; `severity` and `confidence` have ranges but no calibration. Coordinates are removed (§4.1). Layout is frozen-quality; **meaning is not**. |
-| `REQUEST` | **Candidate** | `request_class` has no vocabulary. Same coordinate removal. |
+| `HAZARD` | **Candidate** | `hazard_class` has no cross-vendor vocabulary; `severity` and `confidence` have ranges but no calibration. Keeps its v0 layout, coordinates included; §4.1 governs the Stable surface only and does not reach a Candidate object. Layout is frozen-quality; **meaning is not**. |
+| `REQUEST` | **Candidate** | `request_class` has no vocabulary. Keeps its v0 layout, coordinates included, for the same reason as `HAZARD`. |
 | `AUTHORITY_CLAIM` | **Candidate** | `authority_class` has no vocabulary and `jurisdiction` has no settled *namespace* — the registry cannot yet say whether it names a legal jurisdiction, a site, an operator or a fleet. Those are not interchangeable. |
 | `DEGRADED_STATE` | **Candidate** | `affected_capability` has no namespace; `health` has no calibration. |
 
@@ -170,9 +170,14 @@ rule — ships a Stable field that nobody is allowed to use, which is an invitat
 to use it anyway. A hazard placed at the wrong origin is worse than one never
 reported.
 
-**Cost, stated plainly:** a Stable `HAZARD` can say what kind of hazard, how bad,
-how confident, how big and for how long. It cannot say *where*. That is what
-first contact can honestly support without a shared frame.
+**Cost, stated plainly:** `HAZARD` is Candidate for v1 and keeps its v0 layout,
+coordinates included (§3). This decision governs the *Stable* surface, so its
+cost is paid later: if and when `HAZARD` is promoted, it will be able to say what
+kind of hazard, how bad, how confident, how big and for how long — but not
+*where*. That is what first contact can honestly support without a shared frame.
+The registry entry for `x, y, z` records the decision on a scope axis separate
+from its meaning status, because descoping a field does not settle what it
+means.
 
 ### 4.2 `capability_digest` becomes `capability_tag`
 
@@ -259,15 +264,78 @@ exponent/mantissa duration encoding.
 short for `PRESENCE` and needlessly coarse elsewhere. Two duration fields with
 different scales in one protocol is a defect waiting to be written.
 
+### 4.7 A Stable major carries only Stable semantics
+
+**Decision:** Wire major 1 carries only semantic objects whose body contract is
+part of the major-1 Stable set. Candidate objects continue to be carried under
+the experimental major. A major-1 decoder receiving a category/opcode that is
+not assigned in the major-1 Stable set MUST reject it.
+
+```text
+Wire major 0     evolving bytes: Candidate and research objects
+Wire major 1     frozen bytes: PRESENCE, TRANSPORT_OFFER, TRANSPORT_ACCEPT
+```
+
+**The gap this closes.** §3.2 disposes four objects as Candidate while §3.3
+makes the Stable layouts major 1, and nothing said which major the Candidate
+bytes travel under. Left unanswered, the natural reading is that a major-1 frame
+may carry `HAZARD`, because its layout exists and its vectors pass. But `HAZARD`
+is Candidate precisely so that it may still change. If its body changed without
+a major bump, two decoders both correctly implementing "major 1" would read the
+same category/opcode under different layouts. That is the exact failure a major
+version exists to make impossible, and it would be introduced by silence rather
+than by decision.
+
+**Why not the alternative.** Carrying Candidate objects inside major 1 under a
+code range documented as unstable was considered and rejected. It makes the
+major version insufficient to determine whether a layout can be trusted — a
+decoder would have to consult a range table to know what its own version
+guarantees. The project already draws this line for extension IDs, where
+Experimental Use values are explicitly not globally interoperable assignments.
+Semantic codes get the same treatment for the same reason.
+
+**Consequence, stated because implementers will hit it.** A node that does
+first contact under major 1 and also reports hazards emits objects of two
+different majors, and this is permitted: the major is a per-object header field,
+not a per-link property. What a peer may *not* do is infer support for one major
+from having seen the other. This is not a limitation of the split; it is the
+honest statement that MCL v1.0 stabilised first contact and did not stabilise
+the safety vocabulary, made visible in the bytes instead of only in prose.
+
+**Status:** the codec currently accepts only the experimental major and rejects
+every other value, so no implementation change is required today. The rule must
+be written into the Wire specification and enforced by the decoder **before**
+major-1 vectors are generated (§5.8). Freezing vectors first would fix the
+ambiguity into the artifacts that define the release.
+
 ## 5. Work this scope requires
 
 Everything below is a consequence of the dispositions above. This is the v1
 critical path, in order.
 
 ### 5.1 Close the Stable Tier-0 meanings
-`machine_class` vocabulary; the shared duration encoding; the `capability_tag`
-rename; Stable `profile_id` semantics. Only the fields used by the three Stable
-objects must close. The Candidate objects' vocabularies explicitly need not.
+Only the fields used by the three Stable objects must close. The Candidate
+objects' vocabularies explicitly need not.
+
+| Field | State |
+|---|---|
+| shared `ttl` / `validity` duration encoding | **done** — `mcl-wire/spec/duration-v0.1.md` |
+| `capability_tag` rename and semantics (§4.2) | **done** — no bytes changed |
+| `machine_class` vocabulary | **superseded by an audit finding** — see below |
+| Stable `profile_id` semantics | open, and coupled to §5.6 |
+
+`machine_class` was listed here as "write the vocabulary". A necessity audit was
+run first and recommends against writing one:
+[`MACHINE_CLASS_AUDIT.md`](MACHINE_CLASS_AUDIT.md). No code in any of the eight
+repositories consumes the value — all 21 references are constant writes, codec
+plumbing, or round-trip asserts — the research corpus contains three `PRESENCE`
+messages carrying two distinct classes, and both specifications that mention the
+field already mark it optional. The recommendation is to remove it from major-1
+`PRESENCE` (v0 untouched), on the same reasoning §4.1 used to remove
+coordinates: a Stable field nobody may act on is an invitation to act on it.
+
+**Owner decision required.** Until it is taken, no `machine_class` vocabulary is
+written, and §5.1 is blocked only on `profile_id`.
 
 ### 5.2 Registry governance and the extension registry
 Every Stable registry gets a named change controller, an application procedure,
@@ -286,6 +354,37 @@ Stable-but-optional-with-complete-behaviour, reserved, or excluded from v1.
 A small deterministic exchange covering Wire major, transport profile, maximum
 frame size and an explicit feature set. Small enough to be obviously correct.
 
+**Do not reuse the context-negotiation draft.** `CONTEXT_OFFER`/`CONTEXT_ACCEPT`
+is a Research Draft with unfrozen field widths, and it negotiates a context
+compression codec that §3.3 defers and that does not exist. Building this
+mechanism out of that one would import control machinery for a feature v1 does
+not ship. No `context_id`, no ruleset digest.
+
+**Encode the feature set as an ordinary bitmask.** A compact class-interval
+encoding — the compressed-subset idea from the semantic-grammar research — was
+evaluated and loses at MCL's scale. Cost model
+`ceil(log2(n+1)) + 2·runs·ceil(log2 n)` against a flat bitmap, exhaustively over
+every subset:
+
+| Capability universe | Bitmap | Interval mean | Result |
+|---|---:|---:|---|
+| n = 4 (today's transport families) | 4 bits | 8.00 bits | 2.0× worse |
+| n = 8 | 8 bits | 17.50 bits | 2.2× worse |
+
+Both rows are exhaustive over all 2^n subsets, so they are exact rather than
+sampled. Interval coding only begins to win when the universe reaches roughly
+16–32 members *and* real capability sets cluster tightly under one shared
+ordering. Under a synthetic domain shift — the same code ordering, sets drawn
+from a different clustering — the interval cost rose above the bitmap at both
+n = 16 and n = 32 while the bitmap stayed invariant by construction. A code that
+gets worse when it meets a vendor it was not fitted to is the wrong code for a
+cross-vendor first-contact standard.
+
+Reproduce with `mcl-core/research/capability-coding/interval_vs_bitmap.py`.
+This forecloses the option for v1; it does not forbid revisiting it if MCL ever
+accumulates hundreds of real cross-vendor capability sets to fit against, with
+vendors held out.
+
 ### 5.5 Multi-contact isolation campaign
 The architecture says "instantiate several nodes". That needs evidence, not
 assertion: several simultaneous contacts on one bearer, the same `migration_ref`
@@ -296,6 +395,44 @@ contact reusing an old reference.
 
 ### 5.6 Freeze the two Stable transport profiles
 IP datagram carriage per §4.3, and the BLE GATT profile as one frozen unit.
+
+**A dependency loop has to be broken here, and the order matters.** Both
+transport profile registries state that an experimental profile may be proposed
+for a Standards Action assignment *only once a second independent implementation
+has interoperated with it* (`mcl-ip/registries/ip-profiles-v0.1.json`,
+`mcl-ble/registries/ble-profiles-v0.1.json`). But §5.8 puts the independent
+implementation after profile freezing. Read literally:
+
+```text
+Stable profile ID  ->  needed before independent implementation
+independent impl   ->  needed before Stable profile assignment
+```
+
+**Resolution — separate the specification from the promotion.** They are
+different acts and only the second one needs the interoperability evidence:
+
+```text
+1. Write the normative profile specification, complete and frozen in content,
+   published at Candidate. Parameters fixed BY THE SPECIFICATION, not by
+   whatever the reference implementation happens to do.
+2. Interoperate the independent implementation against exactly that
+   specification, using the existing Experimental Use profile value.
+3. That interoperability satisfies the registries' promotion gate.
+4. Perform the Standards Action assignment of the final Stable profile value.
+5. Re-run the final C4/C5 cases with the final assigned bytes on the wire.
+```
+
+Step 5 is not ceremony. The profile identifier travels in
+`TRANSPORT_OFFER`/`TRANSPORT_ACCEPT`, so changing it changes the bytes that were
+tested; evidence gathered under the experimental value is evidence about the
+experimental value. If the governance model later permits reserving a Candidate
+value inside the Standards Action range, steps 2–5 collapse and the final bytes
+are exercised from the start — that is the better outcome and should be
+preferred if available.
+
+**What must not happen:** relabelling the existing experimental profile value as
+Stable. `REGISTRY_POLICY.md` is explicit that Experimental Use values are not
+globally interoperable assignments, and renaming one does not make it one.
 
 ### 5.7 Release-shaped work
 Installable SDK package and an external-consumer build test; public vulnerability

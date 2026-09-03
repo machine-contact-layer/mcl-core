@@ -19,6 +19,9 @@
  *   - every provisional or open field says what the gap is, because a field
  *     marked unfinished with no explanation is not a record of anything
  *   - the summary matches the entries
+ *   - any field carrying a v1_disposition names the decision that descoped it.
+ *     That key is a SCOPE axis, kept separate from status, which is a MEANING
+ *     axis: a field dropped from Stable v1 is not thereby understood.
  *
  * A minimal recursive-descent scan of the shapes this file actually uses.
  * There is no JSON library here and there will not be one: the protocol repos
@@ -149,9 +152,11 @@ int main(int argc, char **argv)
         size_t status_pos;
         char name[128];
         char status[64];
+        char disposition[64];
         size_t gap_pos;
         size_t before_pos;
         size_t next_name;
+        size_t disp_pos;
 
         if (name_pos == (size_t)-1 || name_pos > summary_start) {
             break;
@@ -197,6 +202,28 @@ int main(int argc, char **argv)
                 (before_pos == (size_t)-1 || before_pos > next_name)) {
                 fail("field %s is unfinished but says nothing about the gap",
                      name);
+            }
+        }
+
+        /*
+         * v1_disposition is a SCOPE axis and is deliberately separate from
+         * status, which is a MEANING axis. Removing a field from the Stable
+         * v1 surface does not settle what it means, and folding the one into
+         * the other would make the unsettled-meaning count fall every time a
+         * field was merely descoped -- improving the number by giving up.
+         * The two ladders in this project are kept apart for the same reason
+         * conformance and evidence are.
+         */
+        disp_pos = find_key("v1_disposition", status_pos);
+        if (disp_pos != (size_t)-1 && disp_pos < next_name) {
+            if (read_string_value(disp_pos, disposition, sizeof(disposition)) == 0) {
+                fail("field %s has an unreadable v1_disposition", name);
+            } else if (strcmp(disposition, "removed_from_stable_v1") != 0) {
+                fail("field %s has an undefined v1_disposition", name);
+            } else if (find_key("v1_decision", disp_pos) == (size_t)-1 ||
+                       find_key("v1_decision", disp_pos) > next_name) {
+                fail("field %s is descoped but does not say which decision "
+                     "descoped it", name);
             }
         }
 
