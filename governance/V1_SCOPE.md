@@ -348,23 +348,54 @@ be reconciled with Wire, which has since implemented and specified it.
 ### 5.3 Disposition every Link frame class
 **Done** — `mcl-link/spec/link-class-disposition-v1.md`.
 
-Seven Stable, one reserved, two conditional. `CONTACT`, `DATA`, `ACK`, `NACK`,
+Nine Stable, one reserved. `CONTACT`, `DATA`, `ACK`, `NACK`,
 `HANDOFF` and `CLOSE` are Stable with contracts that already exist and are
 tested; `KEEPALIVE` is Stable but optional to emit; `ADAPT` stays reserved and
 refused, as a permanent tombstone rather than a recycled value.
 
-`CAPABILITY` and `NEGOTIATION` are the only open entries, and both branches are
-decided in advance. Today they are accepted and handed to the Wire Tier-0
-decoder while no `CAPABILITY` semantic object exists — the class has a transport
-but no contract, which is precisely what §3.4 forbids a Stable decoder to
-accept. Either §5.4 lands first and they carry its control payloads, or they are
-**reserved and refused** at Link major 1 exactly as `ADAPT` is. Shipping them as
-they stand is not an option, and committing to the fallback now keeps that
-choice from being made under release pressure.
+`CAPABILITY` and `NEGOTIATION` were the two conditional entries: they were
+accepted and handed to the Wire Tier-0 decoder while no `CAPABILITY` semantic
+object exists — a transport with no contract, which is precisely what §3.4
+forbids a Stable decoder to accept. **§5.4 has since landed**, so they now carry
+its control payloads and are Stable. The SDK no longer passes them to the Tier-0
+decoder. The fallback — reserved and refused, as `ADAPT` is — was committed in
+advance and did not need to be taken.
+
+**Nine Stable, one reserved, none excluded.**
 
 ### 5.4 Minimum capability and version negotiation
-A small deterministic exchange covering Wire major, transport profile, maximum
-frame size and an explicit feature set. Small enough to be obviously correct.
+**Done** — `mcl-link/spec/link-negotiation-v1.md`, `mcl-link/src/negotiation.c`,
+`mcl-link/tests/test_negotiation.c` (4241 checks, 0 failed).
+
+`CAPABILITY` carries 9 bytes, `NEGOTIATION` 7. Together they settle Wire major,
+Link major, maximum frame size and a feature set. Transport and profile
+selection is deliberately **not** here — `TRANSPORT_OFFER`/`TRANSPORT_ACCEPT`
+already carry `transport_id` and `profile_id`, and a second way to select a
+transport would be a second vocabulary for one concept.
+
+**The design property:** the selection function is symmetric — `min` and `&`
+are commutative, and the highest set bit of `A & B` does not depend on operand
+order. Both peers compute the same answer from the same two inputs, so **glare
+needs no tiebreaker**, unlike migration where two offers propose different
+transports and cannot both proceed. Verified exhaustively over 675 ordered
+capability pairs: 0 disagreements.
+
+**Unknown feature bits fail closed by construction.** The outcome is
+`local.features & peer.features`, so a bit this implementation does not know is
+a bit it did not set, and the `AND` clears it. There is no unknown-feature rule
+to get wrong. Zero feature bits are assigned in v1 — the mechanism ships, the
+table is empty, exactly as the extension-ID registry does.
+
+The negotiated frame floor is **derived** from
+`FRAME_MIN_SIZE + FRAME_MAX_OPTIONAL + HANDOFF_CONTROL_MAX_SIZE` and asserted by
+test, never written as a literal: below it a link cannot carry MCL's own
+migration frames, and a negotiation that produced one would succeed and then
+fail at the worst moment.
+
+**Stated limit:** the check without the peer's advertisement is weaker — it can
+verify a selection is legal locally, not that the peer chose the highest common
+major. Nothing here is authenticated, so this is **not** downgrade protection
+and §7 of the specification says so rather than letting a reader infer it.
 
 **Do not reuse the context-negotiation draft.** `CONTEXT_OFFER`/`CONTEXT_ACCEPT`
 is a Research Draft with unfrozen field widths, and it negotiates a context
