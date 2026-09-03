@@ -204,9 +204,28 @@ if [ "$FAILURES" -eq 0 ]; then
   echo "  - Hardware. No experiment runs here. Software conformance and"
   echo "    physical evidence advance separately and passing this establishes"
   echo "    nothing about the latter."
-  echo "  - Meaning. Every check here is about BYTES. Sixteen of the 21 Tier-0"
-  echo "    fields carry values two independent implementations would not agree"
-  echo "    on; see mcl-core/registries/tier0-fields-v0.1.json."
+  # Counted from the registry rather than restated. This line said "Sixteen of
+  # the 21" and went on saying it after ttl, validity and capability_tag were
+  # settled. A hardcoded number in a script that reports results is the same
+  # trap as a hardcoded test count, and this project has been caught by that
+  # twice already.
+  REGISTRY="$ROOT/mcl-core/registries/tier0-fields-v0.1.json"
+  if [ -f "$REGISTRY" ]; then
+    # Count the SETTLED fields and subtract. Counting provisional-or-open
+    # directly also matches the registry's own root-level "status":
+    # "provisional", which reported 14 unsettled fields out of 21 when there
+    # are 13 -- an off-by-one produced by the very habit this block replaced.
+    # Only field entries carry "width_bits", so the total is safe to grep.
+    total=$(grep -c '"width_bits":' "$REGISTRY")
+    settled=$(grep -c '"status": "assigned"' "$REGISTRY")
+    unsettled=$((total - settled))
+    echo "  - Meaning. Every check here is about BYTES. $unsettled of the $total"
+    echo "    Tier-0 fields carry values two independent implementations would"
+    echo "    not agree on; see mcl-core/registries/tier0-fields-v0.1.json."
+  else
+    echo "  - Meaning. Every check here is about BYTES, not about whether two"
+    echo "    independent implementations would agree what the values mean."
+  fi
 else
   echo "$FAILURES GATE(S) FAILED"
 fi

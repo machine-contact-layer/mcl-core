@@ -21,15 +21,24 @@
       "before_stable": "Assign a range with an allocation policy and a change controller, as semantic-codes-v0.2.json does for category/opcode. The list should be short and coarse: this is a first-contact field, and a taxonomy that needs updating to meet a new machine defeats the purpose."
     },
     {
-      "name": "capability_digest",
+      "name": "capability_tag",
       "objects": [
         "PRESENCE"
       ],
       "width_bits": 24,
-      "status": "open",
-      "meaning": "Intended as a compact summary of the sender's capabilities, so a peer can tell whether it already knows this capability set without a full exchange.",
-      "gap": "There is no defined canonical input, no defined algorithm, and no stated collision semantics. Nothing computes it. A 24-bit digest also has a birthday bound around 4096 distinct capability sets, which is small enough that collisions are a design consideration rather than a remote possibility.",
-      "before_stable": "Either define the canonical input and the algorithm and state what a collision means, or RENAME it. 'Digest' asserts a property -- that equal values imply equal capabilities -- which nothing currently provides, and charter 2.11 forbids naming a mechanism for a property it lacks. If it is really an opaque version tag chosen by the sender, 'capability_tag' says so honestly."
+      "status": "assigned",
+      "former_name": "capability_digest",
+      "meaning": "A sender-controlled opaque revision token for the capability set the sender advertises on the current contact. It answers one question: have this peer's capabilities changed since I last asked.",
+      "resolved": "Renamed. 'Digest' asserts that equal values imply equal capabilities, and nothing provided that property -- no canonical input, no algorithm, no collision semantics, and nothing computing it. Charter 2.11 forbids naming a mechanism for a property it lacks, and an implementer trusting the old name would have compared two senders' values and concluded something false. Defining a real digest was the alternative and was rejected: it needs a canonical capability serialisation, an algorithm with its own versioning, and collision semantics for a 24-bit space whose birthday bound is around 4096 distinct capability sets. That is a great deal of machinery for what PRESENCE actually needs.",
+      "normative_rules": [
+        "The sender MUST change capability_tag when the set or meaning of the capabilities it advertises for the current contact changes.",
+        "A receiver MUST scope the tag to the advertising source/contact.",
+        "A receiver MUST NOT compare tags from different peers as capability identities.",
+        "The tag provides no authenticity, integrity, uniqueness or cryptographic collision resistance.",
+        "A receiver MAY use equality only as a cache or renegotiation hint."
+      ],
+      "not": "Not a digest, not a hash, not an identity, not a secret, and not monotonic. No randomness or hashing is required; incrementing a counter conforms. capability_revision was considered and rejected because it implies a monotonicity this contract does not require.",
+      "collision_semantics": "Harmless by construction. Across senders, comparison is forbidden. Within one sender, a repeated tag after a real change is a sender defect that leaves the receiver with a stale capability view until the next change; a changed tag with no real change costs one unnecessary exchange."
     },
     {
       "name": "hazard_class",
@@ -254,10 +263,10 @@
   ],
   "summary": {
     "total": 21,
-    "assigned": 7,
+    "assigned": 8,
     "provisional": 10,
-    "open": 4,
-    "note": "Ten fields carry values that two independent implementations would not agree on, and four have gaps that need a decision rather than an assignment. That is the honest state, and it is recorded here rather than discovered by whoever writes the second implementation. ttl and validity left the open column when mcl-wire/spec/duration-v0.1.md gave them one shared encoding.",
+    "open": 3,
+    "note": "Ten fields carry values that two independent implementations would not agree on, and three have gaps that need a decision rather than an assignment. That is the honest state, and it is recorded here rather than discovered by whoever writes the second implementation. ttl and validity left the open column when they were given one shared duration encoding; capability_digest left it by being renamed to capability_tag, which is what it always was.",
     "these_counts_are_checked": "tools/validate_field_registry.c counts the entries and fails if this block disagrees. It was written because this block was first filled in by hand as 6/9/6, which was wrong in the direction that overstates how much of Tier-0 is interoperable. The fix for a miscount is not to recount more carefully."
   }
 }
