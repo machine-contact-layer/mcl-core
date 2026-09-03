@@ -71,9 +71,14 @@ for CC_NAME in gcc clang; do
 done
 
 # ---------------------------------------------------------------- 2. ASan + UBSan
-note "ASan + UBSan (clang) on the protocol repos"
+# Every repository, not only the core four. The binding parsers -- the BLE
+# advertising-data scanner and fragment reassembler, the IP endpoint and
+# datagram/stream decoders, the UWB endpoint and ranging decoders -- all read
+# bytes chosen by a peer or by whatever else is transmitting nearby. A bounds
+# error there is not a crash, it is a remote one.
+note "ASan + UBSan (clang), all repositories"
 SAN="-fsanitize=address,undefined -fno-omit-frame-pointer -fno-sanitize-recover=undefined -g -O1"
-for repo in mcl-core mcl-wire mcl-link mcl-sdk; do
+for repo in $REPOS; do
   B="$WORK/san/$repo"
   mkdir -p "$(dirname "$B")"
   if ! cmake -S "$ROOT/$repo" -B "$B" -G Ninja \
