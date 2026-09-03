@@ -6,35 +6,36 @@
   "visibility": "PRIVATE — no visibility changes made. Owner has deferred all publication until v1.0.",
   "tag_status": "NOT TAGGED — owner has deferred release to v1.0. This manifest is an internal engineering snapshot, not a published release.",
   "repositories": {
-    "_note": "Snapshot of each repository at the time this manifest was written. The mcl-core entry necessarily names the commit preceding the one that records it, because the manifest lives in mcl-core and cannot contain its own hash. Nothing is tagged; these are provenance references, not immutable release pointers.",
+    "_note": "Snapshot of each repository at the time this manifest was written. The mcl-core entry necessarily names its own parent commit, since a manifest cannot contain its own hash. These are read from the working tree by mcl-core/tools/ at manifest time rather than typed: an earlier revision carried heads from three commits back while the results beside them were current, so the file was no longer one coherent snapshot of anything.",
     "mcl-core": {
       "release_ref": "v0.1.0-alpha.1",
-      "subject": "charter, security: MCL defines the interface, not the cryptography",
-      "commit": "8349b8b3fb58cf488c5ce062d98e1675962a6f98"
+      "subject": "core: Tier-0 field registry, MSVC gate half, control.c in the cross-compiles",
+      "commit": "81a73639bd5611210b7d46e4efeb35f0c9c3383d",
+      "_self": "This is the parent of the commit that carries this manifest."
     },
     "mcl-wire": {
-      "commit": "7d70fb81ef035c4c735073b8f5085f4b752ed934",
-      "subject": "spec: close two pieces of drift between wire-v0.md and the implementation"
+      "commit": "d4d1913081e24f0d9b04f8fdfa261bf03f8d649f",
+      "subject": "wire: authoritative Tier-0 body layout, machine-checked against the codec"
     },
     "mcl-link": {
-      "commit": "672518fdd29b1aa01bb5589cfeaef6d97012e64f",
-      "subject": "link: define endpoint rendezvous, resolving a token to a real endpoint"
+      "commit": "cb666fa47dda90fa03ad6c826e56171b12adaaa3",
+      "subject": "Link: control codecs, duplicate rules, transport admissibility, ADAPT reserved"
     },
     "mcl-sdk": {
-      "commit": "a9a707a3d07822ba861192ead5d0e872d977c669",
-      "subject": "sdk: extend the registry cross-check to the per-binding profile registries"
+      "commit": "8c959124f649889d747b8deb661f2734e9ba3dfb",
+      "subject": "SDK: transport-aware on both TX and RX; the SDK owns the commit boundary"
     },
     "mcl-ap": {
-      "commit": "0541e6f6777978524ea8da608fc49d03bf96de1a",
-      "subject": "ap: profile registry recording the laboratory instrument, not a candidate profile"
+      "commit": "cd265932aec70be9c167ee7b8064cbee7853dad0",
+      "subject": "ap: fix undefined behaviour in the symbol-boundary conversion"
     },
     "mcl-ip": {
       "commit": "b38605524a0fd1b619187487089b11616a4e5f3d",
       "subject": "ip: rendezvous discovery datagram, and assign profiles"
     },
     "mcl-ble": {
-      "commit": "4ab810b6539d54347bf6f582a1664d68b93dbbfc",
-      "subject": "ble: place the rendezvous beacon in advertising service data, and assign profiles"
+      "commit": "6a7f18acccb9f191eb813ee708e413597804ee05",
+      "subject": "ble: carry the real PRESENCE bytes through fragmentation, not just its length"
     },
     "mcl-uwb": {
       "commit": "2abb9b92b8344c57ba51da10c3a3511173c123a7",
@@ -108,10 +109,10 @@
     }
   },
   "compiler_verification": {
-    "_note": "Re-verified 2026-09-03 by mcl-core/tools/local-gates.sh, which runs every gate below in one pass. This project has no hosted CI and will not gain any; the gates are run by hand and the script is what running them means. Passing them establishes nothing about physical evidence.",
+    "_note": "Re-verified 2026-09-03. The gates are run BY HAND in TWO parts, and neither alone is 'the gates': mcl-core/tools/local-gates.sh covers GCC, Clang, ASan/UBSan, the two freestanding cross-compiles and the C++ header compiles, and mcl-core/tools/local-gates-msvc.ps1 covers MSVC. The shell script needs a POSIX shell and the GNU/LLVM toolchain and does NOT run MSVC; an earlier revision of this note claimed it ran 'every gate below in one pass', which overstated the coverage. This project has no hosted CI and will not gain any: a governing interoperability layer whose verification depends on one vendor's build service has a dependency it did not declare. Passing establishes nothing about physical evidence.",
     "msvc_19_51": {
       "status": "PASS",
-      "detail": "All eight repositories compile and pass their full test suites under MSVC 19.51 with /W4 /WX. 27 test targets."
+      "detail": "All eight repositories compile and pass their full test suites under MSVC 19.51 with /W4 /WX. 30 test targets, counted by local-gates-msvc.ps1 from ctest's own summary rather than written from memory -- the count in this field was wrong twice before, in both directions, because it was typed. Run separately from the Linux gates."
     },
     "gcc_13_strict": {
       "status": "PASS",
@@ -139,25 +140,37 @@
     }
   },
   "codebase_status": {
-    "summary": "All eight repositories contain implementation, not only specification. 27 test targets pass across the family under strict warnings-as-errors, and all eight repositories also pass under ASan and UBSan. (An earlier revision of this manifest said 28 and then 31; both were miscounts, corrected here against an actual ctest run.)",
+    "summary": "All eight repositories contain implementation, not only specification. 30 test targets pass across the family under MSVC, GCC and Clang with warnings as errors, and all eight pass under ASan and UBSan.",
     "freestanding_verification": "Link, Wire, SDK, IP, BLE and UWB objects compiled and inspected for undefined externals: no memcpy, memset, malloc or stdio. Byte copies use a volatile-destination helper because optimising compilers rewrite plain indexed loops into memcpy, which would reintroduce a libc dependency.",
     "not_implemented": [
+      "ACK, NACK, KEEPALIVE and CLOSE now have codecs (mcl-link/include/mcl/control.h). What they do NOT have is a caller: nothing in the SDK sends or acts on one yet, so the frame classes are specified and encodable and not yet part of any exchange. ADAPT is reserved and now rejected by both encoder and decoder. CAPABILITY and NEGOTIATION remain provisional pending the capability and version/context controls.",
+      "No Wire extension id is assigned and no extension registry policy exists. The decoder now lets a caller decide which critical ids it implements AND whether it accepts each value (mcl_wire_tier0_decode_ext_accept), so a registry can be added without changing the decode contract -- but the registry itself must still state owner, range policy, application procedure, change controller, provisional-to-permanent promotion, deprecation behaviour and the no-reuse rule.",
+      "SIXTEEN of the twenty-one Tier-0 field MEANINGS are not settled. The byte layouts are now authoritative and machine-checked (mcl-wire/spec/tier0-layout-v0.2.md, verified against the codec in both directions by mcl_wire_validate_tier0_layout), but 10 fields are provisional and 6 are open -- recorded field by field in mcl-core/registries/tier0-fields-v0.1.json. The most serious is that HAZARD and REQUEST coordinates have NO defined frame of reference: no origin, no axis convention, no quantization. If they require an external frame to interpret then those two are not context-free Tier-0 objects, which is Tier-0's defining property. Bit-perfect decoding without shared meaning is not interoperability.",
+      "One mcl_node_t holds one contact. A machine needing several concurrent contacts instantiates several nodes. A caller-owned contact pool with no hidden allocation is the intended shape and is not built.",
       "mcl-uwb has never been exercised against real UWB hardware, and no UWB profile is assigned.",
-      "The Link frame-class audit (link-frame-classes-v0.1.md) decides the contract for all ten classes but only HANDOFF is implemented as a codec. ACK, NACK, KEEPALIVE and CLOSE are specified and not yet coded; ADAPT is specified as reserved and the decoder still accepts it; CAPABILITY and NEGOTIATION remain provisional pending the capability and version/context controls.",
-      "No Wire extension id is assigned and no extension registry policy exists. The decoder now has a mechanism for a caller to declare which critical ids it implements (mcl_wire_tier0_decode_ext_known), so a registry can be added without changing the decode contract, but the registry itself must still state owner, range policy, application procedure, change controller, provisional-to-permanent promotion, deprecation behaviour and the no-reuse rule.",
       "No independent implementation exists, so C4 and E6 are unreachable by construction.",
       "AP-B0 is not selected; no normative acoustic profile is defined.",
       "No normative transport profile is defined for IP or BLE. Their profile registries assign Experimental Use values only, because the profiles are defined by reference-implementation behaviour rather than by specification.",
       "No cryptographic capability of any kind exists. See security_posture.",
       "The reverse acoustic path has never been swept with Experiment 002; the 3/6 kHz pair is optimised for the forward path only.",
-      "No Wire extension id is assigned and no extension registry policy exists. Before any id becomes normative the registry must state owner, range policy, application procedure, change controller, provisional-to-permanent promotion, deprecation behaviour and the no-reuse rule. Until then extensions interoperate only between parties that agreed an id out of band, and neither may claim interoperability from it.",
       "The semantic registry marks 15 opcodes as Tier-0 candidates while 7 are implemented. The registry must not imply executable support that does not exist.",
       "Contact migration is now specified as bytes and exercised between two nodes that share only a buffer, but it has still never crossed a real radio. Doing so requires a single peer holding two transports open at once rather than separate firmwares. A hardware run driven by direct calls to mcl_contact_* on both machines would prove the radios work and must not be recorded as on-wire migration.",
       "The HANDOFF control assigns no ABORT operation. Convergence after a failed migration therefore depends on the caller enforcing the offer validity, since the library has no clock. This is a deliberate decision recorded in link-handoff-control-v0.1.md section 9, not an oversight, and it can be revisited by assigning an operation value without a version change.",
       "MCL_IP_RENDEZVOUS_PORT 49913 is unregistered and provisional; this project holds no IANA assignment."
     ],
     "audit_2026_09_02": "A file-by-file audit fixed seven defects that would otherwise have shipped: a compiler-synthesised memset in mcl-link that broke the freestanding contract; truncation conflated with permanent malformation in Link decode and then mistranslated by two bindings; a BLE reassembly bound below the largest legal Link frame; an unguarded fragment-sequence wrap; an unenforced exact payload boundary in the SDK; an unbounded IP stream length prefix; and an MTU accounting function that contradicted its own documented contract. Two session-scaffolding documents were removed and their durable content promoted to governance/IMPLEMENTATION_CONTRACT.md.",
-    "audit_2026_09_03": "Acted on an external protocol review. Fixed the SDK emitting the Wire context_id as a frame's session_ref, two unrelated identifiers sharing an integer; a test had asserted that behaviour, which is why it survived. Added a migration transaction correlator, without which a delayed acceptance from an abandoned offer was indistinguishable from the live one. Added candidate-path validation, because acceptance is not arrival. Fixed a genuine deadlock where simultaneous offers left both peers rejecting and waiting. Defined endpoint_token resolution, without which a hardware migration would have proved only that the harness knew where the peer was. Created per-binding profile registries, because profile_id=1 meant nothing in three bindings and was about to fossilize."
+    "audit_2026_09_03": "Acted on an external protocol review. Fixed the SDK emitting the Wire context_id as a frame's session_ref, two unrelated identifiers sharing an integer; a test had asserted that behaviour, which is why it survived. Added a migration transaction correlator, without which a delayed acceptance from an abandoned offer was indistinguishable from the live one. Added candidate-path validation, because acceptance is not arrival. Fixed a genuine deadlock where simultaneous offers left both peers rejecting and waiting. Defined endpoint_token resolution, without which a hardware migration would have proved only that the harness knew where the peer was. Created per-binding profile registries, because profile_id=1 meant nothing in three bindings and was about to fossilize.",
+    "closed_since_last_manifest": [
+      "The SDK is transport-aware on both TX and RX. It could not model two simultaneous transports at all before, which made it the blocker ahead of any BLE<->IP hardware run: one tx callback with no transport argument cannot express a migration, and a receive path that does not know where bytes arrived cannot verify that a PATH_RESPONSE crossed the candidate.",
+      "The transmit callback reports three outcomes -- sent, definitely not sent, unknown -- and the SDK owns the COMMIT transition around the transmission. Collapsing the last two forces a choice between a contact stranded irrevocably in COMMITTING over a frame nobody sent, and a rollback after a commit the peer may have acted on.",
+      "Every migration control is now idempotent, not just COMMIT. The gap that mattered: a retransmitted PATH_CHALLENGE was refused because the peer had left AGREED, so one dropped frame killed a migration with both peers behaving correctly.",
+      "Ordinary traffic is quiesced between COMMIT and CONFIRM, instead of being sent onto a medium the peer may already have left.",
+      "MCL_LINK_FLAG_SESSION is mandatory on handoff frames, enforced on send and receive. It was a SHOULD checked only when present, which made the field a multi-contact receiver needs for routing optional.",
+      "mcl_contact_link_state is deleted. It claimed a mapping between two independently mutable state machines and so was a third source of truth that drifted from both. Ownership is decided in mcl-link/spec/link-contact-ownership-v0.1.md.",
+      "session_ref is decided to persist for the life of the contact, enforced rather than documented. The repeated-migration test had been asserting the opposite model by passing a new reference each hop.",
+      "The NACK reason set is corrected: five of the original reasons were unsendable, because a receiver rejecting a frame at those points cannot quote a trustworthy acked_sequence out of it. Sequence wrap now has a bounded window rather than a note saying the field wraps.",
+      "The authoritative Tier-0 body layout exists and is machine-checked against the codec, so a second implementation can be built without reading the reference C. Until now the only complete statement of the layouts was that C, which inverts the project's own rule."
+    ]
   },
   "transport_evidence": {
     "note": "Evidence levels for the non-acoustic bindings, kept separate from ap_evidence because the ladder describes physical reality per transport and merging them would obscure which medium was used.",
