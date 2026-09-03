@@ -195,7 +195,11 @@ def build_cross_check():
         os.path.join(ROOT, "mcl-link", "src", "contact.c"),
         os.path.join(ROOT, "mcl-link", "src", "handoff.c"),
         os.path.join(ROOT, "mcl-link", "src", "rendezvous.c"),
+        os.path.join(ROOT, "mcl-ip", "src", "ip_binding.c"),
+        os.path.join(ROOT, "mcl-ble", "src", "ble_binding.c"),
     ]
+    cmd[4:4] = ["-I", os.path.join(ROOT, "mcl-ip", "include"),
+                "-I", os.path.join(ROOT, "mcl-ble", "include")]
     result = subprocess.run(cmd, capture_output=True, text=True)
     if result.returncode != 0:
         print(result.stderr[-2000:])

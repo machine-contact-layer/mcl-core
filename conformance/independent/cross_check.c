@@ -18,6 +18,8 @@
 #include "mcl/wire.h"
 #include "mcl/link.h"
 #include "mcl/negotiation.h"
+#include "mcl/ip_binding.h"
+#include "mcl/ble_binding.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -320,6 +322,91 @@ int main(int argc, char **argv)
         printf("%u,%u,%u,%04x\n",
                (unsigned)out.wire_major, (unsigned)out.link_major,
                (unsigned)out.max_frame, (unsigned)out.features);
+        return 0;
+    }
+
+    /* ---------- transport profiles, release gate item 17 ---------- */
+
+    if (strcmp(argv[1], "ip_validate") == 0) {
+        size = from_hex(argc > 2 ? argv[2] : "", buffer, sizeof(buffer));
+        if (size == 0u) { return 1; }
+        if (mcl_ip_datagram_validate(buffer, size) != MCL_IP_OK) { return 1; }
+        printf("ok\n");
+        return 0;
+    }
+
+    if (strcmp(argv[1], "ip_mtu") == 0) {
+        char family[8];
+        unsigned mtu = 0u;
+        mcl_ip_address_family_t af;
+        if (argc < 3 || sscanf(argv[2], "%7[^:]:%u", family, &mtu) != 2) {
+            return 2;
+        }
+        af = (strcmp(family, "ipv4") == 0) ? MCL_IP_AF_IPV4 : MCL_IP_AF_IPV6;
+        printf("%u\n", (unsigned)mcl_ip_max_frame_for_mtu(af, (size_t)mtu));
+        return 0;
+    }
+
+    if (strcmp(argv[1], "ble_per_pdu") == 0) {
+        unsigned mtu = 0u;
+        if (argc < 3 || sscanf(argv[2], "%u", &mtu) != 1) { return 2; }
+        printf("%u\n", (unsigned)mcl_ble_payload_per_pdu((uint16_t)mtu));
+        return 0;
+    }
+
+    if (strcmp(argv[1], "ble_validate") == 0) {
+        size = from_hex(argc > 2 ? argv[2] : "", buffer, sizeof(buffer));
+        if (size == 0u) { return 1; }
+        if (mcl_ble_frame_validate(buffer, size) != MCL_BLE_OK) { return 1; }
+        printf("ok\n");
+        return 0;
+    }
+
+    if (strcmp(argv[1], "ble_fragment") == 0) {
+        size_t count;
+        size_t i;
+        size = from_hex(argc > 2 ? argv[2] : "", buffer, sizeof(buffer));
+        if (size == 0u) { return 1; }
+        count = mcl_ble_fragment_count(size, MCL_BLE_ATT_DEFAULT_MTU);
+        if (count == 0u) { return 1; }
+        for (i = 0u; i < count; ++i) {
+            size_t n = 0u;
+            size_t j;
+            if (mcl_ble_fragment(buffer, size, MCL_BLE_ATT_DEFAULT_MTU, i,
+                                 scratch, sizeof(scratch), &n) != MCL_BLE_OK) {
+                return 1;
+            }
+            if (i != 0u) { printf(","); }
+            for (j = 0u; j < n; ++j) { printf("%02x", scratch[j]); }
+        }
+        printf("\n");
+        return 0;
+    }
+
+    if (strcmp(argv[1], "ble_reassemble") == 0) {
+        /* Comma-separated fragments fed in order. Any refusal is the answer. */
+        mcl_ble_reassembler_t r;
+        char *list = (argc > 2) ? argv[2] : (char *)"";
+        char *token;
+        size_t frame_size = 0u;
+        int completed = 0;
+
+        mcl_ble_reassembler_reset(&r);
+        token = strtok(list, ",");
+        while (token != NULL) {
+            size_t n = from_hex(token, scratch, sizeof(scratch));
+            mcl_ble_status_t st;
+            if (n == 0u && strlen(token) != 0u) { return 1; }
+            st = mcl_ble_reassemble(&r, scratch, n, &frame_size);
+            if (st == MCL_BLE_OK) {
+                completed = 1;
+            } else if (st != MCL_BLE_ERR_INCOMPLETE) {
+                return 1;
+            }
+            token = strtok(NULL, ",");
+        }
+        if (completed == 0) { return 1; }
+        print_hex(r.buffer, frame_size);
         return 0;
     }
 
