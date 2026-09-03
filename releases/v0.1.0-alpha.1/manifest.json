@@ -1,6 +1,6 @@
 {
   "release": "v0.1.0-alpha.1",
-  "prepared_date": "2026-09-02",
+  "prepared_date": "2026-09-03",
   "status": "ALPHA / PRE-RELEASE",
   "license": "Apache-2.0 — selected by owner 2026-09-02; identical canonical text (SHA-256 cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30) present in all eight repositories",
   "visibility": "PRIVATE — no visibility changes made. Owner has deferred all publication until v1.0.",
@@ -9,8 +9,8 @@
     "_note": "Snapshot of each repository at the time this manifest was written. The mcl-core entry necessarily names its own parent commit, since a manifest cannot contain its own hash. These are read from the working tree by mcl-core/tools/ at manifest time rather than typed: an earlier revision carried heads from three commits back while the results beside them were current, so the file was no longer one coherent snapshot of anything.",
     "mcl-core": {
       "release_ref": "v0.1.0-alpha.1",
-      "subject": "core: Tier-0 field registry, MSVC gate half, control.c in the cross-compiles",
-      "commit": "81a73639bd5611210b7d46e4efeb35f0c9c3383d",
+      "subject": "core: manifest records the real heads and the two-part gate run",
+      "commit": "492b34b361dd5453386c91f8ba5c402f98780201",
       "_self": "This is the parent of the commit that carries this manifest."
     },
     "mcl-wire": {
@@ -18,12 +18,12 @@
       "subject": "wire: authoritative Tier-0 body layout, machine-checked against the codec"
     },
     "mcl-link": {
-      "commit": "cb666fa47dda90fa03ad6c826e56171b12adaaa3",
-      "subject": "Link: control codecs, duplicate rules, transport admissibility, ADAPT reserved"
+      "commit": "2226cf03252db3e8818877830265f32dd7b88b74",
+      "subject": "link: refuse the reserved profile 0, which every registry already forbade"
     },
     "mcl-sdk": {
-      "commit": "8c959124f649889d747b8deb661f2734e9ba3dfb",
-      "subject": "SDK: transport-aware on both TX and RX; the SDK owns the commit boundary"
+      "commit": "d6a509d0e2e9ae459d71c761b3a4f12558d1e316",
+      "subject": "sdk: one contact across two live radios, and the addressing bug it found"
     },
     "mcl-ap": {
       "commit": "cd265932aec70be9c167ee7b8064cbee7853dad0",
@@ -154,7 +154,6 @@
       "No cryptographic capability of any kind exists. See security_posture.",
       "The reverse acoustic path has never been swept with Experiment 002; the 3/6 kHz pair is optimised for the forward path only.",
       "The semantic registry marks 15 opcodes as Tier-0 candidates while 7 are implemented. The registry must not imply executable support that does not exist.",
-      "Contact migration is now specified as bytes and exercised between two nodes that share only a buffer, but it has still never crossed a real radio. Doing so requires a single peer holding two transports open at once rather than separate firmwares. A hardware run driven by direct calls to mcl_contact_* on both machines would prove the radios work and must not be recorded as on-wire migration.",
       "The HANDOFF control assigns no ABORT operation. Convergence after a failed migration therefore depends on the caller enforcing the offer validity, since the library has no clock. This is a deliberate decision recorded in link-handoff-control-v0.1.md section 9, not an oversight, and it can be revisited by assigning an operation value without a version change.",
       "MCL_IP_RENDEZVOUS_PORT 49913 is unregistered and provisional; this project holds no IANA assignment."
     ],
@@ -169,7 +168,8 @@
       "mcl_contact_link_state is deleted. It claimed a mapping between two independently mutable state machines and so was a third source of truth that drifted from both. Ownership is decided in mcl-link/spec/link-contact-ownership-v0.1.md.",
       "session_ref is decided to persist for the life of the contact, enforced rather than documented. The repeated-migration test had been asserting the opposite model by passing a new reference each hop.",
       "The NACK reason set is corrected: five of the original reasons were unsendable, because a receiver rejecting a frame at those points cannot quote a trustworthy acked_sequence out of it. Sequence wrap now has a bounded window rather than a note saying the field wraps.",
-      "The authoritative Tier-0 body layout exists and is machine-checked against the codec, so a second implementation can be built without reading the reference C. Until now the only complete statement of the layouts was that C, which inverts the project's own rule."
+      "The authoritative Tier-0 body layout exists and is machine-checked against the codec, so a second implementation can be built without reading the reference C. Until now the only complete statement of the layouts was that C, which inverts the project's own rule.",
+      "Contact migration has crossed real radios. One ESP32-S3 holding a SoftAP with a UDP socket and a BLE GATT server up at the same time, and a Windows host holding both, each with a single mcl_node_t across the pair: 104 migrations, 2989 checks, 0 failed, host and board records agreeing frame for frame. Driven by on-wire HANDOFF controls, not by direct calls to mcl_contact_* -- which the previous manifest correctly said must never be recorded as on-wire migration. A valid control delivered on the old path was refused as WRONG_TRANSPORT, which is the check path validation depends on and which no single-transport rig can construct. See transport_evidence.migration."
     ]
   },
   "transport_evidence": {
@@ -191,7 +191,14 @@
       "status": "NOT_RUN",
       "detail": "Unit-tested C99 carriage mapping. Has never met UWB hardware."
     },
-    "shared_limit": "Both ends of every run compile the same mcl-link, mcl-wire and binding sources. A shared misreading of the specification would be accepted by both peers and would not appear in any of these results. None of this is independent interoperability."
+    "shared_limit": "Both ends of every run compile the same mcl-link, mcl-wire and binding sources. A shared misreading of the specification would be accepted by both peers and would not appear in any of these results. None of this is independent interoperability.",
+    "migration": {
+      "level": "E4_MULTI_DEVICE_OVER_AIR",
+      "status": "LOCAL_EVIDENCE",
+      "detail": "2026-09-03. The first MCL transport migration between two machines over real radios with BOTH media alive at the same time on both peers. A Windows host (MediaTek Bluetooth LE, Realtek RTL8188EU USB Wi-Fi) and one ESP32-S3 running a SoftAP with a UDP socket and a BLE GATT server simultaneously, each holding a single mcl_node_t across both. 104 migrations, including 100 consecutive alternating BLE<->IP cycles in 14.2 s; 2989 checks, 0 failed. Host and board records agree frame for frame -- 167 BLE frames and 161 datagrams sent, 167 and 161 received, no loss in either direction on either medium, logdrop=0. One session reference and one peer reference survived all 104 changes of medium. A valid frame and a valid PATH_CHALLENGE delivered on the wrong transport were both refused as WRONG_TRANSPORT: that is the check path validation depends on, and a single-transport rig cannot construct it at all. A deliberately destroyed COMMIT and a deliberately destroyed CONFIRM were each repaired by retransmission. The run found two defects, both fixed in the commits this manifest names: the SDK could not address a frame at all, and reserved profile 0 was accepted despite every registry calling it malformed.",
+      "artifact": "mcl-sdk/evidence/e4-dual-transport-migration-20260903/",
+      "not_covered": "Simultaneous offers and the exact tie (the board never initiates, so glare cannot arise on this rig), a wrong challenge echo (neither end can be made to lie without putting a lie in the shipped code), and endpoint resolution failure (on UDP the token resolves as \"reply where the probe came from\", so there is no lookup that can fail). All three are covered by unit tests only."
+    }
   },
   "security_posture": {
     "scope": "Security in MCL is an optional profile a deployment chooses, not a property of MCL itself. Deployments that broadcast to unknown listeners, and deployments whose peers already know each other by means outside MCL, are complete uses of the layer and are usable at this snapshot. The items below describe what is absent for deployments that do need it.",
