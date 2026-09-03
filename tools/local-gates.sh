@@ -107,6 +107,7 @@ INC="-I$ROOT/mcl-wire/include -I$ROOT/mcl-link/include -I$ROOT/mcl-sdk/include \
 SRCS="$ROOT/mcl-wire/src/wire.c $ROOT/mcl-wire/src/extension.c \
       $ROOT/mcl-link/src/link.c $ROOT/mcl-link/src/contact.c \
       $ROOT/mcl-link/src/rendezvous.c $ROOT/mcl-link/src/handoff.c \
+      $ROOT/mcl-link/src/control.c \
       $ROOT/mcl-sdk/src/sdk.c \
       $ROOT/mcl-ip/src/ip_binding.c $ROOT/mcl-ble/src/ble_binding.c \
       $ROOT/mcl-uwb/src/uwb_binding.c"
@@ -174,6 +175,7 @@ cat > "$WORK/hdr.cpp" <<'CPPEOF'
 #include "mcl/contact.h"
 #include "mcl/rendezvous.h"
 #include "mcl/handoff.h"
+#include "mcl/control.h"
 #include "mcl/sdk.h"
 #include "mcl/ip_binding.h"
 #include "mcl/ble_binding.h"
@@ -193,6 +195,18 @@ done
 note "SUMMARY"
 if [ "$FAILURES" -eq 0 ]; then
   echo "ALL GATES PASSED"
+  echo
+  echo "WHAT THIS DOES NOT COVER, stated so the result is not read as more"
+  echo "than it is:"
+  echo "  - MSVC. This script needs a POSIX shell and the GNU/LLVM toolchain."
+  echo "    The MSVC gate is a separate run on the Windows side; see"
+  echo "    tools/local-gates-msvc.ps1. A claim of \"all compilers\" needs both."
+  echo "  - Hardware. No experiment runs here. Software conformance and"
+  echo "    physical evidence advance separately and passing this establishes"
+  echo "    nothing about the latter."
+  echo "  - Meaning. Every check here is about BYTES. Sixteen of the 21 Tier-0"
+  echo "    fields carry values two independent implementations would not agree"
+  echo "    on; see mcl-core/registries/tier0-fields-v0.1.json."
 else
   echo "$FAILURES GATE(S) FAILED"
 fi

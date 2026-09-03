@@ -1,0 +1,212 @@
+{
+  "registry_version": "0.1-draft",
+  "status": "provisional",
+  "purpose": "Governing meanings for the primitive fields encoded in Tier-0 object bodies. The byte layouts are frozen in mcl-wire/spec/tier0-layout-v0.2.md; this file is about what the values MEAN, which is a separate question and a less finished one.",
+  "why_this_exists": "Bit-perfect decoding without shared meaning is not interoperability. Two implementations can exchange a HAZARD today, agree on every byte, and disagree entirely about what hazard_class 3 is. Layout is necessary and not sufficient.",
+  "how_to_read_status": {
+    "assigned": "Values are fixed. An implementation may rely on them across vendors.",
+    "provisional": "Encoded and carried, meaning NOT fixed. Usable within one deployment, or between parties with an external agreement. MUST NOT be relied on for interoperability between independently developed implementations.",
+    "open": "A decision is required before a stable Wire major. The gap is described, not papered over."
+  },
+
+  "fields": [
+    {
+      "name": "machine_class",
+      "objects": ["PRESENCE"],
+      "width_bits": 8,
+      "status": "provisional",
+      "meaning": "What kind of machine is announcing itself.",
+      "gap": "No values are assigned. A receiver learns that the sender considers itself class N and has no way to look N up.",
+      "before_stable": "Assign a range with an allocation policy and a change controller, as semantic-codes-v0.2.json does for category/opcode. The list should be short and coarse: this is a first-contact field, and a taxonomy that needs updating to meet a new machine defeats the purpose."
+    },
+    {
+      "name": "capability_digest",
+      "objects": ["PRESENCE"],
+      "width_bits": 24,
+      "status": "open",
+      "meaning": "Intended as a compact summary of the sender's capabilities, so a peer can tell whether it already knows this capability set without a full exchange.",
+      "gap": "There is no defined canonical input, no defined algorithm, and no stated collision semantics. Nothing computes it. A 24-bit digest also has a birthday bound around 4096 distinct capability sets, which is small enough that collisions are a design consideration rather than a remote possibility.",
+      "before_stable": "Either define the canonical input and the algorithm and state what a collision means, or RENAME it. 'Digest' asserts a property -- that equal values imply equal capabilities -- which nothing currently provides, and charter 2.11 forbids naming a mechanism for a property it lacks. If it is really an opaque version tag chosen by the sender, 'capability_tag' says so honestly."
+    },
+    {
+      "name": "hazard_class",
+      "objects": ["HAZARD"],
+      "width_bits": 8,
+      "status": "provisional",
+      "meaning": "What kind of hazard is being reported.",
+      "gap": "No values are assigned. This is the field where disagreement is most consequential: two machines can exchange a hazard report bit-perfectly and act on different hazards.",
+      "before_stable": "Assign values. Until then a receiver MUST treat an unrecognised hazard_class as an unspecified hazard rather than as no hazard -- the safe direction is to surface it to local policy, not to discard it."
+    },
+    {
+      "name": "request_class",
+      "objects": ["REQUEST"],
+      "width_bits": 8,
+      "status": "provisional",
+      "meaning": "What is being requested.",
+      "gap": "No values are assigned.",
+      "before_stable": "Assign values. A request whose class is unrecognised MUST NOT be executed under a default interpretation; charter 2.3 says reception is not authority, and guessing at an unknown request is the opposite of failing explicitly."
+    },
+    {
+      "name": "authority_class",
+      "objects": ["AUTHORITY_CLAIM"],
+      "width_bits": 6,
+      "status": "provisional",
+      "meaning": "The kind of authority being claimed.",
+      "gap": "No values are assigned.",
+      "note": "Assigning values here changes nothing about trust. The object is a CLAIM: it travels in the clear over an observable medium, anyone in range can transmit an identical one, and MCL has no mechanism to verify the credential it references. Charter 2.11.2: where local policy requires a property, the absence of the mechanism that establishes it must cause refusal, not acceptance."
+    },
+    {
+      "name": "jurisdiction",
+      "objects": ["AUTHORITY_CLAIM"],
+      "width_bits": 12,
+      "status": "open",
+      "meaning": "The domain within which the claimed authority is asserted to apply.",
+      "gap": "No values, and no decision about what a jurisdiction identifier even names -- a legal jurisdiction, a site, an operator, a fleet. These are not interchangeable and 4096 values is a very different size for each.",
+      "before_stable": "Decide what it names before assigning any values."
+    },
+    {
+      "name": "credential_ref",
+      "objects": ["AUTHORITY_CLAIM"],
+      "width_bits": 32,
+      "status": "provisional",
+      "meaning": "An opaque reference to a credential held elsewhere.",
+      "note": "It is a reference to a credential, NOT a credential. It proves nothing and verifies nothing. No MCL mechanism resolves it. It is carried so that a deployment with its own credential system has somewhere to put its identifier."
+    },
+    {
+      "name": "affected_capability",
+      "objects": ["DEGRADED_STATE"],
+      "width_bits": 8,
+      "status": "provisional",
+      "meaning": "Which capability of the sender is degraded.",
+      "gap": "No values are assigned, and the values should almost certainly share a namespace with whatever capability negotiation ends up using. Assigning them here first would create two capability vocabularies that have to be kept in step.",
+      "before_stable": "Assign after the minimum capability exchange exists, not before."
+    },
+    {
+      "name": "severity",
+      "objects": ["HAZARD", "DEGRADED_STATE"],
+      "width_bits": 3,
+      "range": "0..7",
+      "status": "provisional",
+      "meaning": "How serious. Monotonic: higher is more severe.",
+      "gap": "Uncalibrated. One vendor's severity 5 is not another's, and nothing anchors either end of the scale.",
+      "before_stable": "Either anchor the endpoints with descriptions concrete enough that two engineers reading them independently pick the same number, or mark it permanently local and say so. An uncalibrated scale that LOOKS interoperable is worse than one labelled local."
+    },
+    {
+      "name": "confidence",
+      "objects": ["HAZARD"],
+      "width_bits": 7,
+      "range": "0..127",
+      "status": "provisional",
+      "meaning": "How confident the sender is in this report. Monotonic: higher is more confident.",
+      "gap": "Uncalibrated and, specifically, NOT a probability. Nothing states that 64 means 50 percent. A receiver that treats it as one is inventing a calibration the sender never claimed.",
+      "before_stable": "Decide whether it is a probability or an opinion. If a probability, define the scale exactly. If an opinion, say so in the field's name or its documentation so nobody multiplies it by anything."
+    },
+    {
+      "name": "health",
+      "objects": ["DEGRADED_STATE"],
+      "width_bits": 7,
+      "range": "0..127",
+      "status": "provisional",
+      "meaning": "How well the affected capability is functioning. Monotonic: higher is healthier.",
+      "gap": "Uncalibrated, as severity and confidence are."
+    },
+    {
+      "name": "x, y, z",
+      "objects": ["HAZARD", "REQUEST"],
+      "width_bits": "12, 12, 10 (HAZARD); 12, 12 (REQUEST, no z)",
+      "signed": true,
+      "status": "open",
+      "meaning": "A position. Which position, relative to what, is not defined.",
+      "gap": "THE MOST SERIOUS GAP IN TIER-0. No origin, no axis convention, no quantization. mcl-core/spec/shared-primitives-v0.1.md section 1 makes canonical length metres; the superseded candidate layout proposed 0.25 m per unit; the implementation encodes plain integers. None of these is normative, so a 12-bit x currently means plus or minus 2047 of something, measured from somewhere.",
+      "consequence": "If these coordinates require an external frame of reference to interpret, then HAZARD and REQUEST are not context-free Tier-0 objects, and being decodable with no prior shared state is Tier-0's defining property. MCL's premise is first contact between machines with no prior relationship, and such machines have no shared origin by construction.",
+      "current_rule": "A conforming implementation MUST NOT act on these coordinates as though they name a location in a shared frame. Carrying them, storing them and surfacing them to local policy is fine. Navigating by them is not. A hazard placed at the wrong origin is worse than one never reported.",
+      "before_stable": "Three honest options, and this is a decision rather than more code: (a) define a sender-relative frame and carry the sender's reference direction, which costs bits and makes the object self-contained; (b) remove the coordinates from Tier-0 and put them in an extension that can carry a frame declaration; (c) keep them and mark them permanently advisory, never actionable."
+    },
+    {
+      "name": "radius",
+      "objects": ["HAZARD", "REQUEST"],
+      "width_bits": 10,
+      "range": "0..1023",
+      "status": "open",
+      "meaning": "The extent around the position.",
+      "gap": "Shares the coordinates' quantization problem, but NOT their frame-of-reference problem: a radius is a distance, and a distance needs only a unit, not an origin. It is the more tractable half and could be settled independently."
+    },
+    {
+      "name": "ttl",
+      "objects": ["PRESENCE", "HAZARD", "REQUEST", "DEGRADED_STATE"],
+      "width_bits": 8,
+      "status": "open",
+      "meaning": "The maximum local interval after successful decode during which a receiver may keep treating the object as current, subject to local policy. Defined semantically in mcl-core/spec/shared-primitives-v0.1.md section 2.1.",
+      "gap": "No unit and no scale. 8 bits meaning 'some duration'. The superseded candidate layout proposed an exponent/mantissa encoding covering a wide range in one byte; it was not built.",
+      "current_rule": "A receiver MUST NOT infer seconds.",
+      "not": "ttl is not freshness and not replay protection. It bounds how long a decoded object may be considered current; it says nothing about when the object was sent, and nothing prevents a listener re-transmitting an object within its own TTL window.",
+      "before_stable": "Fix a unit and a scale. Linear seconds in 8 bits gives a range of about four minutes, which is too short for PRESENCE and too coarse for nothing; an exponent/mantissa split is the obvious answer and needs deciding rather than assuming."
+    },
+    {
+      "name": "validity",
+      "objects": ["AUTHORITY_CLAIM", "TRANSPORT_OFFER"],
+      "width_bits": 8,
+      "status": "open",
+      "meaning": "How long the claim, or the offer, remains usable.",
+      "gap": "Same as ttl: no unit, no scale. In TRANSPORT_OFFER it is retained for the CALLER to enforce, because the Link library has no clock and inventing one would tie a freestanding protocol library to a platform's notion of time.",
+      "before_stable": "Decide with ttl, and use the same encoding. Two duration fields with different scales in one protocol is a defect waiting to be written."
+    },
+    {
+      "name": "migration_ref",
+      "objects": ["TRANSPORT_OFFER", "TRANSPORT_ACCEPT"],
+      "width_bits": 32,
+      "status": "assigned",
+      "meaning": "Correlates one transport-change transaction, and nothing else. Zero is RESERVED so an uninitialised field never names a live transaction.",
+      "not": "Not identity, not authorization, not a session, not a secret."
+    },
+    {
+      "name": "session_ref",
+      "objects": ["TRANSPORT_ACCEPT"],
+      "width_bits": 32,
+      "status": "assigned",
+      "meaning": "The accepting peer's reference for the CONTINUING logical contact. Bound once and persisting for the life of the contact, across every migration. Zero is RESERVED.",
+      "not": "Not a secret. It crosses an observable medium in the clear, so anyone in range can read it and quote it back. It lets an honest peer recognise a continuing contact; it establishes nothing about who that peer is."
+    },
+    {
+      "name": "endpoint_token",
+      "objects": ["TRANSPORT_OFFER"],
+      "width_bits": 32,
+      "status": "assigned",
+      "meaning": "A rendezvous reference resolved on the CANDIDATE transport, not an address. Defined in mcl-link/include/mcl/rendezvous.h.",
+      "why": "A 32-bit field cannot hold an IPv6 address, a BLE address plus a characteristic, or a UWB session descriptor. Carrying a token that the candidate transport resolves by its own means keeps the Wire object transport-independent, which is the property that lets one migration object serve four bindings."
+    },
+    {
+      "name": "transport_id",
+      "objects": ["TRANSPORT_OFFER", "TRANSPORT_ACCEPT"],
+      "width_bits": 8,
+      "status": "assigned",
+      "meaning": "Which transport. Values are assigned in mcl-link/registries/transport-ids-v0.1.json. Zero is RESERVED so a zeroed field is never a valid bearer.",
+      "note": "This is the one Tier-0 enumeration that DOES have a registry, which is why it is 'assigned' while machine_class and hazard_class are not. It is the model the others should follow."
+    },
+    {
+      "name": "profile_id",
+      "objects": ["TRANSPORT_OFFER", "TRANSPORT_ACCEPT"],
+      "width_bits": 8,
+      "status": "provisional",
+      "meaning": "Which profile of the named transport.",
+      "gap": "Profile identifiers are per-transport and no transport has a normative profile registry yet. Values in the Experimental Use range are the only ones currently meaningful, and only between parties that agreed externally."
+    },
+    {
+      "name": "source_ref",
+      "objects": ["all"],
+      "width_bits": 32,
+      "status": "assigned",
+      "meaning": "A correlation reference for the SEMANTIC ORIGIN of this object.",
+      "not": "Not identity, not authority, not trust. It is also NOT the same field as a Link frame's source_ref, which names the immediate peer that transmitted the frame. The two are equal in the ordinary two-party case and diverge as soon as anything relays. Neither may be copied into the other. See mcl-link/spec/link-v0.md section 3.3."
+    }
+  ],
+
+  "summary": {
+    "total": 21,
+    "assigned": 5,
+    "provisional": 10,
+    "open": 6,
+    "note": "Sixteen of twenty-one fields carry values that two independent implementations would not agree on, and six of those have gaps needing a decision rather than an assignment. That is the honest state, and it is recorded here rather than discovered by whoever writes the second implementation.",
+    "these_counts_are_checked": "tools/validate_field_registry.c counts the entries and fails if this block disagrees. It was written because this block was first filled in by hand as 6/9/6, which was wrong in the direction that overstates how much of Tier-0 is interoperable. The fix for a miscount is not to recount more carefully."
+  }
+}
