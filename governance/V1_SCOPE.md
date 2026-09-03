@@ -429,12 +429,26 @@ accumulates hundreds of real cross-vendor capability sets to fit against, with
 vendors held out.
 
 ### 5.5 Multi-contact isolation campaign
-The architecture says "instantiate several nodes". That needs evidence, not
-assertion: several simultaneous contacts on one bearer, the same `migration_ref`
-in different contacts, wrong `session_ref`, wrong `destination_ref`, a candidate
-endpoint swapped between contacts, one contact migrating while another sends
-data, glare and the exact tie, a delayed frame from a dead contact, and a new
-contact reusing an old reference.
+**Done** — `mcl-sdk/tests/test_multi_contact.c` (50 checks, 0 failed) and
+`mcl-sdk/tests/MULTI_CONTACT_MUTATIONS.md`.
+
+All nine cases covered. The harness is a **broadcast bus**: every frame is
+offered to every node, so isolation has to come from the protocol rather than
+from the harness routing frames to their intended recipient.
+
+**Mutation-tested, and it found a gap.** The campaign passed on its first run,
+which is when a campaign is most likely to be testing itself, so each mechanism
+was deliberately broken in turn. Removing the `migration_ref` check on
+`mcl_contact_agree`'s *retransmission* branch **escaped** — the campaign only
+reached the copy on the `OFFERED` path. That branch is the more dangerous one:
+it decides whether a delayed acceptance belonging to another contact is mistaken
+for a retransmission of this one, at a contact already validating. The case was
+extended to reach it, and re-running the mutation now fails the campaign.
+
+**Not claimed:** this is host-side software conformance. Several real peers on
+one radio is a separate experiment, and no physical evidence is asserted. The E4
+dual-transport evidence covers one contact across two media, a different
+property.
 
 ### 5.6 Freeze the two Stable transport profiles
 IP datagram carriage per §4.3, and the BLE GATT profile as one frozen unit.

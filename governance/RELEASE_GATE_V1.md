@@ -33,7 +33,7 @@ Stable is not.
 | 6 | Candidate-vs-Stable major enforcement | **DONE** | `common-header-v0.2.md` §3.1, `mcl_wire_kind_allowed_at_major`, `tests/test_major_rule.c` — 149 checks. Major 1 defined, deliberately not yet cut. |
 | 7 | Stable IP-DATAGRAM profile | **OPEN** | Carriage only, no Stable claim on UDP 49913, no discovery requirement (§4.3). |
 | 8 | Stable BLE-GATT profile | **OPEN** | |
-| 9 | Multi-contact isolation campaign | **OPEN** | Required evidence for the documented "one contact per node, multiple nodes for multiple contacts" architecture. |
+| 9 | Multi-contact isolation campaign | **DONE** | `mcl-sdk/tests/test_multi_contact.c` — 50 checks, 9 cases, broadcast bus. Mutation-tested: `MULTI_CONTACT_MUTATIONS.md`, one escape found and closed. Host-side only; several real peers on one radio is not claimed. |
 | 10 | Final Wire major 1 | **BLOCKED** on 1, 2, 7, 8 | Rule already in place (item 6). |
 | 11 | Final Link major 1 | **BLOCKED** on 10 | |
 | 12 | Immutable major-1 vectors | **BLOCKED** on 10, 11 | v0 vectors never rewritten. |
@@ -63,9 +63,9 @@ Stable is not.
 ## Counts
 
 ```text
-DONE       3   (4, 5, 6)
+DONE       4   (4, 5, 6, 9)
 PARTIAL    3   (2, 18, 19)
-OPEN      15
+OPEN      14
 BLOCKED   13
 ```
 
