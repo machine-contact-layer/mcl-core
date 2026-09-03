@@ -8,11 +8,12 @@
     "provisional": "Encoded and carried, meaning NOT fixed. Usable within one deployment, or between parties with an external agreement. MUST NOT be relied on for interoperability between independently developed implementations.",
     "open": "A decision is required before a stable Wire major. The gap is described, not papered over."
   },
-
   "fields": [
     {
       "name": "machine_class",
-      "objects": ["PRESENCE"],
+      "objects": [
+        "PRESENCE"
+      ],
       "width_bits": 8,
       "status": "provisional",
       "meaning": "What kind of machine is announcing itself.",
@@ -21,7 +22,9 @@
     },
     {
       "name": "capability_digest",
-      "objects": ["PRESENCE"],
+      "objects": [
+        "PRESENCE"
+      ],
       "width_bits": 24,
       "status": "open",
       "meaning": "Intended as a compact summary of the sender's capabilities, so a peer can tell whether it already knows this capability set without a full exchange.",
@@ -30,7 +33,9 @@
     },
     {
       "name": "hazard_class",
-      "objects": ["HAZARD"],
+      "objects": [
+        "HAZARD"
+      ],
       "width_bits": 8,
       "status": "provisional",
       "meaning": "What kind of hazard is being reported.",
@@ -39,7 +44,9 @@
     },
     {
       "name": "request_class",
-      "objects": ["REQUEST"],
+      "objects": [
+        "REQUEST"
+      ],
       "width_bits": 8,
       "status": "provisional",
       "meaning": "What is being requested.",
@@ -48,7 +55,9 @@
     },
     {
       "name": "authority_class",
-      "objects": ["AUTHORITY_CLAIM"],
+      "objects": [
+        "AUTHORITY_CLAIM"
+      ],
       "width_bits": 6,
       "status": "provisional",
       "meaning": "The kind of authority being claimed.",
@@ -57,7 +66,9 @@
     },
     {
       "name": "jurisdiction",
-      "objects": ["AUTHORITY_CLAIM"],
+      "objects": [
+        "AUTHORITY_CLAIM"
+      ],
       "width_bits": 12,
       "status": "open",
       "meaning": "The domain within which the claimed authority is asserted to apply.",
@@ -66,7 +77,9 @@
     },
     {
       "name": "credential_ref",
-      "objects": ["AUTHORITY_CLAIM"],
+      "objects": [
+        "AUTHORITY_CLAIM"
+      ],
       "width_bits": 32,
       "status": "provisional",
       "meaning": "An opaque reference to a credential held elsewhere.",
@@ -74,7 +87,9 @@
     },
     {
       "name": "affected_capability",
-      "objects": ["DEGRADED_STATE"],
+      "objects": [
+        "DEGRADED_STATE"
+      ],
       "width_bits": 8,
       "status": "provisional",
       "meaning": "Which capability of the sender is degraded.",
@@ -83,7 +98,10 @@
     },
     {
       "name": "severity",
-      "objects": ["HAZARD", "DEGRADED_STATE"],
+      "objects": [
+        "HAZARD",
+        "DEGRADED_STATE"
+      ],
       "width_bits": 3,
       "range": "0..7",
       "status": "provisional",
@@ -93,7 +111,9 @@
     },
     {
       "name": "confidence",
-      "objects": ["HAZARD"],
+      "objects": [
+        "HAZARD"
+      ],
       "width_bits": 7,
       "range": "0..127",
       "status": "provisional",
@@ -103,7 +123,9 @@
     },
     {
       "name": "health",
-      "objects": ["DEGRADED_STATE"],
+      "objects": [
+        "DEGRADED_STATE"
+      ],
       "width_bits": 7,
       "range": "0..127",
       "status": "provisional",
@@ -112,7 +134,10 @@
     },
     {
       "name": "x, y, z",
-      "objects": ["HAZARD", "REQUEST"],
+      "objects": [
+        "HAZARD",
+        "REQUEST"
+      ],
       "width_bits": "12, 12, 10 (HAZARD); 12, 12 (REQUEST, no z)",
       "signed": true,
       "status": "open",
@@ -124,7 +149,10 @@
     },
     {
       "name": "radius",
-      "objects": ["HAZARD", "REQUEST"],
+      "objects": [
+        "HAZARD",
+        "REQUEST"
+      ],
       "width_bits": 10,
       "range": "0..1023",
       "status": "open",
@@ -133,27 +161,39 @@
     },
     {
       "name": "ttl",
-      "objects": ["PRESENCE", "HAZARD", "REQUEST", "DEGRADED_STATE"],
+      "objects": [
+        "PRESENCE",
+        "HAZARD",
+        "REQUEST",
+        "DEGRADED_STATE"
+      ],
       "width_bits": 8,
-      "status": "open",
+      "status": "assigned",
       "meaning": "The maximum local interval after successful decode during which a receiver may keep treating the object as current, subject to local policy. Defined semantically in mcl-core/spec/shared-primitives-v0.1.md section 2.1.",
-      "gap": "No unit and no scale. 8 bits meaning 'some duration'. The superseded candidate layout proposed an exponent/mantissa encoding covering a wide range in one byte; it was not built.",
-      "current_rule": "A receiver MUST NOT infer seconds.",
-      "not": "ttl is not freshness and not replay protection. It bounds how long a decoded object may be considered current; it says nothing about when the object was sent, and nothing prevents a listener re-transmitting an object within its own TTL window.",
-      "before_stable": "Fix a unit and a scale. Linear seconds in 8 bits gives a range of about four minutes, which is too short for PRESENCE and too coarse for nothing; an exponent/mantissa split is the obvious answer and needs deciding rather than assuming."
+      "encoding": "4-bit exponent, 4-bit mantissa, unit seconds. e==0 gives m seconds; e>=1 gives (16+m)<<(e-1). Range 0..507904 s, worst quantization loss 5.88% above one minute. Normative in mcl-wire/spec/duration-v0.1.md.",
+      "resolved": "The gap was no unit and no scale: eight bits meaning 'some duration', with a rule forbidding a receiver to infer seconds. Two implementations could agree on every bit of a PRESENCE and disagree completely on how long it was good for. One encoding now serves ttl and validity both, because two duration fields with different scales in one protocol is a defect waiting to be written.",
+      "current_rule": "Zero means zero seconds, not 'unset'. Encoders round DOWN, never up and never to nearest: these fields bound how long stale information may be treated as current, and rounding up extends that bound again on every hop that re-encodes it. A duration above the maximum is refused rather than clamped.",
+      "not": "ttl is not freshness and not replay protection. It bounds how long a decoded object may be considered current; it says nothing about when the object was sent, and nothing prevents a listener re-transmitting an object within its own TTL window. It requires no synchronized clock: the interval is measured locally from local receipt."
     },
     {
       "name": "validity",
-      "objects": ["AUTHORITY_CLAIM", "TRANSPORT_OFFER"],
+      "objects": [
+        "AUTHORITY_CLAIM",
+        "TRANSPORT_OFFER"
+      ],
       "width_bits": 8,
-      "status": "open",
+      "status": "assigned",
       "meaning": "How long the claim, or the offer, remains usable.",
-      "gap": "Same as ttl: no unit, no scale. In TRANSPORT_OFFER it is retained for the CALLER to enforce, because the Link library has no clock and inventing one would tie a freestanding protocol library to a platform's notion of time.",
-      "before_stable": "Decide with ttl, and use the same encoding. Two duration fields with different scales in one protocol is a defect waiting to be written."
+      "encoding": "Identical to ttl. See mcl-wire/spec/duration-v0.1.md.",
+      "resolved": "Decided together with ttl and sharing its encoding, which is the whole point: the two fields are the same kind of quantity and were the obvious place for two incompatible scales to appear.",
+      "current_rule": "In TRANSPORT_OFFER the value is retained for the CALLER to enforce. The Link library has no clock, and giving it one would tie a freestanding protocol library to a platform's notion of time. Assigning a unit tells the caller what the number means; it does not move the enforcement into the library."
     },
     {
       "name": "migration_ref",
-      "objects": ["TRANSPORT_OFFER", "TRANSPORT_ACCEPT"],
+      "objects": [
+        "TRANSPORT_OFFER",
+        "TRANSPORT_ACCEPT"
+      ],
       "width_bits": 32,
       "status": "assigned",
       "meaning": "Correlates one transport-change transaction, and nothing else. Zero is RESERVED so an uninitialised field never names a live transaction.",
@@ -161,7 +201,9 @@
     },
     {
       "name": "session_ref",
-      "objects": ["TRANSPORT_ACCEPT"],
+      "objects": [
+        "TRANSPORT_ACCEPT"
+      ],
       "width_bits": 32,
       "status": "assigned",
       "meaning": "The accepting peer's reference for the CONTINUING logical contact. Bound once and persisting for the life of the contact, across every migration. Zero is RESERVED.",
@@ -169,7 +211,9 @@
     },
     {
       "name": "endpoint_token",
-      "objects": ["TRANSPORT_OFFER"],
+      "objects": [
+        "TRANSPORT_OFFER"
+      ],
       "width_bits": 32,
       "status": "assigned",
       "meaning": "A rendezvous reference resolved on the CANDIDATE transport, not an address. Defined in mcl-link/include/mcl/rendezvous.h.",
@@ -177,7 +221,10 @@
     },
     {
       "name": "transport_id",
-      "objects": ["TRANSPORT_OFFER", "TRANSPORT_ACCEPT"],
+      "objects": [
+        "TRANSPORT_OFFER",
+        "TRANSPORT_ACCEPT"
+      ],
       "width_bits": 8,
       "status": "assigned",
       "meaning": "Which transport. Values are assigned in mcl-link/registries/transport-ids-v0.1.json. Zero is RESERVED so a zeroed field is never a valid bearer.",
@@ -185,7 +232,10 @@
     },
     {
       "name": "profile_id",
-      "objects": ["TRANSPORT_OFFER", "TRANSPORT_ACCEPT"],
+      "objects": [
+        "TRANSPORT_OFFER",
+        "TRANSPORT_ACCEPT"
+      ],
       "width_bits": 8,
       "status": "provisional",
       "meaning": "Which profile of the named transport.",
@@ -193,20 +243,21 @@
     },
     {
       "name": "source_ref",
-      "objects": ["all"],
+      "objects": [
+        "all"
+      ],
       "width_bits": 32,
       "status": "assigned",
       "meaning": "A correlation reference for the SEMANTIC ORIGIN of this object.",
       "not": "Not identity, not authority, not trust. It is also NOT the same field as a Link frame's source_ref, which names the immediate peer that transmitted the frame. The two are equal in the ordinary two-party case and diverge as soon as anything relays. Neither may be copied into the other. See mcl-link/spec/link-v0.md section 3.3."
     }
   ],
-
   "summary": {
     "total": 21,
-    "assigned": 5,
+    "assigned": 7,
     "provisional": 10,
-    "open": 6,
-    "note": "Sixteen of twenty-one fields carry values that two independent implementations would not agree on, and six of those have gaps needing a decision rather than an assignment. That is the honest state, and it is recorded here rather than discovered by whoever writes the second implementation.",
+    "open": 4,
+    "note": "Ten fields carry values that two independent implementations would not agree on, and four have gaps that need a decision rather than an assignment. That is the honest state, and it is recorded here rather than discovered by whoever writes the second implementation. ttl and validity left the open column when mcl-wire/spec/duration-v0.1.md gave them one shared encoding.",
     "these_counts_are_checked": "tools/validate_field_registry.c counts the entries and fails if this block disagrees. It was written because this block was first filled in by hand as 6/9/6, which was wrong in the direction that overstates how much of Tier-0 is interoperable. The fix for a miscount is not to recount more carefully."
   }
 }
