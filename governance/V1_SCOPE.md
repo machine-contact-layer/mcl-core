@@ -346,9 +346,21 @@ Create the extension-ID registry and its allocation policy; it may be empty.
 be reconciled with Wire, which has since implemented and specified it.
 
 ### 5.3 Disposition every Link frame class
-`CONTACT`, `CAPABILITY`, `NEGOTIATION`, `DATA`, `ACK`, `NACK`, `KEEPALIVE`,
-`ADAPT`, `HANDOFF`, `CLOSE`. Each becomes Stable-and-implemented,
-Stable-but-optional-with-complete-behaviour, reserved, or excluded from v1.
+**Done** — `mcl-link/spec/link-class-disposition-v1.md`.
+
+Seven Stable, one reserved, two conditional. `CONTACT`, `DATA`, `ACK`, `NACK`,
+`HANDOFF` and `CLOSE` are Stable with contracts that already exist and are
+tested; `KEEPALIVE` is Stable but optional to emit; `ADAPT` stays reserved and
+refused, as a permanent tombstone rather than a recycled value.
+
+`CAPABILITY` and `NEGOTIATION` are the only open entries, and both branches are
+decided in advance. Today they are accepted and handed to the Wire Tier-0
+decoder while no `CAPABILITY` semantic object exists — the class has a transport
+but no contract, which is precisely what §3.4 forbids a Stable decoder to
+accept. Either §5.4 lands first and they carry its control payloads, or they are
+**reserved and refused** at Link major 1 exactly as `ADAPT` is. Shipping them as
+they stand is not an option, and committing to the fallback now keeps that
+choice from being made under release pressure.
 
 ### 5.4 Minimum capability and version negotiation
 A small deterministic exchange covering Wire major, transport profile, maximum
