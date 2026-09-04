@@ -223,6 +223,24 @@ else
   fail "registry governance"; grep -E 'FAIL|missing' "$WORK/reg.log"
 fi
 
+# ---------------------------------------------------------------- 7. specification index
+note "specification index"
+if sh "$ROOT/mcl-core/tools/build-spec-index.sh" --check > "$WORK/idx.log" 2>&1; then
+  printf '  %s
+' "$(cat "$WORK/idx.log")"
+else
+  fail "specification index"; head -20 "$WORK/idx.log"
+fi
+
+# ---------------------------------------------------------------- 8. traceability
+note "feature traceability"
+if sh "$ROOT/mcl-core/tools/check-traceability.sh" > "$WORK/trace.log" 2>&1; then
+  printf '  %s
+' "$(grep 'features traced' "$WORK/trace.log")"
+else
+  fail "feature traceability"; grep -E 'FAIL|broken link' "$WORK/trace.log"
+fi
+
 # ---------------------------------------------------------------- summary
 note "SUMMARY"
 if [ "$FAILURES" -eq 0 ]; then
