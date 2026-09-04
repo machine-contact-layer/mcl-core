@@ -1,163 +1,138 @@
-# Security
+# Security policy
 
-## Scope: security in MCL is optional, and currently absent
+Release gate item 23.
 
-MCL is a contact and communication layer. Whether a deployment authenticates
-anything is a configuration choice it makes for itself — Architecture Charter
-§2.10.1. Plenty of legitimate deployments never authenticate at all: presence,
-hazard broadcast and capability discovery among unknown listeners, or machines
-that already know each other through means entirely outside MCL.
+This document says two different things, and conflating them would be the most
+dangerous thing it could do:
 
-This document is therefore not a description of what MCL *is*. It is a
-description of what MCL does and does not give you if you need it to.
+1. **What MCL v1.0 does not protect against.** These are design properties, not
+   defects, and reporting them is not a vulnerability report.
+2. **How to report an actual vulnerability**, and what this project commits to
+   doing about it.
 
-## Read this before building on MCL
+## 1. What MCL v1.0 does not protect against
 
-**MCL currently provides no confidentiality, no cryptographic authenticity, and
-no peer authentication.** Not weak versions of them — none.
+**MCL v1.0 provides no confidentiality, no peer authentication, no message
+integrity in the security sense, and no replay protection.**
 
-That is a statement of implementation status, not of intent: MCL is designed to
-be able to carry a reviewed security profile, and that profile has not been
-built. It is stated first because the alternative is that somebody assumes
-otherwise and ships it.
+This is stated first, prominently, because a protocol that quietly lacks these
+is more dangerous than one that says so.
 
-**If your deployment does not need those properties, MCL is usable today.** If
-it does, it is not yet.
-
-| Property | Status today |
+| Property | v1.0 |
 |---|---|
-| Contact continuity | **not provided** |
-| Channel confidentiality | **not provided** |
-| Channel authenticity | **not provided** |
-| Peer authentication | **not provided** |
-| Attestation | **not provided** |
-| Proximity evidence | AP and UWB expose measurements as *evidence*, never as proof |
-| Local authorization | yours — MCL never decides it for you |
+| Confidentiality | **none.** Every byte is in the clear on every binding. |
+| Peer authentication | **none.** Nothing establishes who sent a frame. |
+| Message integrity | **none in the security sense.** `frame_check` is a CRC-32: it detects accidental corruption. Anyone who can write to the medium can recompute it. |
+| Replay protection | **none.** A recorded frame replayed later is a valid frame. |
+| Denial-of-service resistance | **none.** Anyone who can reach a binding can send to it. |
+| Downgrade protection | **none.** Capability negotiation is unauthenticated, so an active attacker can present a minimal capability set and both peers will honestly negotiate down to it. |
+| Contact continuity | **correlation, not authentication.** `session_ref` says two frames belong to one conversation. It does not say the peer is the machine the contact began with. |
 
-If you deploy MCL today, assume every frame you receive may have been written by
-anyone within range, and treat it accordingly. That is a legitimate way to use
-it — presence, hazard broadcast and capability discovery are useful without
-authentication, and designing for exactly those conditions is a first-class use
-of MCL rather than a compromise. But it must be a decision, not a surprise.
+The constitutional rule holds everywhere in MCL and is the shortest summary of
+this section:
 
-### The frame check is not integrity
+```text
+reception != identity != authenticity != authority != trust != obligation
+```
 
-`MCL_LINK_FLAG_FRAME_CHECK` selects a CRC-32. A CRC detects **accidental
-corruption**. It provides no protection whatsoever against deliberate
-modification: an attacker who alters a frame simply recomputes the CRC over the
-altered bytes.
+An `AUTHORITY_CLAIM` is a claim. Receiving one establishes that someone
+transmitted it. It confers nothing.
 
-This flag was originally named `MCL_LINK_FLAG_INTEGRITY`. It was renamed
-precisely because that name invited implementers to assume a guarantee that was
-never there. The wire bit is unchanged; only the name is.
+**None of the above is a vulnerability in v1.0.** They are recorded scope
+decisions — see `governance/V1_SCOPE.md` §4.4, which defers cryptography
+conspicuously rather than quietly. A report saying "MCL traffic can be read by
+anyone in range" describes the specification working as written.
 
-**A mechanism is never named for a property it does not provide** — Architecture
-Charter §2.11. An error-detecting code is not integrity, an encrypted channel is
-not an authenticated peer, and a verified credential is not an authorization.
+**What to do instead.** A deployment needing any of those properties places MCL
+inside a transport that provides them — a DTLS-wrapped IP path, LE Secure
+Connections beneath the BLE profile, or a physically controlled medium — and
+treats every MCL-carried claim as input to local policy rather than as
+authorization. `MCL_IP_SEC_TLS_CLAIMED` and the BLE bonding state let an
+endpoint *claim* such a wrapper. A claim is not verification.
 
-### Transport security is not MCL security
+## 2. What IS a vulnerability here
 
-**Transport establishment alone does not imply an authenticated MCL peer.** A
-transport security mechanism may establish confidentiality, channel
-authenticity, or even credential-based peer authentication, depending entirely
-on how it is configured — and MCL must surface only the properties actually
-established, never the ones the mechanism is capable of.
+Something that makes an implementation behave in a way the specification does
+not describe, or makes the specification's own guarantees false:
 
-An earlier revision of this section said no transport mechanism "establishes
-anything about the peer." That was too absolute: a properly configured TLS
-session authenticates a peer under its own credential and trust model, and
-Bluetooth's authenticated association methods — Passkey Entry, Numeric
-Comparison, OOB — are meaningfully different from Just Works. The warning was
-right; the wording overstated it, and an overstated security claim is a defect
-in the same way an understated one is.
+- A decoder that reads or writes outside its buffer on any input — the fuzz and
+  sanitizer gates exist to prevent exactly this.
+- An input that causes unbounded memory or CPU use in a bounded-work path.
+- A frame that is accepted when the specification says it must be refused, or
+  refused when it must be accepted, in a way that lets one peer make another
+  act incorrectly.
+- A migration that can be driven to an inconsistent state — for example a peer
+  induced to believe a transport change committed when its peer believes
+  otherwise.
+- Cross-contact contamination: one contact's frames affecting another's state.
+- Any way to make an implementation treat reception as identity, authenticity,
+  authority or trust.
 
-The published BLE evidence used Bluetooth "Just Works" pairing: encrypted
-against a passive listener, unauthenticated against an active one. The evidence
-record says so. `BLE connected` must never be read as `peer authenticated`.
+## 3. How to report
 
-### Never summarise security state
+**Do not open a public issue for a suspected vulnerability.**
 
-Charter §2.11 forbids collapsing the properties above into a single indicator.
-No `trusted = true` may appear in any normative MCL interface, in any
-implementation. Every such field eventually invites a shortcut from one property
-to a stronger one that was never established.
+Report privately to the maintainer contact listed in
+`governance/GOVERNANCE.md`. Include:
 
-Record and reason about the properties separately. They fail independently.
+- affected repository and commit,
+- what an attacker can cause,
+- a reproducer — an input, a test, or a sequence of frames,
+- your assessment of severity, and why.
 
-## What is being worked on
+A reproducer matters more than a severity rating. The project can assess
+severity; it cannot reproduce an effect it cannot see.
 
-The security track designs an **optional profile**. It is not MCL's roadmap, and
-MCL is not blocked on it — the deployments that do not need it are usable now.
+## 4. What this project commits to
 
-It is deliberately specification-first. No cryptographic code exists in any
-repository, and none will be written before the design is settled.
+Commitments this project can actually meet, given that it is a small
+specification effort and not a staffed vendor security team. Overstating them
+would be its own failure.
 
-- [`mcl-link/research/secure-contact-threat-model.md`](https://github.com/machine-contact-layer/mcl-link) — adversaries, and what cannot be achieved without a trust anchor
-- [`mcl-link/research/secure-contact-candidate.md`](https://github.com/machine-contact-layer/mcl-link) — prior art to adopt rather than reinvent
-- [`mcl-link/research/contact-continuity-experiment.md`](https://github.com/machine-contact-layer/mcl-link) — the next experiment and the attacks it must survive
+| Stage | Commitment |
+|---|---|
+| Acknowledgement | Within **7 days** of a report reaching the maintainer contact. |
+| Initial assessment | Within **30 days**: confirmed, not-a-vulnerability with reasoning, or needs-more-information. |
+| Fix or documented decision | Within **90 days** of confirmation, or a public statement explaining why longer is needed. |
+| Disclosure | Coordinated. The project publishes after a fix is available, or at **90 days** from confirmation, whichever is sooner, unless the reporter asks for longer. |
+| Credit | Given by default, and withheld on request. |
 
-The governing principle: **MCL adopts reviewed cryptographic constructions and
-invents none.** Cryptography is the worst possible place to be original.
+**No bounty is offered**, and none should be inferred.
 
-The architectural consequence, now charter §2.10.2: **MCL defines the interface,
-not the cryptography.** A builder supplies the mechanism — their own stack, a
-secure element, a platform crypto API, or a reviewed key exchange — and MCL
-defines only what must be bound, and how the resulting properties are surfaced
-separately. MCL is implementable without ever holding a private key.
+If a report receives no acknowledgement within 7 days, the reporter is free to
+disclose publicly. A process that can silently stall is not a process.
 
-What MCL contributes there is not cryptographic. It is the precise definition of
-*what must be bound* so that a contact migrating from one medium to another
-cannot be stolen. That definition is algorithm-independent, and no existing
-standard supplies it, because none spans an acoustic first contact and a later
-radio channel.
+## 5. Supported versions
 
-Because two strangers with no mechanism in common cannot negotiate at all, at
-least one fully specified named profile will eventually be needed as well — as a
-profile, never as a precondition for using MCL.
+| Version | Supported |
+|---|---|
+| `v1.0.x` | Yes, once released. |
+| `v0.x` pre-release | **No.** Experimental, superseded, and never to be deployed. |
 
-## Reporting a vulnerability
+MCL's version policy is source compatibility within a major
+(`V1_SCOPE.md` §4.5). A security fix that requires a wire-format change requires
+a new major version, and the project will say so plainly rather than breaking a
+compatibility promise quietly.
 
-This is a private pre-v0.1 research project with no deployed users, so there is
-no embargo process yet. If you find a flaw:
+## 6. Security errata
 
-- **In the specification or the security model** — open an issue in the relevant
-  repository. Design flaws in a pre-adoption specification are the most valuable
-  thing you can contribute, and they are not sensitive.
-- **In reference implementation code** — open an issue. There are no production
-  deployments to protect.
+A confirmed vulnerability in a **Stable** specification produces a security
+erratum, handled under the errata process in `governance/GOVERNANCE.md`. A
+security erratum may be published before its normal review period elapses; that
+is the one place the governance process is deliberately shortened, and the
+reason is recorded there.
 
-When MCL reaches public adoption this section will be replaced by a coordinated
-disclosure process with a contact address and response commitments. It has not
-been, because pretending to operate a process that does not exist would itself
-be a security failure.
+## 7. What a scan of this repository will and will not find
 
-## What we most want reviewed
+Stated so that automated reports are useful rather than noise:
 
-Specific, and roughly in order of how much damage a mistake would do:
-
-1. **The contact continuity design.** An earlier revision proposed proving
-   knowledge of a hash over the first-contact exchange. That is worthless: first
-   contact is observable, so any listener computes the same hash. The corrected
-   requirement is that a continuity proof depend on secret state both peers
-   committed *during* the contact. If there is a flaw in the corrected model, it
-   is the most valuable flaw to find.
-
-2. **Multi-peer cross-binding.** A machine hears several peers at once, each
-   advertising an endpoint, and an attacker swaps which contact is associated
-   with which endpoint. No key is broken and no peer is impersonated — only the
-   pairing is wrong. Every diagram in this project so far assumes a clean
-   two-party encounter; a factory floor, warehouse aisle or road junction is not
-   one. This is the least-examined problem here.
-
-3. **Anything that lets a security property be inferred from a weaker one.** A
-   place where receiving implies identity, where a channel implies a peer, where
-   a credential implies authorization, or where a measurement implies proximity.
-   Including the self-inflicted case: treating "the peer appears not to support
-   security" as grounds to proceed without it (charter §2.11.2).
-
-4. **Decoder behaviour on hostile input.** Truncation, reserved bits, unknown
-   classes, oversized declared lengths, fragment sequence manipulation. These are
-   the paths an attacker reaches first, and they run before any policy does.
-
-5. **Anything a name promises that the mechanism does not deliver.** The
-   `INTEGRITY` rename was the first instance found. It will not be the last.
+- **No dependencies.** The protocol repositories take none — no package manifest,
+  no vendored third-party source. A dependency-scanning report finding nothing
+  is correct.
+- **No cryptography.** There is no key material, no random number generation
+  used for security, and no cryptographic primitive to get wrong. The CRC-32 is
+  not one.
+- **No network listener in the libraries.** Bindings hand bytes to a
+  caller-supplied transport callback. The reference harnesses in `tools/` and
+  `hardware/` do open sockets and radios; those are test instruments, not
+  shipped code, and are not covered by the commitments in §4.

@@ -191,6 +191,38 @@ for CXX in g++ clang++; do
   fi
 done
 
+# ---------------------------------------------------------------- 5. API surface
+#
+# v1.0 promises SOURCE compatibility (V1_SCOPE 4.5). A public symbol that
+# disappears or is renamed breaks it, and the break is invisible until an
+# external consumer fails to compile -- which is too late. Checked here so it
+# is caught in the same run that checks everything else.
+note "public API surface"
+if sh "$ROOT/mcl-core/tools/api-baseline.sh" > "$WORK/api.log" 2>&1; then
+  printf '  %s
+' "$(grep -E 'baseline:|current:' "$WORK/api.log" | tr '
+' ' ')"
+  if grep -q '^    + ' "$WORK/api.log"; then
+    printf '  symbols added since the baseline (allowed, additive):
+'
+    grep '^    + ' "$WORK/api.log"
+  else
+    printf '  unchanged
+'
+  fi
+else
+  fail "public API surface"; cat "$WORK/api.log"
+fi
+
+# ---------------------------------------------------------------- 6. registry governance
+note "registry governance"
+if sh "$ROOT/mcl-core/tools/check-registry-governance.sh" > "$WORK/reg.log" 2>&1; then
+  printf '  %s
+' "$(grep 'registries checked' "$WORK/reg.log")"
+else
+  fail "registry governance"; grep -E 'FAIL|missing' "$WORK/reg.log"
+fi
+
 # ---------------------------------------------------------------- summary
 note "SUMMARY"
 if [ "$FAILURES" -eq 0 ]; then

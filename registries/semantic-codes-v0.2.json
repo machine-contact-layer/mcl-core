@@ -1,39 +1,256 @@
 {
-  "registry_version": "0.2-draft",
-  "status": "provisional",
-  "wire_header_model": {
-    "major_version_bits": 4,
-    "category_bits": 4,
-    "opcode_bits": 5,
-    "priority_bits": 2,
-    "extension_present_bits": 1,
-    "total_bits": 16
+ "registry_version": "0.2-draft",
+ "status": "provisional",
+ "wire_header_model": {
+  "major_version_bits": 4,
+  "category_bits": 4,
+  "opcode_bits": 5,
+  "priority_bits": 2,
+  "extension_present_bits": 1,
+  "total_bits": 16
+ },
+ "allocation_policy": {
+  "categories_0x0_0xD": "MCL Standards Action",
+  "category_0xE": "Experimental Use",
+  "category_0xF": "Extended namespace escape",
+  "opcodes_0x00_0x17": "MCL Standards Action",
+  "opcodes_0x18_0x1B": "Specification Required",
+  "opcodes_0x1C_0x1D": "Experimental Use",
+  "opcodes_0x1E_0x1F": "Reserved"
+ },
+ "categories": [
+  {
+   "code": 0,
+   "name": "CONTACT",
+   "status": "provisional",
+   "opcodes": [
+    {
+     "code": 0,
+     "name": "PRESENCE",
+     "tier0_candidate": true,
+     "status": "provisional"
+    }
+   ]
   },
-  "allocation_policy": {
-    "categories_0x0_0xD": "MCL Standards Action",
-    "category_0xE": "Experimental Use",
-    "category_0xF": "Extended namespace escape",
-    "opcodes_0x00_0x17": "MCL Standards Action",
-    "opcodes_0x18_0x1B": "Specification Required",
-    "opcodes_0x1C_0x1D": "Experimental Use",
-    "opcodes_0x1E_0x1F": "Reserved"
+  {
+   "code": 1,
+   "name": "IDENTITY",
+   "status": "provisional",
+   "opcodes": [
+    {
+     "code": 0,
+     "name": "IDENTITY_CLAIM",
+     "tier0_candidate": true,
+     "status": "provisional"
+    },
+    {
+     "code": 1,
+     "name": "AUTHORITY_CLAIM",
+     "tier0_candidate": true,
+     "status": "provisional"
+    }
+   ]
   },
-  "categories": [
-    {"code":0,"name":"CONTACT","status":"provisional","opcodes":[{"code":0,"name":"PRESENCE","tier0_candidate":true,"status":"provisional"}]},
-    {"code":1,"name":"IDENTITY","status":"provisional","opcodes":[{"code":0,"name":"IDENTITY_CLAIM","tier0_candidate":true,"status":"provisional"},{"code":1,"name":"AUTHORITY_CLAIM","tier0_candidate":true,"status":"provisional"}]},
-    {"code":2,"name":"CAPABILITY","status":"provisional","opcodes":[{"code":0,"name":"CAPABILITY","tier0_candidate":true,"status":"provisional"},{"code":1,"name":"TRANSPORT_CAPABILITY","tier0_candidate":true,"status":"provisional"}]},
-    {"code":3,"name":"WORLD_STATE","status":"provisional","opcodes":[{"code":0,"name":"OBSERVATION","tier0_candidate":false,"status":"provisional"},{"code":1,"name":"HAZARD","tier0_candidate":true,"status":"provisional"}]},
-    {"code":4,"name":"INTENT","status":"provisional","opcodes":[{"code":0,"name":"INTENT","tier0_candidate":false,"status":"provisional"},{"code":1,"name":"TRAJECTORY","tier0_candidate":false,"status":"provisional"}]},
-    {"code":5,"name":"COORDINATION","status":"provisional","opcodes":[{"code":0,"name":"CONSTRAINT","tier0_candidate":true,"status":"provisional"},{"code":1,"name":"REQUEST","tier0_candidate":true,"status":"provisional"},{"code":2,"name":"OFFER","tier0_candidate":true,"status":"provisional"},{"code":3,"name":"ACK","tier0_candidate":true,"status":"provisional"},{"code":4,"name":"REFUSE","tier0_candidate":true,"status":"provisional"}]},
-    {"code":6,"name":"STATE","status":"provisional","opcodes":[{"code":0,"name":"STATUS","tier0_candidate":false,"status":"provisional"},{"code":1,"name":"DEGRADED_STATE","tier0_candidate":true,"status":"provisional"}]},
-    {"code":7,"name":"LINK_STATE","status":"provisional","opcodes":[{"code":0,"name":"CHANNEL_STATE","tier0_candidate":false,"status":"provisional"},{"code":1,"name":"INTERFERENCE","tier0_candidate":true,"status":"provisional"}]},
-    {"code":8,"name":"TRANSPORT","status":"provisional","opcodes":[{"code":0,"name":"TRANSPORT_OFFER","tier0_candidate":true,"status":"provisional"},{"code":1,"name":"TRANSPORT_ACCEPT","tier0_candidate":true,"status":"provisional"}]},
-    {"code":9,"name":"RESERVED_STANDARD_9","status":"reserved","opcodes":[]},
-    {"code":10,"name":"RESERVED_STANDARD_A","status":"reserved","opcodes":[]},
-    {"code":11,"name":"RESERVED_STANDARD_B","status":"reserved","opcodes":[]},
-    {"code":12,"name":"RESERVED_STANDARD_C","status":"reserved","opcodes":[]},
-    {"code":13,"name":"RESERVED_STANDARD_D","status":"reserved","opcodes":[]},
-    {"code":14,"name":"EXPERIMENTAL","status":"experimental","opcodes":[]},
-    {"code":15,"name":"EXTENDED","status":"escape","opcodes":[]}
-  ]
+  {
+   "code": 2,
+   "name": "CAPABILITY",
+   "status": "provisional",
+   "opcodes": [
+    {
+     "code": 0,
+     "name": "CAPABILITY",
+     "tier0_candidate": true,
+     "status": "provisional"
+    },
+    {
+     "code": 1,
+     "name": "TRANSPORT_CAPABILITY",
+     "tier0_candidate": true,
+     "status": "provisional"
+    }
+   ]
+  },
+  {
+   "code": 3,
+   "name": "WORLD_STATE",
+   "status": "provisional",
+   "opcodes": [
+    {
+     "code": 0,
+     "name": "OBSERVATION",
+     "tier0_candidate": false,
+     "status": "provisional"
+    },
+    {
+     "code": 1,
+     "name": "HAZARD",
+     "tier0_candidate": true,
+     "status": "provisional"
+    }
+   ]
+  },
+  {
+   "code": 4,
+   "name": "INTENT",
+   "status": "provisional",
+   "opcodes": [
+    {
+     "code": 0,
+     "name": "INTENT",
+     "tier0_candidate": false,
+     "status": "provisional"
+    },
+    {
+     "code": 1,
+     "name": "TRAJECTORY",
+     "tier0_candidate": false,
+     "status": "provisional"
+    }
+   ]
+  },
+  {
+   "code": 5,
+   "name": "COORDINATION",
+   "status": "provisional",
+   "opcodes": [
+    {
+     "code": 0,
+     "name": "CONSTRAINT",
+     "tier0_candidate": true,
+     "status": "provisional"
+    },
+    {
+     "code": 1,
+     "name": "REQUEST",
+     "tier0_candidate": true,
+     "status": "provisional"
+    },
+    {
+     "code": 2,
+     "name": "OFFER",
+     "tier0_candidate": true,
+     "status": "provisional"
+    },
+    {
+     "code": 3,
+     "name": "ACK",
+     "tier0_candidate": true,
+     "status": "provisional"
+    },
+    {
+     "code": 4,
+     "name": "REFUSE",
+     "tier0_candidate": true,
+     "status": "provisional"
+    }
+   ]
+  },
+  {
+   "code": 6,
+   "name": "STATE",
+   "status": "provisional",
+   "opcodes": [
+    {
+     "code": 0,
+     "name": "STATUS",
+     "tier0_candidate": false,
+     "status": "provisional"
+    },
+    {
+     "code": 1,
+     "name": "DEGRADED_STATE",
+     "tier0_candidate": true,
+     "status": "provisional"
+    }
+   ]
+  },
+  {
+   "code": 7,
+   "name": "LINK_STATE",
+   "status": "provisional",
+   "opcodes": [
+    {
+     "code": 0,
+     "name": "CHANNEL_STATE",
+     "tier0_candidate": false,
+     "status": "provisional"
+    },
+    {
+     "code": 1,
+     "name": "INTERFERENCE",
+     "tier0_candidate": true,
+     "status": "provisional"
+    }
+   ]
+  },
+  {
+   "code": 8,
+   "name": "TRANSPORT",
+   "status": "provisional",
+   "opcodes": [
+    {
+     "code": 0,
+     "name": "TRANSPORT_OFFER",
+     "tier0_candidate": true,
+     "status": "provisional"
+    },
+    {
+     "code": 1,
+     "name": "TRANSPORT_ACCEPT",
+     "tier0_candidate": true,
+     "status": "provisional"
+    }
+   ]
+  },
+  {
+   "code": 9,
+   "name": "RESERVED_STANDARD_9",
+   "status": "reserved",
+   "opcodes": []
+  },
+  {
+   "code": 10,
+   "name": "RESERVED_STANDARD_A",
+   "status": "reserved",
+   "opcodes": []
+  },
+  {
+   "code": 11,
+   "name": "RESERVED_STANDARD_B",
+   "status": "reserved",
+   "opcodes": []
+  },
+  {
+   "code": 12,
+   "name": "RESERVED_STANDARD_C",
+   "status": "reserved",
+   "opcodes": []
+  },
+  {
+   "code": 13,
+   "name": "RESERVED_STANDARD_D",
+   "status": "reserved",
+   "opcodes": []
+  },
+  {
+   "code": 14,
+   "name": "EXPERIMENTAL",
+   "status": "experimental",
+   "opcodes": []
+  },
+  {
+   "code": 15,
+   "name": "EXTENDED",
+   "status": "escape",
+   "opcodes": []
+  }
+ ],
+ "governance": {
+  "change_controller": "The MCL maintainer (the owner of the eight MCL repositories).",
+  "procedures": "mcl-core/governance/GOVERNANCE.md section 4 defines application, review, promotion and deprecation for every MCL registry. They are defined once there rather than restated per registry, so they cannot drift apart.",
+  "application": "GOVERNANCE.md 4.1 -- an issue naming the registry, requested range, meaning, a permanent specification reference, and the failure behaviour required of a receiver that does not implement it. An application without a specification reference is not an application.",
+  "review": "GOVERNANCE.md 4.2",
+  "promotion": "GOVERNANCE.md 4.3 -- an Experimental Use value is NEVER relabelled Stable. Promotion assigns a NEW value in the Standards Action range after an independent implementation has interoperated using the experimental one, and re-runs conformance evidence on the final assigned bytes.",
+  "deprecation": "GOVERNANCE.md 4.4 -- a retired assignment becomes a permanent tombstone. Its value is never reused and a decoder must refuse it, because a peer that once meant something by that value would otherwise be misread rather than refused."
+ }
 }
