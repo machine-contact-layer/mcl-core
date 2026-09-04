@@ -30,7 +30,7 @@ registry value the document assigns.
 | Document | Status |
 |---|---|
 | [`core-v0.md`](../mcl-core/spec/core-v0.md) | Research Draft |
-| [`shared-primitives-v0.1.md`](../mcl-core/spec/shared-primitives-v0.1.md) | Research Draft |
+| [`shared-primitives-v0.1.md`](../mcl-core/spec/shared-primitives-v0.1.md) | Research Draft |
 
 ## mcl-wire
 
@@ -53,15 +53,15 @@ registry value the document assigns.
 | [`link-handoff-control-v0.1.md`](../mcl-link/spec/link-handoff-control-v0.1.md) | Research Draft |
 | [`link-negotiation-v1.md`](../mcl-link/spec/link-negotiation-v1.md) | Candidate |
 | [`link-v0.md`](../mcl-link/spec/link-v0.md) | Research Draft |
-| [`machine-card.md`](../mcl-link/spec/machine-card.md) | Research Draft |
-| [`version-context-negotiation-v0.1.md`](../mcl-link/spec/version-context-negotiation-v0.1.md) | Research Draft |
+| [`machine-card.md`](../mcl-link/spec/machine-card.md) | Research Draft |
+| [`version-context-negotiation-v0.1.md`](../mcl-link/spec/version-context-negotiation-v0.1.md) | Research Draft |
 
 ## mcl-ap
 
 | Document | Status |
 |---|---|
-| [`ap-v0.md`](../mcl-ap/spec/ap-v0.md) | Research Draft |
-| [`bootstrap-link-convergence.md`](../mcl-ap/spec/bootstrap-link-convergence.md) | Research Draft |
+| [`ap-v0.md`](../mcl-ap/spec/ap-v0.md) | Research Draft |
+| [`bootstrap-link-convergence.md`](../mcl-ap/spec/bootstrap-link-convergence.md) | Research Draft |
 
 ## mcl-ip
 

@@ -31,8 +31,16 @@ mkdir -p "$WORK"
 # A status line may be "Status: X" or "**Status:** X", at the start of a line or
 # after markdown emphasis. Anchoring to the line start alone missed six
 # documents on the first attempt -- the ones using the bold form.
+#
+# The carriage return is stripped explicitly. Several specifications are stored
+# with CRLF endings, and a grep that keeps the CR carries it into the generated
+# table -- which puts a stray control character in a published document and
+# makes --check depend on how the reader's git happened to configure line
+# endings. A gate that passes or fails on a checkout setting is not a gate, and
+# the committed index did carry five of those characters until this was added.
 extract_status() {
     grep -m1 -iE '^\**status:?\**' "$1" 2>/dev/null \
+        | tr -d '\r' \
         | sed -E 's/^\**[Ss]tatus:?\**[[:space:]]*//' \
         | sed 's/\*\*//g' \
         | cut -c1-70

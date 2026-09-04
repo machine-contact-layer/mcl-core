@@ -58,7 +58,7 @@ interoperate. v1.0.0 does not claim that. See `V1_SCOPE.md` §5.9.
 | **E4** dual-transport migration | yes | `mcl-sdk/evidence/e4-dual-transport-migration-20260903/` — 104 migrations, 100 consecutive alternating BLE↔IP, 2989 checks, 0 failures |
 | **E3** acoustic | yes | `mcl-ap/experiments/001-known-waveform/evidence/` |
 | **E4** acoustic, both directions | yes | `mcl-ap/experiments/003-band-informed-candidate/evidence/` |
-| **E3** acoustic, Android loudspeaker | yes | `mcl-ap/experiments/009-android-acoustic-peer/` — a phone speaker emitting the MCL-AP waveform, decoded by the reference modem. Acquired 10/10 in both cells; recovered 4/10 at 10 bytes and 1/10 at 24. One direction only: capture on Android needs an application permission no shell binary can hold. **Not a usable link, and not claimed as one.** |
+| **E3** acoustic, Android loudspeaker | yes | `mcl-ap/experiments/009-android-acoustic-peer/` — a phone speaker emitting the MCL-AP waveform, decoded by the reference modem. Acquired 10/10 in both cells; recovered 4/10 at 10 bytes and 1/10 at 24. One direction only: capture on Android needs an application permission no shell binary can hold. Those figures are what that session measured; the same recordings re-decoded by the current receiver, after the decision threshold was moved, give 5/10 and 2/10 — the archived evidence is not rewritten and the experiment README reports both. **Not a usable link, and not claimed as one.** |
 | **E4** protocol stack on an embedded peer | yes | `mcl-ap/experiments/008-embedded-node/` — the DFR1154 builds, modulates, demodulates and decodes MCL itself. host→board recovery is decoded on the microcontroller, no host in the loop. 4 cells × 10 trials; all four acquired 10/10. |
 | **E5, E6** | **no** | Not attempted. E6 needs an implementation built by someone else, which v1.0.0 does not claim — see `V1_SCOPE.md` §5.9. |
 
@@ -94,6 +94,7 @@ interoperate. v1.0.0 does not claim that. See `V1_SCOPE.md` §5.9.
 | IP stream carriage | partially | Unit-tested only; **never exercised over a real TCP connection**. Experimental. |
 | BLE connectionless carriage | no | Not a v1 profile. |
 | AP acoustic carriage | experimental | E3 reached. Not a v1 Stable transport. |
+| AP continuous listening | experimental | `mcl-ap/include/mcl/ap_listen.h` — the reference receiver driven by an unscheduled audio stream, so a machine that is busy can still be called. Streaming the archived captures past it in blocks of 256 to 8192 samples reproduces the one-shot decoder exactly on all four cells. Same waveform, same modem; nothing here is a Stable transport. |
 | UWB carriage | experimental | **No hardware evidence at all.** |
 | Rendezvous beacons | yes | Experimental; not required by either Stable profile. |
 | Context compression | **no** | Deferred. No codec exists. |

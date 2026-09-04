@@ -35,6 +35,28 @@ fi
 rm -rf "$WORK"
 mkdir -p "$WORK"
 
+# A missing compiler must stop the run, not colour it.
+#
+# The loop below tolerates one source that fails to compile, because a source
+# that cannot stand alone contributes nothing to the linkable surface and
+# saying so is useful. It does NOT tolerate a toolchain that is absent: with no
+# `cc`, EVERY source is skipped, the extracted surface is empty, and the script
+# reports the entire public API as removed. That is a frightening and
+# completely false result, and it is the failure mode most likely to be
+# believed, because "API BASELINE CHECK FAILED" is exactly what a real source
+# break looks like.
+for tool in cc nm; do
+    if ! command -v "$tool" > /dev/null 2>&1; then
+        echo "CANNOT RUN: '$tool' is not on PATH." >&2
+        echo >&2
+        echo "This gate compiles every protocol-facing source and reads the" >&2
+        echo "symbols it defines. Without a toolchain it would extract an" >&2
+        echo "empty surface and report the whole API as deleted. Refusing" >&2
+        echo "rather than reporting that." >&2
+        exit 2
+    fi
+done
+
 # Every protocol-facing translation unit in the eight repositories. Compiled
 # rather than parsed: a header declaration that no source defines is not part of
 # the linkable surface, and grepping headers would report one.
