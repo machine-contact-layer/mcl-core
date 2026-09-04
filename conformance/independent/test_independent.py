@@ -218,12 +218,39 @@ def test_cross_implementation(binary):
     print("[C4] independent -> reference C, and back, bytes only")
 
     # --- Tier-0, independent encodes, C decodes -------------------------
+    #
+    # The transport objects carry profile_id 1 -- the Standards Action
+    # assignment, IP-DATAGRAM. This is step 5 of the promotion sequence:
+    # profile_id travels inside these objects, so evidence gathered under the
+    # experimental 192 is evidence about 192 and does not transfer. The 192
+    # cases are kept below rather than dropped, because an implementation must
+    # still carry an experimental value it does not recognise.
     cases = [
         ("PRESENCE", {"source_ref": 0x0BADCAFE, "machine_class": 3,
                       "capability_tag": 0x00ABCD, "ttl": 60}),
         ("TRANSPORT_OFFER", {"source_ref": 0x0BADCAFE,
                              "migration_ref": 0x4D194201, "transport_id": 2,
+                             "profile_id": 1, "endpoint_token": 0xD00D0001,
+                             "validity": 30}),
+        ("TRANSPORT_ACCEPT", {"source_ref": 0x0BADCAFE,
+                              "migration_ref": 0x4D194201, "transport_id": 2,
+                              "profile_id": 1, "session_ref": 0x5E5510C7}),
+        # Every profile range the registries define, carried unchanged. A
+        # decoder is not entitled to an opinion about which values are
+        # assigned: that is the registry's business, and a byte it does not
+        # recognise must still round-trip so the refusal happens at the layer
+        # that knows.
+        ("TRANSPORT_OFFER", {"source_ref": 0x0BADCAFE,
+                             "migration_ref": 0x4D194201, "transport_id": 2,
                              "profile_id": 192, "endpoint_token": 0xD00D0001,
+                             "validity": 30}),
+        ("TRANSPORT_OFFER", {"source_ref": 0x0BADCAFE,
+                             "migration_ref": 0x4D194201, "transport_id": 2,
+                             "profile_id": 0x40, "endpoint_token": 0xD00D0001,
+                             "validity": 30}),
+        ("TRANSPORT_OFFER", {"source_ref": 0x0BADCAFE,
+                             "migration_ref": 0x4D194201, "transport_id": 2,
+                             "profile_id": 0xFE, "endpoint_token": 0xD00D0001,
                              "validity": 30}),
         ("TRANSPORT_ACCEPT", {"source_ref": 0x0BADCAFE,
                               "migration_ref": 0x4D194201, "transport_id": 2,

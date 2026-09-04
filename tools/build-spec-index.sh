@@ -108,7 +108,7 @@ extract_status() {
     echo "| Candidate semantic objects | \`HAZARD\`, \`REQUEST\`, \`AUTHORITY_CLAIM\`, \`DEGRADED_STATE\` — carried at major 0 only |"
     echo "| Stable Link frame classes | 9 of 10; \`ADAPT\` reserved |"
     echo "| Stable transports | IP (\`transport_id\` 2), BLE (3) |"
-    echo "| Stable transport profiles | **none assigned yet** — both specifications are Candidate; profile 192 is Experimental Use in each and is never relabelled |"
+    echo "| Stable transport profiles | **IP-DATAGRAM = 1** and **BLE-GATT = 1**, MCL Standards Action, 2026-09-04. Both specifications are Stable. Profile 192 remains Experimental Use in each and was never relabelled |"
     echo "| Experimental transports | AP (1), UWB (4) |"
     echo "| Stable extension IDs | **none** — the mechanism ships, the table is empty by design |"
     echo "| Negotiated feature bits | **none assigned** — same disposition |"

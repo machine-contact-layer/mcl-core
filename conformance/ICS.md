@@ -30,15 +30,25 @@ reverse.
 | Level | Reached | Evidence |
 |---|---|---|
 | **C0–C3** | yes | Repository test suites; both gate halves. |
-| **C4** cross-implementation | **yes, at Wire major 0** | `conformance/independent/test_independent.py` — 718 checks against a clean-room Python implementation, both directions, including matching refusals. |
-| **C5** profile interoperability | **yes, on experimental profile 192** | `conformance/independent/test_profiles_c5.py` — 60 checks against both Candidate profiles. |
-| **C6** | **no** | Requires a Stable specification, which requires the promotion sequence to complete. |
+| **C4** cross-implementation | **yes, at Wire majors 0 and 1** | `conformance/independent/test_independent.py` — 803 checks against a clean-room Python implementation, both directions, including matching refusals. |
+| **C5** profile interoperability | **yes, on the assigned profile value 1** | `conformance/independent/test_profiles_c5.py` — 108 checks against both Stable profiles, on the final assigned bytes. |
+| **C6** | **no** | Requires field deployment beyond anything this project has run. |
 
-**The C4/C5 caveat that matters:** both were run against Wire major 0 and
-transport profile 192, the experimental values. They are evidence about those
-values. When major 1 is cut and Stable profile identifiers are assigned, both
-are re-run on the final bytes, because `profile_id` travels inside
-`TRANSPORT_OFFER` and `TRANSPORT_ACCEPT`.
+**The C4/C5 caveat that mattered has been discharged.** Both were first run
+against Wire major 0 and transport profile 192 — the experimental values, and
+therefore evidence about those values. Major 1 is now cut and the Standards
+Action assignments are made, so both were re-run on the final bytes, because
+`profile_id` travels inside `TRANSPORT_OFFER` and `TRANSPORT_ACCEPT`. The
+earlier runs are retained as what they were: evidence about profile 192, which
+remains Experimental Use permanently.
+
+**The caveat that has NOT been discharged, and will not be by v1.0.0:** the
+clean-room implementation is independent *of the reference code* — different
+language, no shared source, no shared build — and it found three real
+specification-reading defects. It was written by the same author. C4 and C5 are
+therefore strong evidence that these specifications can be implemented **from
+the text alone**, and no evidence at all that two *organisations* can
+interoperate. v1.0.0 does not claim that. See `V1_SCOPE.md` §5.9.
 
 | Level | Reached | Evidence |
 |---|---|---|
@@ -109,8 +119,8 @@ are re-run on the final bytes, because `profile_id` travels inside
 | Transport IDs | 4 provisional (AP, IP, BLE, UWB) |
 | Handoff operations | provisional |
 | **Extension IDs** | **zero — and that is the intended v1 state** |
-| **IP profiles** | **zero Stable.** 192 is Experimental Use |
-| **BLE profiles** | **zero Stable.** 192 is Experimental Use |
+| **IP profiles** | **1 Stable** — `IP-DATAGRAM = 1`, Standards Action, 2026-09-04. 192 stays Experimental Use |
+| **BLE profiles** | **1 Stable** — `BLE-GATT = 1`, Standards Action, 2026-09-04. 192 stays Experimental Use |
 | Negotiated feature bits | **zero assigned** |
 
 An empty Stable table is a correct outcome where the mechanism is ready and

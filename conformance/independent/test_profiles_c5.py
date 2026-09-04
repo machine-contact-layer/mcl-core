@@ -1,5 +1,5 @@
 """
-C5: independent implementation against the Candidate transport profiles.
+C5: independent implementation against the Stable transport profiles.
 
 RELEASE GATE ITEM 17.
 
@@ -11,21 +11,23 @@ bindings?
 
 WHAT IS BEING TESTED, AND UNDER WHICH PROFILE VALUE
 
-Profile 192 in both registries -- the Experimental Use value. That is
-deliberate and is the promotion sequence recorded in `V1_SCOPE.md` §5.6:
-interoperate on the experimental value, and only then perform the Standards
-Action assignment.
+`profile_id = 1` in both registries -- the MCL Standards Action assignments
+`IP-DATAGRAM` and `BLE-GATT`, made 2026-09-04. This is step 5 of the promotion
+sequence in `GOVERNANCE.md` section 4.3, and it is not ceremony: `profile_id`
+travels inside `TRANSPORT_OFFER` and `TRANSPORT_ACCEPT`, so the earlier run
+against the Experimental Use value 192 is evidence about 192 and does not
+transfer to these bytes.
 
-**This run is therefore evidence about profile 192, not about the Stable value
-that does not exist yet.** When the Stable value is assigned, C4 and C5 are
-re-run on the final bytes, because `profile_id` travels inside
-`TRANSPORT_OFFER` and `TRANSPORT_ACCEPT` and changing it changes what was
-tested.
+192 has NOT been dropped from this file. It stays as an experimental value that
+both implementations must carry without treating it as interoperable, and this
+file asserts against the registries themselves that it is still Experimental Use
+-- a test that fails the day somebody relabels it.
 
 The profile carriage rules are implemented here from the specifications only;
 `ip_binding.c` and `ble_binding.c` were not read while writing them.
 """
 
+import json
 import os
 import subprocess
 import sys
@@ -39,7 +41,8 @@ import mcl_independent as mcl  # noqa: E402
 checks = 0
 failures = []
 
-EXPERIMENTAL_PROFILE = 192
+STABLE_PROFILE = 1          # IP-DATAGRAM under IP, BLE-GATT under BLE
+EXPERIMENTAL_PROFILE = 192  # Experimental Use, permanently
 
 
 def check(cond, what):
@@ -48,6 +51,51 @@ def check(cond, what):
     if not cond:
         failures.append(what)
         print("  FAIL: %s" % what)
+
+
+def load_registry(relative):
+    with open(os.path.join(ROOT, relative), encoding="utf-8") as handle:
+        return json.load(handle)
+
+
+def test_registry_agrees_with_what_is_being_tested():
+    """The registry is the authoritative source of assigned numbers.
+
+    A test that hardcodes a profile value proves the two implementations agree
+    with each other and nothing about whether they agree with the registry.
+    These checks close that gap, and they are the ones that fail if an
+    Experimental Use value is ever quietly relabelled Stable.
+    """
+    print("[C5] the registries say what this file assumes")
+    for relative, transport, name in [
+            ("mcl-ip/registries/ip-profiles-v0.1.json", "IP", "IP-DATAGRAM"),
+            ("mcl-ble/registries/ble-profiles-v0.1.json", "BLE", "BLE-GATT")]:
+        reg = load_registry(relative)
+        rows = dict((row["id"], row) for row in reg["profiles"])
+
+        check(STABLE_PROFILE in rows,
+              "%s registry assigns profile %d" % (transport, STABLE_PROFILE))
+        if STABLE_PROFILE in rows:
+            row = rows[STABLE_PROFILE]
+            check(row["status"] == "stable",
+                  "%s profile %d is stable, got %r"
+                  % (transport, STABLE_PROFILE, row["status"]))
+            check(row["name"] == name,
+                  "%s profile %d is named %s, got %r"
+                  % (transport, STABLE_PROFILE, name, row["name"]))
+            check(row["range"] == "MCL Standards Action",
+                  "%s profile %d came from the Standards Action range"
+                  % (transport, STABLE_PROFILE))
+            check(row["specification_status"] == "Stable",
+                  "%s profile %d cites a Stable specification" % (transport,
+                                                                  STABLE_PROFILE))
+
+        check(rows[EXPERIMENTAL_PROFILE]["status"] == "experimental",
+              "%s profile %d is STILL Experimental Use -- never relabelled"
+              % (transport, EXPERIMENTAL_PROFILE))
+        check(rows[0]["status"] == "reserved",
+              "%s profile 0 stays reserved, so a zeroed field names no profile"
+              % transport)
 
 
 # --------------------------------------------------------------------------
@@ -79,6 +127,36 @@ def ip_max_frame_for_mtu(family, path_mtu):
     if usable < LINK_FRAME_MIN_SIZE:
         return 0
     return min(usable, LINK_FRAME_MAX_SIZE)
+
+
+def check_profile_carriage(binary, transport_id, profile_id, what):
+    """Both objects that carry profile_id, both directions, by value.
+
+    An 8-bit field is easy to get right by accident and easy to lose in a
+    struct layout. These checks compare the decoded VALUE on the far side,
+    which is the only comparison that catches a field being read from the
+    wrong offset.
+    """
+    for kind, extra in [("TRANSPORT_OFFER",
+                         {"endpoint_token": 0xD00D0001, "validity": 30}),
+                        ("TRANSPORT_ACCEPT",
+                         {"session_ref": 0x5E5510C7})]:
+        fields = {"source_ref": 0x0BADCAFE, "migration_ref": 0x4D194201,
+                  "transport_id": transport_id, "profile_id": profile_id}
+        fields.update(extra)
+        raw = mcl.encode_tier0(kind, 1, fields)
+        rc, out = c_call(binary, "fields_tier0", raw.hex())
+        check(rc == 0, "%s: reference decodes %s (%s)" % (what, kind, out))
+        check("profile_id=%d" % profile_id in out,
+              "%s: reference reads profile_id=%d back from %s, got %r"
+              % (what, profile_id, kind, out))
+        check("transport_id=%d" % transport_id in out,
+              "%s: and transport_id=%d, which scopes it"
+              % (what, transport_id))
+        # And back: the reference's own bytes, read by this implementation.
+        again = mcl.decode_tier0(raw)
+        check(again["fields"]["profile_id"] == profile_id,
+              "%s: %s round-trips the value here too" % (what, kind))
 
 
 def test_ip_profile(binary):
@@ -138,15 +216,25 @@ def test_ip_profile(binary):
           "a jumbo MTU is capped by the protocol, not the path")
 
     # The profile identifier travels inside the objects, so it is part of what
-    # is being tested. Recorded explicitly.
+    # is being tested rather than a label on the test.
+    check_profile_carriage(binary, 2, STABLE_PROFILE,
+                           "IP: the assigned IP-DATAGRAM value")
+    check_profile_carriage(binary, 2, EXPERIMENTAL_PROFILE,
+                           "IP: the experimental value, carried not blessed")
+
+    # An offer this implementation builds at the assigned value must survive
+    # the whole carriage path, not merely decode in isolation.
     offer = mcl.encode_tier0("TRANSPORT_OFFER", 1, {
         "source_ref": 0x0BADCAFE, "migration_ref": 0x4D194201,
-        "transport_id": 2, "profile_id": EXPERIMENTAL_PROFILE,
+        "transport_id": 2, "profile_id": STABLE_PROFILE,
         "endpoint_token": 0xD00D0001, "validity": 30})
-    rc, out = c_call(binary, "fields_tier0", offer.hex())
-    check(rc == 0, "reference decodes an offer naming profile 192")
-    check("profile_id=%d" % EXPERIMENTAL_PROFILE in out,
-          "and reads the experimental profile value back, got %r" % out)
+    carried = mcl.encode_frame(0, mcl.FLAG_SEQUENCE | mcl.FLAG_FRAME_CHECK,
+                               0x0BADCAFE, offer, sequence=2)
+    rc, out = c_call(binary, "ip_validate", carried.hex())
+    check(rc == 0,
+          "an IP datagram carrying an IP-DATAGRAM offer is accepted (%s)" % out)
+    check(ip_datagram_validate(carried) is not None,
+          "and this implementation accepts the same datagram")
 
 
 # --------------------------------------------------------------------------
@@ -346,6 +434,29 @@ def test_ble_profile(binary):
     check(rc == 0, "BLE: a frame with a check is accepted by the reference")
     check(ble_frame_validate(frame) is not None, "and here")
 
+    # The BLE profile identifier, under transport 3. Profile 1 here and
+    # profile 1 under IP are unrelated assignments; the transport_id is what
+    # keeps them apart, so both fields are compared together.
+    check_profile_carriage(binary, 3, STABLE_PROFILE,
+                           "BLE: the assigned BLE-GATT value")
+    check_profile_carriage(binary, 3, EXPERIMENTAL_PROFILE,
+                           "BLE: the experimental value, carried not blessed")
+
+    # An offer naming BLE-GATT, fragmented at the minimum MTU and reassembled
+    # by the reference: the identifier has to survive fragmentation too.
+    offer = mcl.encode_tier0("TRANSPORT_OFFER", 1, {
+        "source_ref": 0x0BADCAFE, "migration_ref": 0x4D194201,
+        "transport_id": 3, "profile_id": STABLE_PROFILE,
+        "endpoint_token": 0xD00D0001, "validity": 30})
+    carried = mcl.encode_frame(0, mcl.FLAG_SEQUENCE | mcl.FLAG_FRAME_CHECK,
+                               0x0BADCAFE, offer, sequence=3)
+    pieces = ble_fragment(carried, ATT_DEFAULT_MTU)
+    check(len(pieces) > 1, "the offer really does fragment at the minimum MTU")
+    rc, out = c_call(binary, "ble_reassemble",
+                     ",".join(f.hex() for f in pieces))
+    check(rc == 0 and out == carried.hex(),
+          "a BLE-GATT offer survives fragmentation and reassembly intact")
+
 
 def c_call(binary, verb, payload=""):
     result = subprocess.run([binary, verb, payload],
@@ -354,18 +465,22 @@ def c_call(binary, verb, payload=""):
 
 
 def main():
-    print("=== MCL C5: independent implementation vs the Candidate profiles ===")
-    print("Profile %d in both registries -- the Experimental Use value."
+    print("=== MCL C5: independent implementation vs the Stable profiles ===")
+    print("profile_id %d in both registries -- IP-DATAGRAM under transport 2,"
+          % STABLE_PROFILE)
+    print("BLE-GATT under transport 3. MCL Standards Action, 2026-09-04.")
+    print("These are the FINAL assigned bytes: profile_id travels inside")
+    print("TRANSPORT_OFFER and TRANSPORT_ACCEPT, so the earlier run against")
+    print("the Experimental Use value %d is evidence about %d and does not"
+          % (EXPERIMENTAL_PROFILE, EXPERIMENTAL_PROFILE))
+    print("transfer here. %d is still exercised, still experimental.\n"
           % EXPERIMENTAL_PROFILE)
-    print("This is evidence about profile %d, NOT about a Stable value that"
-          % EXPERIMENTAL_PROFILE)
-    print("does not exist yet. C4 and C5 are re-run on the final assigned")
-    print("bytes once the Standards Action assignment is made.\n")
 
     sys.path.insert(0, HERE)
     from test_independent import build_cross_check
     binary = build_cross_check()
 
+    test_registry_agrees_with_what_is_being_tested()
     test_ip_profile(binary)
     test_ble_profile(binary)
 
@@ -374,8 +489,12 @@ def main():
         for item in failures:
             print("  - %s" % item)
         return 1
-    print("C5 PROFILE INTEROPERABILITY PASSED (on experimental profile %d)"
-          % EXPERIMENTAL_PROFILE)
+    print("C5 PROFILE INTEROPERABILITY PASSED on the assigned profile value %d"
+          % STABLE_PROFILE)
+    print()
+    print("What this does NOT establish: that two ORGANISATIONS interoperate.")
+    print("The implementation on this side is independent of the reference")
+    print("code and was written by the same author. See ICS.md.")
     return 0
 
 

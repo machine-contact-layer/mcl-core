@@ -86,7 +86,13 @@ static int build_object(const char *name, mcl_wire_tier0_t *obj)
         obj->kind = MCL_WIRE_KIND_TRANSPORT_OFFER;
         obj->body.transport_offer.migration_ref = 0x4D194201u;
         obj->body.transport_offer.transport_id = 2u;
-        obj->body.transport_offer.profile_id = 192u;
+        /* Profile 1, IP-DATAGRAM: the Standards Action assignment. The fixture
+           carried the experimental 192 until that value existed, and moving it
+           is step 5 of the promotion sequence rather than housekeeping --
+           profile_id travels on the wire, so this changes the bytes under
+           test. The 192 cases did not disappear; they moved to explicit
+           experimental-value tests in test_independent.py. */
+        obj->body.transport_offer.profile_id = 1u;
         obj->body.transport_offer.endpoint_token = 0xD00D0001u;
         obj->body.transport_offer.validity = 30u;
         return 1;
@@ -95,7 +101,7 @@ static int build_object(const char *name, mcl_wire_tier0_t *obj)
         obj->kind = MCL_WIRE_KIND_TRANSPORT_ACCEPT;
         obj->body.transport_accept.migration_ref = 0x4D194201u;
         obj->body.transport_accept.transport_id = 2u;
-        obj->body.transport_accept.profile_id = 192u;
+        obj->body.transport_accept.profile_id = 1u;
         obj->body.transport_accept.session_ref = 0x5E5510C7u;
         return 1;
     }

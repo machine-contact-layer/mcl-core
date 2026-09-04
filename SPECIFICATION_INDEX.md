@@ -61,14 +61,14 @@ interoperability evidence for the exact bytes being frozen.
 | Document | Status |
 |---|---|
 | [`binding-v0.md`](../mcl-ip/spec/binding-v0.md) | Research Draft |
-| [`ip-datagram-profile-v1.md`](../mcl-ip/spec/ip-datagram-profile-v1.md) | Candidate |
+| [`ip-datagram-profile-v1.md`](../mcl-ip/spec/ip-datagram-profile-v1.md) | Stable |
 
 ## mcl-ble
 
 | Document | Status |
 |---|---|
 | [`binding-v0.md`](../mcl-ble/spec/binding-v0.md) | Research Draft |
-| [`ble-gatt-profile-v1.md`](../mcl-ble/spec/ble-gatt-profile-v1.md) | Candidate |
+| [`ble-gatt-profile-v1.md`](../mcl-ble/spec/ble-gatt-profile-v1.md) | Stable |
 
 ## mcl-uwb
 
@@ -104,7 +104,7 @@ Exactly what constitutes MCL v1.0. **This table is the answer to
 | Candidate semantic objects | `HAZARD`, `REQUEST`, `AUTHORITY_CLAIM`, `DEGRADED_STATE` — carried at major 0 only |
 | Stable Link frame classes | 9 of 10; `ADAPT` reserved |
 | Stable transports | IP (`transport_id` 2), BLE (3) |
-| Stable transport profiles | **none assigned yet** — both specifications are Candidate; profile 192 is Experimental Use in each and is never relabelled |
+| Stable transport profiles | **IP-DATAGRAM = 1** and **BLE-GATT = 1**, MCL Standards Action, 2026-09-04. Both specifications are Stable. Profile 192 remains Experimental Use in each and was never relabelled |
 | Experimental transports | AP (1), UWB (4) |
 | Stable extension IDs | **none** — the mechanism ships, the table is empty by design |
 | Negotiated feature bits | **none assigned** — same disposition |

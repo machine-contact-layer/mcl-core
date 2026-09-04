@@ -528,17 +528,37 @@ different acts and only the second one needs the interoperability evidence:
 5. Re-run the final C4/C5 cases with the final assigned bytes on the wire.
 ```
 
-Step 5 is not ceremony. The profile identifier travels in
-`TRANSPORT_OFFER`/`TRANSPORT_ACCEPT`, so changing it changes the bytes that were
-tested; evidence gathered under the experimental value is evidence about the
-experimental value. If the governance model later permits reserving a Candidate
-value inside the Standards Action range, steps 2–5 collapse and the final bytes
-are exercised from the start — that is the better outcome and should be
-preferred if available.
+**All five steps are complete as of 2026-09-04.**
 
-**What must not happen:** relabelling the existing experimental profile value as
-Stable. `REGISTRY_POLICY.md` is explicit that Experimental Use values are not
-globally interoperable assignments, and renaming one does not make it one.
+| Step | What closed it |
+|---|---|
+| 1 | Both profile specifications, complete, published at Candidate. |
+| 2 | `conformance/independent/test_profiles_c5.py` interoperated on the Experimental Use value 192. |
+| 3 | The registries' promotion gate, satisfied by step 2 and by the parameters being fixed by document rather than by code. |
+| 4 | `IP-DATAGRAM = 1` and `BLE-GATT = 1`, MCL Standards Action, recorded in each registry with the five §2 requirements answered individually. |
+| 5 | C4 (803 checks) and C5 (108 checks) re-run on the assigned bytes; the major-1 vector family regenerated to carry them. |
+
+Both specifications are now **Stable**.
+
+Step 5 was not ceremony. The profile identifier travels in
+`TRANSPORT_OFFER`/`TRANSPORT_ACCEPT`, so changing it changed the bytes that were
+tested; evidence gathered under the experimental value is evidence about the
+experimental value, and it is retained as exactly that rather than being
+re-labelled as evidence about profile 1.
+
+**What did not happen, and must not:** relabelling the experimental value as
+Stable. 192 remains Experimental Use permanently in both registries, and C5
+asserts that against the registry files themselves — the check fails the day
+anybody edits that status. Promotion assigned a *new* value in the Standards
+Action range, which is what `REGISTRY_POLICY.md` requires.
+
+**What this assignment rests on, stated plainly.** The independent
+implementation in step 2 is independent *of the reference code* — different
+language, no shared source, no shared build — and it found three real
+specification-reading defects. It was written by the same author. So the
+assignment rests on evidence that these documents can be implemented from the
+text alone, and **not** on evidence that two organisations have interoperated.
+§5.9 states what v1.0.0 therefore claims and does not claim.
 
 ### 5.7 Release-shaped work
 Installable SDK package and an external-consumer build test; public vulnerability
@@ -564,6 +584,81 @@ independent clean-room implementation, and C4/C5 cross-implementation testing.
 The charter does not permit going from private research to Stable without
 passing Candidate and Interoperability Candidate.
 
+### 5.9 What v1.0.0 claims about interoperability, and what it does not
+
+The release gate was first written with three rows that require acts by people
+outside this project: publish the repositories, have **someone else's**
+implementation interoperate, and have third parties review the published
+Candidate. Those rows describe how a standards body validates a specification.
+This project is one maintainer with two laptops, a development board, two
+speakers and two microphones, and it has no third parties yet — not because the
+bar is unreasonable but because a bar that can only be cleared by people who do
+not know the project exists cannot be cleared before publication.
+
+**Decision.** v1.0.0 ships as a *functional first release* with its claim
+boundary stated in the release itself, and review happens after publication
+through the errata process in `GOVERNANCE.md` §6. That is the order in which
+protocols are actually reviewed: publish something implementable, and let the
+first implementer file the first defect.
+
+**This narrows what the release claims. It does not lower a gate.** Every check
+in `RELEASE_GATE_V1.md` still has to pass, and none was rewritten to be easier.
+What changed is that the release states what its evidence supports instead of
+claiming a validation nobody performed.
+
+#### What v1.0 requires as interoperability evidence
+
+Three parts, all internally achievable, all mandatory:
+
+```text
+(a) two implementations independent OF EACH OTHER'S CODE cross-decode,
+    in both directions, including matching refusals
+(b) over-air carriage between two physically distinct devices, measured in
+    both directions, on real transports
+(c) the reference implementation, compiled by a DIFFERENT TOOLCHAIN for a
+    DIFFERENT ARCHITECTURE, running on an embedded target, interoperating
+    over a physical channel with the host implementation
+```
+
+Each answers a different question, and none substitutes for another:
+
+| | Question it answers |
+|---|---|
+| (a) | Can the specifications be implemented from the text, or only by reading the reference code? |
+| (b) | Do the bytes survive a real medium between real devices, rather than a loopback? |
+| (c) | Is the freestanding C99 claim true — does the stack run where there is no host, no heap and no libc, and does a machine there understand a machine here? |
+
+(c) is not a second implementation and this document does not call it one. It
+shares source with the reference. What it demonstrates is **portability and
+end-to-end operation**: an ESP32-S3 encoding a Tier-0 object itself, modulating
+it itself, and a host decoding it — and the reverse. That is the thesis of MCL
+reduced to its smallest honest demonstration, and it is worth more to a first
+release than a third review of the same documents.
+
+#### What v1.0.0 therefore does NOT claim
+
+```text
+NOT claimed: two ORGANISATIONS have interoperated
+NOT claimed: anyone outside this project has implemented these specifications
+NOT claimed: anyone outside this project has reviewed them
+NOT claimed: the specifications are free of defects a fresh reader would find
+```
+
+The independent implementation in `conformance/independent/` shares no code, no
+language and no build system with the reference C, and it found three real
+specification-reading defects — which is precisely why the fourth line above is
+written as it is. A reader who is not the author will find more. The errata
+process exists for exactly that, and the first external implementation report is
+a v1.1 event, tracked as errata, not a reason to withhold v1.0.
+
+#### What would change the claim
+
+One thing: an implementation built by someone else, interoperating. When that
+happens it is recorded as evidence and the claim widens. Until then the release
+says so in `ICS.md`, in `mcl-core/README.md`, and in the release manifest — in
+the same words, so a reader cannot find a weaker version of the statement by
+looking somewhere else.
+
 ## 6. The go/no-go rule
 
 > MCL v1.0.0 ships only when every feature called **Stable** has one unambiguous
@@ -577,3 +672,9 @@ compression and the richer semantics from artificially blocking a release they
 are not part of. It also stops the family being called "1.0" while a Stable
 profile, a Core meaning or interoperability itself still depends on whatever the
 reference C implementation happens to do.
+
+"Independent interoperability evidence" in that rule means the three-part
+requirement in §5.9 — (a) implementations independent of each other's code, (b)
+over-air between distinct devices, (c) a different toolchain and architecture on
+an embedded target. It does not mean organisational independence, and §5.9 says
+so in the release rather than leaving a reader to assume the stronger reading.
