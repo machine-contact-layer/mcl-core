@@ -327,6 +327,79 @@ def test_cross_implementation(binary):
         check(not c_ok, "%s: and it really is refused" % what)
 
 
+def test_major1_vectors(binary):
+    """The immutable major-1 family, field by field, both implementations.
+
+    These are the bytes v1.0 freezes. If the two implementations disagree about
+    any of them the release is not interoperable, so this is the sharpest test
+    in the suite.
+    """
+    print("[C4] major-1 vectors, both implementations")
+    path = os.path.join(ROOT, "mcl-wire", "conformance", "vectors",
+                        "tier0-major1-v1.0.json")
+    doc = load_vectors(path)
+    check(doc["wire_major"] == 1, "the family is major 1")
+
+    for vector in doc["vectors"]:
+        name = vector["name"]
+        raw = bytes.fromhex(vector["hex"])
+        check(len(raw) == vector["length"], "%s: length matches" % name)
+
+        decoded = mcl.decode_tier0(raw)
+        check(decoded["kind"] == name, "%s: independent decodes it" % name)
+        check(decoded["major"] == mcl.STABLE_MAJOR, "%s: at major 1" % name)
+
+        for field, expected in vector["fields"].items():
+            if field in ("major", "category", "opcode"):
+                continue
+            if field == "priority":
+                check(decoded["priority"] == expected,
+                      "%s.priority: %s vs %s" % (name, decoded["priority"],
+                                                 expected))
+                continue
+            check(decoded["fields"].get(field) == expected,
+                  "%s.%s: %s vs vector %s"
+                  % (name, field, decoded["fields"].get(field), expected))
+
+        # PRESENCE at major 1 must carry no machine_class at all.
+        if name == "PRESENCE":
+            check("machine_class" not in decoded["fields"],
+                  "PRESENCE at major 1 has no machine_class field")
+
+        # Re-encoding must reproduce the frozen bytes exactly.
+        again = mcl.encode_tier0(name, decoded["priority"], decoded["fields"],
+                                 major=mcl.STABLE_MAJOR)
+        check(again == raw, "%s: re-encodes to the frozen bytes" % name)
+
+        # And the reference C agrees on every field.
+        rc, out = c_call(binary, "fields_tier0", vector["hex"])
+        check(rc == 0, "%s: reference decodes the major-1 vector" % name)
+        if rc == 0:
+            reference = dict(p.split("=", 1) for p in out.split(" "))
+            check(reference["kind"] == name, "%s: reference agrees" % name)
+            for field, value in decoded["fields"].items():
+                if field in reference:
+                    check(int(reference[field]) == value,
+                          "%s.%s: reference %s vs %s"
+                          % (name, field, reference[field], value))
+
+    # Every negative vector must be refused by BOTH implementations.
+    for vector in doc["negative_vectors"]:
+        name = vector["name"]
+        raw = bytes.fromhex(vector["hex"])
+        independent_ok = True
+        try:
+            d = mcl.decode_tier0(raw)
+            independent_ok = d["consumed"] == len(raw)
+        except mcl.MclError:
+            independent_ok = False
+        rc, _ = c_call(binary, "decode_tier0", vector["hex"])
+        reference_ok = (rc == 0)
+        check(not independent_ok, "%s: independent refuses" % name)
+        check(not reference_ok, "%s: reference refuses" % name)
+        check(independent_ok == reference_ok, "%s: both agree" % name)
+
+
 def main():
     print("=== MCL C4 cross-implementation conformance ===")
     print("Independent implementation: mcl_independent.py, written from the")
@@ -338,6 +411,7 @@ def main():
     test_published_tier0_vectors(binary)
     test_duration_codec_against_spec()
     test_major_1_presence_is_ten_bytes()
+    test_major1_vectors(binary)
     test_cross_implementation(binary)
 
     print("\n%d checks, %d failed." % (checks, len(failures)))

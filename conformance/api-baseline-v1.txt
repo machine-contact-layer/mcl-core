@@ -10,7 +10,7 @@
 # Regenerate deliberately: mcl-core/tools/api-baseline.sh --update
 # Never regenerate to make a diff go away.
 #
-# symbols: 130
+# symbols: 132
 mcl_ap_attenuation_db_per_m
 mcl_ap_bitrate_equal_to_propagation_bps
 mcl_ap_doppler_shift_hz
@@ -79,6 +79,7 @@ mcl_link_context_key_equals
 mcl_link_crc32
 mcl_link_frame_decode
 mcl_link_frame_encode
+mcl_link_frame_encode_at_major
 mcl_link_frame_encoded_size
 mcl_link_has_active_context
 mcl_link_init
@@ -136,6 +137,7 @@ mcl_wire_tier0_decode_body
 mcl_wire_tier0_decode_ext
 mcl_wire_tier0_decode_ext_accept
 mcl_wire_tier0_encode
+mcl_wire_tier0_encode_at_major
 mcl_wire_tier0_encode_ext
 mcl_wire_tier0_encoded_size
 mcl_wire_tier0_encoded_size_at_major
