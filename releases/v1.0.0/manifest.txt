@@ -1,5 +1,5 @@
 MCL v1.0.0 release manifest
-built: 2026-09-04T01:08:53Z
+built: 2026-09-04T14:07:28Z
 
 COMMITS
 
@@ -12,13 +12,13 @@ COMMITS
   exactly this and recorded a stale mcl-core hash. Stating which
   entry is which is the honest fix; claiming to know it is not.
 
-  mcl-core 3686e1fce85661bc0af734532b996a09d9b83791
-  mcl-wire e5339f4d6615b26da10b7255312e1c3f5fe61073
+  mcl-core 64e397a231d4c5c52808250e31093e5cae4ea594
+  mcl-wire c2a63526f9b9986fdefe421982e6900d86ef60c5
   mcl-link 1b6d485120c29fa1d2ddb2faae4cfbed95179e5b
-  mcl-sdk a01f0fb86903471fcc79fd508bed59e229abab2e
-  mcl-ap 8d09c1cea0a3e275916860ef95a90890fe76f129
-  mcl-ip 7f113cb036e630c578e840a1ce6dc3f7dc206463
-  mcl-ble 2be9c706aa0c0f87633f6d619d981983f8452591
+  mcl-sdk 0069f2182f58097cdc983b94e7df6b711ff9a090
+  mcl-ap d24f3cb091abec3d441236bde31f4e7f30885fe3
+  mcl-ip 49d32f81683aa21b46a116ea99944baf2931d8f1
+  mcl-ble 6d406566809f1bed12f995a4b9bd23f36ab96996
   mcl-uwb cffd589153f603634e2b4ac0fdceab437b80f3f6
 
 WHAT THIS RELEASE CONTAINS
@@ -31,19 +31,45 @@ WHAT THIS RELEASE CONTAINS
   Link classes      9 Stable, ADAPT reserved
   Transports        IP (2) and BLE (3) Stable; AP (1) and UWB (4)
                     experimental
-  Profiles          NO Stable profile identifier is assigned.
-                    Both profile specifications are Candidate and
-                    interoperability was demonstrated on the
-                    Experimental Use value 192 in each registry.
+  Profiles          IP-DATAGRAM = 1 under transport 2
+                    BLE-GATT    = 1 under transport 3
+                    MCL Standards Action, assigned 2026-09-04. Both
+                    profile specifications are Stable. C4/C5 were
+                    re-run on these assigned bytes. Value 192 remains
+                    Experimental Use in each registry and was never
+                    relabelled.
   Extension IDs     none assigned; the mechanism ships, the table is
                     empty by design
   Feature bits      none assigned; same disposition
   Cryptography      none. See mcl-core/SECURITY.md
 
+WHAT THIS RELEASE DOES NOT CLAIM
+
+  Stated here in the same words as mcl-core/README.md,
+  conformance/ICS.md and governance/V1_SCOPE.md section 5.9, so that
+  a reader cannot find a weaker version by looking somewhere else.
+
+  NOT claimed: two ORGANISATIONS have interoperated
+  NOT claimed: anyone outside this project has implemented these
+               specifications
+  NOT claimed: anyone outside this project has reviewed them
+  NOT claimed: the specifications are free of defects a fresh reader
+               would find
+
+  The clean-room implementation in mcl-core/conformance/independent/
+  shares no code, no language and no build system with the reference
+  C, and it found three real specification-reading defects. It was
+  written by the same author. E6 is NOT reached.
+
+  Report a defect: mcl-core/REPORTING.md. Errata: mcl-core/errata/.
+
 ARTIFACTS
 
   mcl-core/SPECIFICATION_INDEX.md
   mcl-core/SECURITY.md
+  mcl-core/REPORTING.md
+  mcl-core/errata/README.md
+  mcl-core/governance/PUBLISHING.md
   mcl-core/LICENSING.md
   mcl-core/CONTRIBUTING.md
   mcl-core/governance/V1_SCOPE.md

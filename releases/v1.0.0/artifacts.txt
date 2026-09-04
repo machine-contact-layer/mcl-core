@@ -2,6 +2,9 @@
 # release. Paths are relative to the eight-repository root.
 mcl-core/SPECIFICATION_INDEX.md
 mcl-core/SECURITY.md
+mcl-core/REPORTING.md
+mcl-core/errata/README.md
+mcl-core/governance/PUBLISHING.md
 mcl-core/LICENSING.md
 mcl-core/CONTRIBUTING.md
 mcl-core/governance/V1_SCOPE.md
