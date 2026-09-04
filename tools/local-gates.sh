@@ -241,6 +241,15 @@ else
   fail "feature traceability"; grep -E 'FAIL|broken link' "$WORK/trace.log"
 fi
 
+# ---------------------------------------------------------------- 9. provenance
+note "provenance and licensing"
+if sh "$ROOT/mcl-core/tools/check-provenance.sh" > "$WORK/prov.log" 2>&1; then
+  printf '  %s
+' "$(grep 'binary artifact' "$WORK/prov.log")"
+else
+  fail "provenance and licensing"; grep 'FAIL' "$WORK/prov.log"
+fi
+
 # ---------------------------------------------------------------- summary
 note "SUMMARY"
 if [ "$FAILURES" -eq 0 ]; then
