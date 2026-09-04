@@ -41,7 +41,7 @@ tracked_grep() {
     for repo in $REPOS; do
         git -C "$ROOT/$repo" grep -nIE "$pattern" -- \
             ':!*/evidence/*' ':!*evidence/*' \
-            ':!*/tools/go-no-go-audit.sh' 2>/dev/null \
+            ':!*go-no-go-audit.sh' 2>/dev/null \
             | sed "s|^|$repo/|" || true
     done
 }
