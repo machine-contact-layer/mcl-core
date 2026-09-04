@@ -113,7 +113,9 @@ report_info "$(tracked_grep 'tx_fn\(user, data, size\)|tx\(user, bytes, size\)' 
 
 # ------------------------------------------------------------------ checks
 section "the other gate checks still pass"
-for tool in check-registry-governance.sh check-traceability.sh check-provenance.sh api-baseline.sh; do
+for tool in check-registry-governance.sh check-traceability.sh \
+            check-provenance.sh api-baseline.sh \
+            check-publication-readiness.sh; do
     if sh "$ROOT/mcl-core/tools/$tool" > /dev/null 2>&1; then
         echo "  ok   $tool"
     else

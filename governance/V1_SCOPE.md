@@ -612,13 +612,19 @@ Three parts, all internally achievable, all mandatory:
 
 ```text
 (a) two implementations independent OF EACH OTHER'S CODE cross-decode,
-    in both directions, including matching refusals
+    in both directions, including matching refusals            DONE
 (b) over-air carriage between two physically distinct devices, measured in
-    both directions, on real transports
+    both directions, on real transports                        DONE
 (c) the reference implementation, compiled by a DIFFERENT TOOLCHAIN for a
     DIFFERENT ARCHITECTURE, running on an embedded target, interoperating
-    over a physical channel with the host implementation
+    over a physical channel with the host implementation        DONE
 ```
+
+| | Evidence |
+|---|---|
+| (a) | `conformance/independent/` — C4 803 checks, C5 108 checks, both directions, matching refusals. |
+| (b) | IP `mcl-ip/evidence/e4-udp-2g4-20260902/`, BLE `mcl-ble/evidence/e4-ble-gatt-20260902/`, migration `mcl-sdk/evidence/e4-dual-transport-migration-20260903/`, acoustic `mcl-ap/experiments/003-band-informed-candidate/evidence/`. |
+| (c) | `mcl-ap/experiments/008-embedded-node/` — the DFR1154 builds a major-1 `PRESENCE` with `mcl-wire`, wraps it in a major-1 Link frame with `mcl-link`, modulates, emits, and in the other direction acquires, demodulates, verifies, decodes and reports field values with no host in the loop. Ten trials per cell: board→host 9/10 at 10 bytes and 2/10 at 24; host→board 6/10 and 7/10, decoded on the microcontroller. All four cells acquired 10/10. |
 
 Each answers a different question, and none substitutes for another:
 
@@ -634,6 +640,12 @@ end-to-end operation**: an ESP32-S3 encoding a Tier-0 object itself, modulating
 it itself, and a host decoding it — and the reverse. That is the thesis of MCL
 reduced to its smallest honest demonstration, and it is worth more to a first
 release than a third review of the same documents.
+
+Recovery rates of 2/10 to 9/10 are **not a usable link**, and the release does
+not claim one. What (c) establishes is that the stack runs and that both ends
+agree about bytes that crossed a room; the acoustic transport remains
+Experimental and AP-B0 remains unselected. A link good enough to depend on is a
+question for the AP profile work, not for whether v1.0 ships.
 
 #### What v1.0.0 therefore does NOT claim
 

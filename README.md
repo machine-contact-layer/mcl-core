@@ -208,9 +208,11 @@ and the `evidence/` directories in the binding repositories.
 
 ## Status
 
-**Pre-v0.1 candidate specification. Private research. Nothing is tagged, nothing
-is standardized, nothing is stable.** No private research draft is an adopted
-standard.
+**v1.0 candidate.** The Stable surface is frozen: Wire major 1, Link major 1,
+three Stable Tier-0 objects, two Stable transport profiles with assigned
+identifiers, nine Stable Link classes. What v1.0 does and does not cover is
+decided in [`governance/V1_SCOPE.md`](governance/V1_SCOPE.md), and the release
+gate is [`governance/RELEASE_GATE_V1.md`](governance/RELEASE_GATE_V1.md).
 
 | Layer | Implementation | Physical evidence |
 |---|---|---|
@@ -218,7 +220,7 @@ standard.
 | Wire — canonical bytes | C99, 7 test targets | — |
 | Link — contact and framing | C99, 9 test targets | — |
 | SDK — developer API | C99, 5 test targets | **E4** — one contact across 104 changes of medium |
-| AP — acoustic | C99 + experiments | **E3 / E4** |
+| AP — acoustic | C99 + experiments | **E4** — and the stack itself runs on an ESP32-S3 |
 | IP — network | C99, host tool | **E4** — 2.4 GHz UDP, two machines |
 | BLE — Bluetooth LE | C99, host tool | **E4** — GATT fragmentation, two machines |
 | UWB — ultra-wideband | C99 | none — software binding only |
@@ -226,23 +228,50 @@ standard.
 Test counts are read from `ctest -N`, not remembered. A count written from
 memory has been wrong twice in this project's history, in both directions.
 
-The SDK row is the newest and the least obvious: migration was exercised between
-two machines with **both media live on both peers at once**, which is the only
-arrangement in which a contact can actually change medium. A single-transport
-rig cannot construct the case that matters.
+Two rows deserve a sentence. The SDK row exercised migration between two
+machines with **both media live on both peers at once**, which is the only
+arrangement in which a contact can actually change medium. The AP row is newer:
+`mcl-ap/experiments/008-embedded-node/` runs `mcl-wire`, `mcl-link` and the
+acoustic modem **on the microcontroller**, so a frame emitted by a laptop is
+acquired, demodulated, verified and decoded to field values by the board itself,
+with no host in the loop.
 
-What the v1.0 release will and will not claim about each of these is decided in
-[`governance/V1_SCOPE.md`](governance/V1_SCOPE.md).
+### What this release claims, and what it does not
 
-What that table does **not** say: nothing here is independent interoperability.
-Both ends of every over-air run compile the same sources, so a shared
-misreading of the specification would pass on both sides and be invisible. C4
-and E6 require a second implementation written from the specification by someone
-else.
+This is the part most likely to be read too generously, so it is stated
+plainly. `V1_SCOPE.md` §5.9 is the normative version.
 
-**MCL currently provides no confidentiality, no cryptographic authenticity, and
-no peer authentication.** The two shapes that do not need them — open contact,
-and machines that already know each other — are usable today. A deployment that
+**Claimed:**
+
+- Two implementations that share **no code, no language and no build system**
+  cross-decode in both directions, including matching refusals — the clean-room
+  implementation in [`conformance/independent/`](conformance/independent/),
+  C4 803 checks and C5 108 checks on the assigned profile bytes.
+- Over-air carriage between physically distinct devices, both directions, on
+  IP, BLE and acoustic.
+- The same source compiled by a **different toolchain for a different
+  architecture**, running on an embedded target with no heap and no libc,
+  interoperating over a physical channel with the host.
+
+**Not claimed:**
+
+```text
+NOT claimed: two ORGANISATIONS have interoperated
+NOT claimed: anyone outside this project has implemented these specifications
+NOT claimed: anyone outside this project has reviewed them
+NOT claimed: the specifications are free of defects a fresh reader would find
+```
+
+The clean-room implementation is independent *of the reference code* and was
+written by the same author. It found three real specification-reading defects,
+which is exactly why the last line is written the way it is: a reader who is not
+the author will find more. That is what the errata process is for —
+[`REPORTING.md`](REPORTING.md) — and the first external implementation report is
+a v1.1 event, not a reason to withhold v1.0.
+
+**MCL provides no confidentiality, no cryptographic authenticity, and no peer
+authentication.** The two shapes that do not need them — open contact, and
+machines that already know each other — are usable today. A deployment that
 needs the security profile is waiting on work that has not been done. See
 [`SECURITY.md`](SECURITY.md) before assuming otherwise.
 

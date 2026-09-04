@@ -1,0 +1,167 @@
+#!/bin/sh
+#
+# Release gate item 27: everything that can be true before the repositories are
+# made public.
+#
+# The act itself is not in this tree -- nothing here can change a repository's
+# visibility. What this checks is that when someone does, they are publishing
+# what they think they are.
+#
+# THE DISTINCTION THIS SCRIPT KEEPS
+#
+# A tracked SCRIPT containing an absolute user path is a defect: it will not
+# run on anyone else's machine, and publishing it publishes a username for no
+# benefit. That is FATAL.
+#
+# An EVIDENCE file containing one is not a defect. Evidence records what a
+# machine printed on a date and is never edited -- rewriting it to look tidier
+# is the one thing this project's rules forbid outright. Those are listed as a
+# DECISION for the owner, who may publish them, redact the whole record, or
+# withhold that directory. What must not happen is editing them quietly.
+#
+#   ./check-publication-readiness.sh
+
+set -e
+
+ROOT=$(cd "$(dirname "$0")/../.." && pwd)
+REPOS="mcl-core mcl-wire mcl-link mcl-sdk mcl-ap mcl-ip mcl-ble mcl-uwb"
+FATAL=0
+DECISIONS=0
+
+echo "=== MCL publication readiness ==="
+echo
+
+# ------------------------------------------------------- 1. front-door files
+echo "-- every repository has the files a reader lands on"
+for repo in $REPOS; do
+    missing=""
+    for f in README.md LICENSE NOTICE; do
+        [ -f "$ROOT/$repo/$f" ] || missing="$missing $f"
+    done
+    if [ -n "$missing" ]; then
+        echo "  FAIL $repo is missing:$missing"
+        FATAL=$((FATAL + 1))
+    else
+        echo "  ok   $repo"
+    fi
+done
+
+echo
+echo "-- mcl-core carries the shared process documents"
+for f in SECURITY.md LICENSING.md CONTRIBUTING.md CODE_OF_CONDUCT.md \
+         REPORTING.md SPECIFICATION_INDEX.md errata/README.md; do
+    if [ -f "$ROOT/mcl-core/$f" ]; then
+        echo "  ok   mcl-core/$f"
+    else
+        echo "  FAIL mcl-core/$f is missing"
+        FATAL=$((FATAL + 1))
+    fi
+done
+
+# ------------------------------------------------- 2. absolute paths, scripts
+echo
+echo "-- no absolute user paths in tracked scripts (FATAL)"
+hits=""
+for repo in $REPOS; do
+    hit=$(git -C "$ROOT/$repo" grep -lIE '[A-Za-z]:\\Users\\[A-Za-z0-9_.-]+|/home/[A-Za-z0-9_.-]+/' -- \
+        '*.sh' '*.ps1' '*.py' '*.c' '*.h' '*.cmd' '*.bat' 'CMakeLists.txt' \
+        ':!*/evidence/*' ':!*evidence/*' 2>/dev/null | sed "s|^|$repo/|" || true)
+    [ -n "$hit" ] && hits="$hits$hit
+"
+done
+hits=$(printf '%s' "$hits" | sed '/^$/d')
+if [ -n "$hits" ]; then
+    echo "$hits" | sed 's/^/  FATAL /'
+    n=$(echo "$hits" | wc -l | tr -d ' ')
+    FATAL=$((FATAL + n))
+else
+    echo "  ok   none"
+fi
+
+# ---------------------------------------------- 3. absolute paths, evidence
+echo
+echo "-- absolute user paths inside EVIDENCE (a decision, never an edit)"
+ev=""
+for repo in $REPOS; do
+    hit=$(git -C "$ROOT/$repo" grep -lIE '[A-Za-z]:\\Users\\[A-Za-z0-9_.-]+|/home/[A-Za-z0-9_.-]+/' -- \
+        '*evidence/*' 2>/dev/null | sed "s|^|$repo/|" || true)
+    [ -n "$hit" ] && ev="$ev$hit
+"
+done
+ev=$(printf '%s' "$ev" | sed '/^$/d')
+if [ -n "$ev" ]; then
+    n=$(echo "$ev" | wc -l | tr -d ' ')
+    DECISIONS=$((DECISIONS + n))
+    echo "  $n evidence file(s) name a local path. Publishing them discloses a"
+    echo "  username. Editing them is NOT an option -- decide per directory:"
+    echo "$ev" | head -20 | sed 's/^/       /'
+    [ "$n" -gt 20 ] && echo "       ... and $((n - 20)) more"
+else
+    echo "  ok   none"
+fi
+
+# ------------------------------------------------------------- 4. secrets
+echo
+echo "-- no credential-shaped strings (FATAL)"
+sec=""
+for repo in $REPOS; do
+    hit=$(git -C "$ROOT/$repo" grep -nIE \
+        '(BEGIN [A-Z ]*PRIVATE KEY|ghp_[A-Za-z0-9]{20,}|AKIA[0-9A-Z]{16}|xox[baprs]-)' \
+        -- . ':!*check-publication-readiness.sh' 2>/dev/null | sed "s|^|$repo/|" || true)
+    [ -n "$hit" ] && sec="$sec$hit
+"
+done
+sec=$(printf '%s' "$sec" | sed '/^$/d')
+if [ -n "$sec" ]; then
+    echo "$sec" | sed 's/^/  FATAL /'
+    FATAL=$((FATAL + 1))
+else
+    echo "  ok   none"
+fi
+
+# ----------------------------------------------- 5. the claim boundary is said
+echo
+echo "-- the release states what it does NOT claim, in every place a reader looks"
+for f in "mcl-core/README.md" "mcl-core/conformance/ICS.md" \
+         "mcl-core/governance/V1_SCOPE.md" \
+         "mcl-core/releases/v1.0.0/manifest.txt"; do
+    if grep -q "NOT claim" "$ROOT/$f" 2>/dev/null; then
+        echo "  ok   $f"
+    else
+        echo "  FAIL $f does not state the claim boundary"
+        FATAL=$((FATAL + 1))
+    fi
+done
+
+# --------------------------------------------------------------- 6. no CI
+echo
+echo "-- no hosted CI configuration (this project uses none, deliberately)"
+ci=0
+for repo in $REPOS; do
+    for d in .github/workflows .gitlab-ci.yml .circleci azure-pipelines.yml; do
+        if [ -e "$ROOT/$repo/$d" ]; then
+            echo "  FAIL $repo/$d exists"
+            FATAL=$((FATAL + 1))
+            ci=1
+        fi
+    done
+done
+[ "$ci" -eq 0 ] && echo "  ok   none"
+
+# ---------------------------------------------------------------- summary
+echo
+echo "=== SUMMARY ==="
+echo "fatal:      $FATAL"
+echo "decisions:  $DECISIONS"
+echo
+if [ "$FATAL" -ne 0 ]; then
+    echo "NOT READY TO PUBLISH. $FATAL fatal finding(s)."
+    exit 1
+fi
+echo "READY, as far as a script can tell."
+echo
+echo "What remains is not in this tree and cannot be:"
+echo "  - making the repositories readable by other people"
+echo "  - deciding the $DECISIONS evidence file(s) above, if any"
+echo
+echo "See mcl-core/governance/PUBLISHING.md for the order those happen in."

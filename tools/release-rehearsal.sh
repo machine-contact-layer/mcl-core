@@ -61,6 +61,8 @@ run "provenance and licensing" \
     sh "$ROOT/mcl-core/tools/check-provenance.sh"
 run "go/no-go audit" \
     sh "$ROOT/mcl-core/tools/go-no-go-audit.sh"
+run "publication readiness" \
+    sh "$ROOT/mcl-core/tools/check-publication-readiness.sh"
 run "release bundle reconstruction" \
     sh "$ROOT/mcl-core/tools/build-release-bundle.sh" --verify v1.0.0
 

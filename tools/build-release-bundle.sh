@@ -166,6 +166,9 @@ cat > "$BUNDLE/artifacts.txt" <<'ARTIFACTS'
 # release. Paths are relative to the eight-repository root.
 mcl-core/SPECIFICATION_INDEX.md
 mcl-core/SECURITY.md
+mcl-core/REPORTING.md
+mcl-core/errata/README.md
+mcl-core/governance/PUBLISHING.md
 mcl-core/LICENSING.md
 mcl-core/CONTRIBUTING.md
 mcl-core/governance/V1_SCOPE.md
@@ -236,6 +239,26 @@ ARTIFACTS
     echo "                    empty by design"
     echo "  Feature bits      none assigned; same disposition"
     echo "  Cryptography      none. See mcl-core/SECURITY.md"
+    echo
+    echo "WHAT THIS RELEASE DOES NOT CLAIM"
+    echo
+    echo "  Stated here in the same words as mcl-core/README.md,"
+    echo "  conformance/ICS.md and governance/V1_SCOPE.md section 5.9, so that"
+    echo "  a reader cannot find a weaker version by looking somewhere else."
+    echo
+    echo "  NOT claimed: two ORGANISATIONS have interoperated"
+    echo "  NOT claimed: anyone outside this project has implemented these"
+    echo "               specifications"
+    echo "  NOT claimed: anyone outside this project has reviewed them"
+    echo "  NOT claimed: the specifications are free of defects a fresh reader"
+    echo "               would find"
+    echo
+    echo "  The clean-room implementation in mcl-core/conformance/independent/"
+    echo "  shares no code, no language and no build system with the reference"
+    echo "  C, and it found three real specification-reading defects. It was"
+    echo "  written by the same author. E6 is NOT reached."
+    echo
+    echo "  Report a defect: mcl-core/REPORTING.md. Errata: mcl-core/errata/."
     echo
     echo "ARTIFACTS"
     echo

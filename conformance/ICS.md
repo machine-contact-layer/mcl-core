@@ -56,7 +56,9 @@ interoperate. v1.0.0 does not claim that. See `V1_SCOPE.md` §5.9.
 | **E4** over-air, BLE | yes | `mcl-ble/evidence/e4-ble-gatt-20260902/` |
 | **E4** dual-transport migration | yes | `mcl-sdk/evidence/e4-dual-transport-migration-20260903/` — 104 migrations, 100 consecutive alternating BLE↔IP, 2989 checks, 0 failures |
 | **E3** acoustic | yes | `mcl-ap/experiments/001-known-waveform/evidence/` |
-| **E5, E6** | **no** | Not attempted. |
+| **E4** acoustic, both directions | yes | `mcl-ap/experiments/003-band-informed-candidate/evidence/` |
+| **E4** protocol stack on an embedded peer | yes | `mcl-ap/experiments/008-embedded-node/` — the DFR1154 builds, modulates, demodulates and decodes MCL itself. host→board recovery is decoded on the microcontroller, no host in the loop. 4 cells × 10 trials; all four acquired 10/10. |
+| **E5, E6** | **no** | Not attempted. E6 needs an implementation built by someone else, which v1.0.0 does not claim — see `V1_SCOPE.md` §5.9. |
 
 ## 2. Mandatory features
 
