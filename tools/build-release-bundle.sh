@@ -67,12 +67,17 @@ if [ "$VERIFY" -eq 1 ]; then
     echo
     echo "-- checksums match the artifacts they name"
     if [ -f "$BUNDLE/SHA256SUMS.txt" ]; then
-        if (cd "$BUNDLE" && sha256sum -c SHA256SUMS.txt > /dev/null 2>&1); then
+        # Verified from the REPOSITORY ROOT, because the paths in
+        # SHA256SUMS.txt are relative to it -- the artifacts live in the eight
+        # repositories and are referenced in place rather than copied into the
+        # bundle. Copying them would create a second version that can drift
+        # from the one the commits name.
+        if (cd "$ROOT" && sha256sum -c "$BUNDLE/SHA256SUMS.txt" > /dev/null 2>&1); then
             n=$(grep -c . "$BUNDLE/SHA256SUMS.txt")
-            echo "  ok   $n artifact(s) verified"
+            echo "  ok   $n artifact(s) verified against the working tree"
         else
             echo "  FAIL checksums do not match:"
-            (cd "$BUNDLE" && sha256sum -c SHA256SUMS.txt 2>&1 | grep -v ': OK' | head)
+            (cd "$ROOT" && sha256sum -c "$BUNDLE/SHA256SUMS.txt" 2>&1                 | grep -v ': OK' | head)
             failures=$((failures + 1))
         fi
     else
