@@ -14,9 +14,16 @@ build if it is out of date.
 | **Research Draft** | Not normative. May change without notice. Not a basis for an implementation. |
 | **Superseded** | Retained as a record. Never deleted, never edited to look current. |
 
-**No document in MCL is Stable yet.** Stable requires the go/no-go
-rule in `governance/V1_SCOPE.md` §6, which requires independent
-interoperability evidence for the exact bytes being frozen.
+**Stable documents, read from the tree at generation time:**
+
+- `mcl-ip/spec/ip-datagram-profile-v1.md`
+- `mcl-ble/spec/ble-gatt-profile-v1.md`
+
+Every other document is below Stable. Promotion requires the
+go/no-go rule in `governance/V1_SCOPE.md` §6 — independent
+interoperability evidence for the exact bytes being frozen — and
+the `governance/REGISTRY_POLICY.md` §2 requirements for any
+registry value the document assigns.
 
 ## mcl-core
 
@@ -97,15 +104,16 @@ Exactly what constitutes MCL v1.0. **This table is the answer to
 
 | Component | v1.0 |
 |---|---|
-| Wire major | 1 — defined, **not yet cut**; the codec still refuses it |
+| Wire major | 1 — **cut**; encoded, decoded, and frozen by the immutable major-1 vectors |
 | Wire experimental major | 0 — permanent, never changes |
-| Link major | 1 — defined, not yet cut |
+| Link major | 1 — **cut**; frame layout byte-identical to major 0, class dispositions frozen |
+| Default major emitted | 0 — v1.0 promises source compatibility, so the pre-cut encode calls emit what they always emitted; the `_at_major` calls select 1 |
 | Stable semantic objects | `PRESENCE`, `TRANSPORT_OFFER`, `TRANSPORT_ACCEPT` |
 | Candidate semantic objects | `HAZARD`, `REQUEST`, `AUTHORITY_CLAIM`, `DEGRADED_STATE` — carried at major 0 only |
 | Stable Link frame classes | 9 of 10; `ADAPT` reserved |
-| Stable transports | IP (`transport_id` 2), BLE (3) |
+| Stable transports | MCL_IP (2), MCL_BLE (3) |
 | Stable transport profiles | **IP-DATAGRAM = 1** and **BLE-GATT = 1**, MCL Standards Action, 2026-09-04. Both specifications are Stable. Profile 192 remains Experimental Use in each and was never relabelled |
-| Experimental transports | AP (1), UWB (4) |
+| Provisional transports | MCL_AP (1), MCL_UWB (4) — assigned for use, not frozen |
 | Stable extension IDs | **none** — the mechanism ships, the table is empty by design |
 | Negotiated feature bits | **none assigned** — same disposition |
 | API compatibility | source/API, **not** binary ABI |

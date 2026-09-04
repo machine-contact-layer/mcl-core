@@ -97,6 +97,37 @@ def test_registry_agrees_with_what_is_being_tested():
               "%s profile 0 stays reserved, so a zeroed field names no profile"
               % transport)
 
+    # A profile identifier is transport-scoped: IP-DATAGRAM = 1 means nothing
+    # unless transport_id = 2 is itself frozen, because profile 1 under some
+    # other transport is an unrelated assignment. For one day this project
+    # shipped a compatibility matrix calling transports 2 and 3 Stable while
+    # the authoritative registry still marked all four provisional. These
+    # checks are why that pair cannot come apart again.
+    transports = load_registry("mcl-link/registries/transport-ids-v0.1.json")
+    trows = dict((row["id"], row) for row in transports["assignments"])
+
+    for tid, tname, spec in [
+            (2, "MCL_IP", "mcl-ip/spec/ip-datagram-profile-v1.md"),
+            (3, "MCL_BLE", "mcl-ble/spec/ble-gatt-profile-v1.md")]:
+        check(tid in trows, "transport %d is assigned" % tid)
+        if tid in trows:
+            row = trows[tid]
+            check(row["name"] == tname,
+                  "transport %d is %s, got %r" % (tid, tname, row["name"]))
+            check(row["status"] == "stable",
+                  "transport %d is stable -- the profile above is scoped to it, "
+                  "got %r" % (tid, row["status"]))
+            check(row.get("normative_specification") == spec,
+                  "transport %d cites %s, got %r"
+                  % (tid, spec, row.get("normative_specification")))
+            check(row.get("specification_status") == "Stable",
+                  "transport %d cites a Stable specification" % tid)
+
+    for tid, tname in [(1, "MCL_AP"), (4, "MCL_UWB")]:
+        check(trows[tid]["status"] != "stable",
+              "transport %d (%s) was NOT promoted alongside them -- AP-B0 is "
+              "unselected and no UWB hardware has run" % (tid, tname))
+
 
 # --------------------------------------------------------------------------
 # IP-DATAGRAM v1, implemented from mcl-ip/spec/ip-datagram-profile-v1.md

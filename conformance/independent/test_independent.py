@@ -335,7 +335,10 @@ def test_cross_implementation(binary):
         ("00", "a two-byte header alone"),
         ("0002aa0000010100001f", "a PRESENCE one byte short"),
         ("0002aa0000010100001f7900", "a PRESENCE one byte long"),
-        ("1002aa0000010100001f79", "major 1 on the wire, not yet cut"),
+        ("1002aa0000010100001f79", "a major-0 PRESENCE body presented at major 1: "
+                                   "major 1 is cut and carries PRESENCE, but it "
+                                   "drops machine_class, so the 11-byte body is "
+                                   "one byte too long at 10"),
         ("0f02aa0000010100001f79", "an unassigned major"),
     ]
     for hex_bytes, what in bad:

@@ -540,6 +540,30 @@ different acts and only the second one needs the interoperability evidence:
 
 Both specifications are now **Stable**.
 
+**The transport identifiers they are scoped to were frozen on the same
+evidence, and had to be.** `profile_id` is transport-scoped: `IP-DATAGRAM = 1`
+means nothing unless `transport_id = 2` is itself fixed, because profile 1 under
+another transport is an unrelated assignment. A Stable profile hanging off a
+provisional identifier is an incoherent pair, and for one day this project
+shipped exactly that — the compatibility matrix called transports 2 and 3
+Stable while `mcl-link/registries/transport-ids-v0.1.json` still marked all four
+provisional. The registry was the authoritative source, so the registry is what
+changed:
+
+| Value | Disposition |
+|---|---|
+| `transport_id = 2` (`MCL_IP`) | **Stable.** MCL Standards Action, 2026-09-04. `mcl-ip/spec/ip-datagram-profile-v1.md`, a Stable document, names the value normatively. |
+| `transport_id = 3` (`MCL_BLE`) | **Stable.** Same date, same treatment, `mcl-ble/spec/ble-gatt-profile-v1.md`. |
+| `transport_id = 1` (`MCL_AP`), `= 4` (`MCL_UWB`) | **Provisional.** AP-B0 is unselected and no UWB hardware has been run, so neither has the evidence the other two have. Assigned for use; not frozen. |
+
+No byte changed: transports 2 and 3 were already the values under test in C4 and
+C5. What changed is that the registry now says they are frozen, and that saying
+so costs something — `validate_transport_registry.c` refuses a row marked
+`stable` that cites no normative specification or cites one that is not itself
+Stable, and `test_profiles_c5.py` fails if either transport stops being stable
+or if AP or UWB is quietly promoted alongside them. Both guards were verified by
+making the edits and watching them fail, not by assertion.
+
 Step 5 was not ceremony. The profile identifier travels in
 `TRANSPORT_OFFER`/`TRANSPORT_ACCEPT`, so changing it changed the bytes that were
 tested; evidence gathered under the experimental value is evidence about the
@@ -623,7 +647,7 @@ Three parts, all internally achievable, all mandatory:
 | | Evidence |
 |---|---|
 | (a) | `conformance/independent/` — C4 803 checks, C5 108 checks, both directions, matching refusals. |
-| (b) | IP `mcl-ip/evidence/e4-udp-2g4-20260902/`, BLE `mcl-ble/evidence/e4-ble-gatt-20260902/`, migration `mcl-sdk/evidence/e4-dual-transport-migration-20260903/`, acoustic `mcl-ap/experiments/003-band-informed-candidate/evidence/`. |
+| (b) | IP `mcl-ip/evidence/e4-udp-2g4-20260902/` and `mcl-ip/evidence/e4-android-udp-20260904/`, BLE `mcl-ble/evidence/e4-ble-gatt-20260902/`, migration `mcl-sdk/evidence/e4-dual-transport-migration-20260903/`, acoustic `mcl-ap/experiments/003-band-informed-candidate/evidence/`. Three device families now, not two: an ESP32-S3, a Windows laptop and a commodity Android handset running a vendor build this project did not choose. |
 | (c) | `mcl-ap/experiments/008-embedded-node/` — the DFR1154 builds a major-1 `PRESENCE` with `mcl-wire`, wraps it in a major-1 Link frame with `mcl-link`, modulates, emits, and in the other direction acquires, demodulates, verifies, decodes and reports field values with no host in the loop. Ten trials per cell: board→host 9/10 at 10 bytes and 2/10 at 24; host→board 6/10 and 7/10, decoded on the microcontroller. All four cells acquired 10/10. |
 
 Each answers a different question, and none substitutes for another:

@@ -18,8 +18,9 @@ Read with `governance/V1_SCOPE.md`, which says what v1.0 *claims*, and
 | Repositories | `mcl-core`, `mcl-wire`, `mcl-link`, `mcl-sdk`, `mcl-ap`, `mcl-ip`, `mcl-ble`, `mcl-uwb` |
 | Language | C99, freestanding for all protocol-facing code |
 | Dependencies | none |
-| Wire major implemented | 0 (experimental). Major 1 is defined and **refused**; it is not cut. |
-| Link major implemented | 0 |
+| Wire majors implemented | **0** (experimental, permanent) and **1** (Stable, cut for v1.0). Both are encoded and decoded. Major 1 carries `PRESENCE`, `TRANSPORT_OFFER`, `TRANSPORT_ACCEPT` and refuses every other kind. Every unassigned major is refused. |
+| Link majors implemented | **0** and **1** (Stable, cut for v1.0). The frame layout is byte-identical; major 1 freezes the class dispositions. |
+| Default major emitted | 0, by both `mcl_wire_tier0_encode` and `mcl_link_frame_encode`. v1.0 promises source compatibility, so a call written before the cut emits exactly the bytes it emitted before; `mcl_wire_tier0_encode_at_major` and `mcl_link_frame_encode_at_major` select major 1. |
 
 ## 1. Conformance levels reached
 
@@ -52,11 +53,12 @@ interoperate. v1.0.0 does not claim that. See `V1_SCOPE.md` §5.9.
 
 | Level | Reached | Evidence |
 |---|---|---|
-| **E4** over-air, IP | yes | `mcl-ip/evidence/e4-udp-2g4-20260902/` |
+| **E4** over-air, IP | yes | `mcl-ip/evidence/e4-udp-2g4-20260902/` (ESP32-S3) and `mcl-ip/evidence/e4-android-udp-20260904/` (Android 14 handset, both directions, both majors, 142 checks, 0 failed) |
 | **E4** over-air, BLE | yes | `mcl-ble/evidence/e4-ble-gatt-20260902/` |
 | **E4** dual-transport migration | yes | `mcl-sdk/evidence/e4-dual-transport-migration-20260903/` — 104 migrations, 100 consecutive alternating BLE↔IP, 2989 checks, 0 failures |
 | **E3** acoustic | yes | `mcl-ap/experiments/001-known-waveform/evidence/` |
 | **E4** acoustic, both directions | yes | `mcl-ap/experiments/003-band-informed-candidate/evidence/` |
+| **E3** acoustic, Android loudspeaker | yes | `mcl-ap/experiments/009-android-acoustic-peer/` — a phone speaker emitting the MCL-AP waveform, decoded by the reference modem. Acquired 10/10 in both cells; recovered 4/10 at 10 bytes and 1/10 at 24. One direction only: capture on Android needs an application permission no shell binary can hold. **Not a usable link, and not claimed as one.** |
 | **E4** protocol stack on an embedded peer | yes | `mcl-ap/experiments/008-embedded-node/` — the DFR1154 builds, modulates, demodulates and decodes MCL itself. host→board recovery is decoded on the microcontroller, no host in the loop. 4 cells × 10 trials; all four acquired 10/10. |
 | **E5, E6** | **no** | Not attempted. E6 needs an implementation built by someone else, which v1.0.0 does not claim — see `V1_SCOPE.md` §5.9. |
 
@@ -67,7 +69,7 @@ interoperate. v1.0.0 does not claim that. See `V1_SCOPE.md` §5.9.
 | Wire common header | yes | |
 | Canonical encoding, zero padding checked | yes | |
 | Unknown category/opcode refused | yes | |
-| Unsupported major refused | yes | Including major 1, which is defined but not cut. |
+| Unsupported major refused | yes | Majors 0 and 1 are assigned; every other value is refused, never guessed. A Candidate object presented at major 1 is refused too — being at an assigned major is not the same as being admissible at it. |
 | `PRESENCE` | yes | 11 bytes at major 0; 10 at major 1 (no `machine_class`). |
 | `TRANSPORT_OFFER` / `TRANSPORT_ACCEPT` | yes | |
 | Extension envelope | yes | Mechanism only; **zero Stable extension IDs assigned**, by design. |
@@ -118,7 +120,7 @@ interoperate. v1.0.0 does not claim that. See `V1_SCOPE.md` §5.9.
 |---|---|
 | Semantic codes | provisional; none Stable |
 | Tier-0 field meanings | 8 of 21 settled |
-| Transport IDs | 4 provisional (AP, IP, BLE, UWB) |
+| **Transport IDs** | **2 Stable** — `MCL_IP = 2` and `MCL_BLE = 3`, Standards Action, 2026-09-04, each named normatively by a Stable profile specification. `MCL_AP = 1` and `MCL_UWB = 4` stay provisional |
 | Handoff operations | provisional |
 | **Extension IDs** | **zero — and that is the intended v1 state** |
 | **IP profiles** | **1 Stable** — `IP-DATAGRAM = 1`, Standards Action, 2026-09-04. 192 stays Experimental Use |
@@ -140,8 +142,14 @@ nothing has earned an assignment.
 | RV32IM, freestanding | same |
 | C++17 header inclusion | g++ and clang++ |
 
-Hardware exercised: ESP32-S3 (UDP peer, GATT peer, dual-radio peer); Windows
-host with a Realtek RTL8188EU USB adapter and WinRT Bluetooth.
+Hardware exercised: ESP32-S3 (UDP peer, GATT peer, dual-radio peer, and the
+embedded node that runs the stack itself); Windows host with a Realtek RTL8188EU
+USB adapter and WinRT Bluetooth; an Android 14 handset (arm64-v8a, Snapdragon
+888) as a third IP peer over its own 2.4 GHz SoftAP.
+
+The Android binaries link statically against aarch64 **glibc, not Bionic**, so
+that run is evidence about a third platform and a third CPU architecture and is
+**not** evidence that MCL builds against Android's C library.
 
 ## 7. What this implementation does NOT claim
 

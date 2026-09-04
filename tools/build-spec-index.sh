@@ -38,6 +38,42 @@ extract_status() {
         | cut -c1-70
 }
 
+# The transport rows of the compatibility matrix are read from the registry
+# that governs them, for the same reason. Hardcoded here, they said transports
+# 2 and 3 were Stable while mcl-link/registries/transport-ids-v0.1.json still
+# marked all four provisional -- and the registry is the authoritative source,
+# so the matrix was simply wrong. A generated document must not be able to
+# contradict the file it is generated from.
+TRANSPORT_REGISTRY="$ROOT/mcl-link/registries/transport-ids-v0.1.json"
+transports_with_status() {
+    tr -d ' \n' < "$TRANSPORT_REGISTRY" \
+        | sed 's/},{/}\n{/g' \
+        | grep '"owner_repo"' \
+        | grep "\"status\":\"$1\"" \
+        | sed -E 's/.*"id":([0-9]+).*"name":"([^"]*)".*/\2 (\1)/' \
+        | paste -sd ',' - \
+        | sed 's/,/, /g'
+}
+STABLE_TRANSPORTS=$(transports_with_status stable)
+PROVISIONAL_TRANSPORTS=$(transports_with_status provisional)
+[ -n "$STABLE_TRANSPORTS" ] || STABLE_TRANSPORTS="**none**"
+[ -n "$PROVISIONAL_TRANSPORTS" ] || PROVISIONAL_TRANSPORTS="**none**"
+
+# Collect the Stable documents by reading their own status lines, so the
+# summary above the table and the table itself cannot disagree.
+STABLE_SPECS=""
+for repo in mcl-core mcl-wire mcl-link mcl-sdk mcl-ap mcl-ip mcl-ble mcl-uwb; do
+    [ -d "$ROOT/$repo/spec" ] || continue
+    for spec in "$ROOT/$repo"/spec/*.md; do
+        [ -e "$spec" ] || continue
+        case "$(extract_status "$spec")" in
+            Stable*|stable*|STABLE*)
+                STABLE_SPECS="$STABLE_SPECS $repo/spec/$(basename "$spec")"
+                ;;
+        esac
+    done
+done
+
 {
     echo "# MCL specification index"
     echo
@@ -55,9 +91,29 @@ extract_status() {
     echo "| **Research Draft** | Not normative. May change without notice. Not a basis for an implementation. |"
     echo "| **Superseded** | Retained as a record. Never deleted, never edited to look current. |"
     echo
-    echo "**No document in MCL is Stable yet.** Stable requires the go/no-go"
-    echo "rule in \`governance/V1_SCOPE.md\` §6, which requires independent"
-    echo "interoperability evidence for the exact bytes being frozen."
+    # Which documents are Stable is READ FROM THE TREE, never asserted here.
+    # This sentence used to be the hardcoded claim "No document in MCL is
+    # Stable yet". It stayed in the file after the two profile specifications
+    # were promoted on 2026-09-04, so a generated index contradicted its own
+    # status column. A generator that walks the filesystem for the rows and
+    # hardcodes the summary has no business being trusted for either.
+    if [ -n "$STABLE_SPECS" ]; then
+        echo "**Stable documents, read from the tree at generation time:**"
+        echo
+        for s in $STABLE_SPECS; do
+            echo "- \`$s\`"
+        done
+        echo
+        echo "Every other document is below Stable. Promotion requires the"
+        echo "go/no-go rule in \`governance/V1_SCOPE.md\` §6 — independent"
+        echo "interoperability evidence for the exact bytes being frozen — and"
+        echo "the \`governance/REGISTRY_POLICY.md\` §2 requirements for any"
+        echo "registry value the document assigns."
+    else
+        echo "**No document in MCL is Stable.** Stable requires the go/no-go"
+        echo "rule in \`governance/V1_SCOPE.md\` §6, which requires independent"
+        echo "interoperability evidence for the exact bytes being frozen."
+    fi
     echo
 
     for repo in mcl-core mcl-wire mcl-link mcl-sdk mcl-ap mcl-ip mcl-ble mcl-uwb; do
@@ -101,15 +157,16 @@ extract_status() {
     echo
     echo "| Component | v1.0 |"
     echo "|---|---|"
-    echo "| Wire major | 1 — defined, **not yet cut**; the codec still refuses it |"
+    echo "| Wire major | 1 — **cut**; encoded, decoded, and frozen by the immutable major-1 vectors |"
     echo "| Wire experimental major | 0 — permanent, never changes |"
-    echo "| Link major | 1 — defined, not yet cut |"
+    echo "| Link major | 1 — **cut**; frame layout byte-identical to major 0, class dispositions frozen |"
+    echo "| Default major emitted | 0 — v1.0 promises source compatibility, so the pre-cut encode calls emit what they always emitted; the \`_at_major\` calls select 1 |"
     echo "| Stable semantic objects | \`PRESENCE\`, \`TRANSPORT_OFFER\`, \`TRANSPORT_ACCEPT\` |"
     echo "| Candidate semantic objects | \`HAZARD\`, \`REQUEST\`, \`AUTHORITY_CLAIM\`, \`DEGRADED_STATE\` — carried at major 0 only |"
     echo "| Stable Link frame classes | 9 of 10; \`ADAPT\` reserved |"
-    echo "| Stable transports | IP (\`transport_id\` 2), BLE (3) |"
+    echo "| Stable transports | $STABLE_TRANSPORTS |"
     echo "| Stable transport profiles | **IP-DATAGRAM = 1** and **BLE-GATT = 1**, MCL Standards Action, 2026-09-04. Both specifications are Stable. Profile 192 remains Experimental Use in each and was never relabelled |"
-    echo "| Experimental transports | AP (1), UWB (4) |"
+    echo "| Provisional transports | $PROVISIONAL_TRANSPORTS — assigned for use, not frozen |"
     echo "| Stable extension IDs | **none** — the mechanism ships, the table is empty by design |"
     echo "| Negotiated feature bits | **none assigned** — same disposition |"
     echo "| API compatibility | source/API, **not** binary ABI |"

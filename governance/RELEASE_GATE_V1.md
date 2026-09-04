@@ -38,8 +38,8 @@ and non-overclaiming* is itself the requirement.
 | 4 | Link class disposition | `DONE` | `link-class-disposition-v1.md`. Nine Stable, one reserved. |
 | 5 | Minimum capability/version negotiation | `DONE` | `link-negotiation-v1.md`, 4241 checks. |
 | 6 | Candidate-vs-Stable major enforcement | `DONE` | `common-header-v0.2.md` §3.1, enforced at both ends. |
-| 7 | IP-DATAGRAM profile | `DONE` | **Stable.** `IP-DATAGRAM = 1`, MCL Standards Action, 2026-09-04. The registry row answers each of the five `REGISTRY_POLICY.md` §2 requirements individually. Specification promoted to Stable. |
-| 8 | BLE-GATT profile | `DONE` | **Stable.** `BLE-GATT = 1`, same date, same treatment. |
+| 7 | IP-DATAGRAM profile | `DONE` | **Stable.** `IP-DATAGRAM = 1`, MCL Standards Action, 2026-09-04. The registry row answers each of the five `REGISTRY_POLICY.md` §2 requirements individually. Specification promoted to Stable. `transport_id = 2` promoted with it — a Stable profile scoped to a provisional identifier is incoherent (`V1_SCOPE.md` §5.6). |
+| 8 | BLE-GATT profile | `DONE` | **Stable.** `BLE-GATT = 1`, same date, same treatment, and `transport_id = 3` with it. |
 | 9 | Multi-contact isolation campaign | `DONE` | `test_multi_contact.c`, 50 checks, mutation-tested, on the assigned profile value. |
 | 10 | Wire major 1 | `DONE` | Cut. Encoder and decoder both enforce the Stable set. |
 | 11 | Link major 1 | `DONE` | Cut. Layout byte-identical; class dispositions frozen. |
@@ -65,8 +65,8 @@ and non-overclaiming* is itself the requirement.
 | 31 | Reconstructability check | `DONE` | `build-release-bundle.sh --verify` → RECONSTRUCTION VERIFIED. |
 | 32 | Final clean-room release rehearsal | `DONE` | `release-rehearsal.sh`, 12 checks in one pass. Re-run on the exact release commits before the tag. |
 | 33 | Final go/no-go audit | `DONE` | `go-no-go-audit.sh` — 0 fatal. |
-| 34 | Create `v1.0.0` | `WAIT_DEP` 27, 34a | Every internally achievable row is DONE. |
-| 34a | Android peer verification | `EXTERNAL` | **Exact external act:** connect an Android device over USB. The owner's stated release order is: qualify the DFR1154, then verify against an Android peer, then publish. The board is qualified (row 28). `adb` is present and reports no device attached, so this cannot proceed from here. |
+| 34 | Create `v1.0.0` | `WAIT_DEP` 27 | Every internally achievable row is DONE. Row 34a closed 2026-09-04. |
+| 34a | Android peer verification | `DONE` | `mcl-ip/evidence/e4-android-udp-20260904/` — an iQOO 9 on Android 14 (arm64-v8a) as a third IP peer over its own 2.4 GHz SoftAP. Four cells (both directions × both majors), 142 checks, 0 failed, 400 sustained frames, 0 lost, 0 retries. The Stable path — major-1 Link frames carrying major-1 `PRESENCE` and `TRANSPORT_OFFER` on profile 1 — was exercised in both directions, including refusal of reserved `profile_id` 0, reserved `transport_id` 0, and a Candidate object at the Stable major. Harness in `mcl-ip/hardware/android-udp-peer/`. |
 
 ## Row 28: what was narrowed, and what was not
 
@@ -104,14 +104,19 @@ specification-reading defects. It was written by the same author. E6 remains
 
 ```text
 27    make the eight repositories readable by other people
-34a   connect an Android device over USB
-34    tag v1.0.0, after both
+34    tag v1.0.0, after that
 ```
 
-Row 34a is the owner's stated order, not an invented obstacle: the board is
-qualified, Android is next, publication follows. Row 27 is one action in a
-settings page. Neither is a technical question and neither can be answered from
-inside this tree.
+Row 27 is one action in a settings page. It is not a technical question and it
+cannot be answered from inside this tree.
+
+**Row 34a closed on 2026-09-04.** The owner's stated release order was: qualify
+the DFR1154, then verify against an Android peer, then publish. The board was
+qualified in row 28 and the Android verification is now recorded in
+`mcl-ip/evidence/e4-android-udp-20260904/`. It found no protocol defect. It did
+find a stale harness case — `udp_over_air_peer.c` was still sending a frame with
+no frame check, which the IP-DATAGRAM profile forbids — and that refusal is now
+a permanent negative case rather than a passing test that was never re-run.
 
 ## What "not on the critical path" means
 
