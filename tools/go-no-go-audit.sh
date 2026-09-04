@@ -27,11 +27,21 @@ STRICT=0
 [ "$1" = "--strict" ] && STRICT=1
 
 # Search tracked files only. An untracked scratch file is not part of a release.
+#
+# This script excludes ITSELF. Its first full run reported two fatal findings
+# that were its own search patterns -- the marker strings appear in this file
+# because this is the file that looks for them. A scanner that fails on its own
+# patterns is noise, and noise is what gets a check disabled.
+#
+# Evidence directories are excluded for a different reason: they record what was
+# measured on a date and are never edited, so a marker inside one is history
+# rather than unfinished work.
 tracked_grep() {
     pattern=$1
     for repo in $REPOS; do
         git -C "$ROOT/$repo" grep -nIE "$pattern" -- \
-            ':!*/evidence/*' ':!*evidence/*' 2>/dev/null \
+            ':!*/evidence/*' ':!*evidence/*' \
+            ':!*/tools/go-no-go-audit.sh' 2>/dev/null \
             | sed "s|^|$repo/|" || true
     done
 }
