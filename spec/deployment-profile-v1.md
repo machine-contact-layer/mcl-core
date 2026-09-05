@@ -118,10 +118,26 @@ material — and nothing else. **If a deployment profile could carry a peer
 address, the two-builder test could be passed by prearrangement**, which is
 precisely the failure it was written to detect.
 
-The validator enforces this two ways: unknown keys are refused outright, and
-every string value is scanned for IPv4, IPv6 and MAC-shaped content wherever it
-appears. A profile that smuggles an address through a legitimately-named field
-fails.
+**The guarantee comes from grammar, not from pattern-matching.** Three layers,
+in order of authority:
+
+1. **A closed field set.** Unknown keys are refused outright, at every level.
+   There is no extension bag, so there is nowhere to put a field the schema does
+   not define.
+2. **A closed value grammar.** Every continuation entry's `transport` and
+   `profile` string must equal the name the registry gives for its
+   `transport_id` and `profile_id`. An address, a hostname or an encoded peer
+   locator cannot appear in those fields because none of them is the registry's
+   name for a transport. **This is the authoritative check.**
+3. **A shape scan, as defence in depth.** Every string value is additionally
+   scanned for IPv4, IPv6 and MAC-shaped content. This is a backstop for fields
+   that have no registry to check against, not the definition of the rule — a
+   heuristic can be evaded by a hostname and can one day misfire on a legitimate
+   value, and neither failure mode is acceptable as a primary control.
+
+Fixture `11-hostname-locator.json` exists precisely to hold that line: it
+carries `peer-7.fleet.example`, which no address heuristic would flag, and the
+grammar rejects it anyway.
 
 ## 5. Validation
 

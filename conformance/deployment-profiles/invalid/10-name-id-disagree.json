@@ -1,0 +1,13 @@
+{
+  "schema": "mcl-deployment-profile/v1",
+  "profile_id": "FIXTURE-NAME-ID-DISAGREE",
+  "revision": 1,
+  "requires": { "wire_major": 1, "link_major": 1, "conformance_layer": "MCL Base 1" },
+  "continuation": {
+    "mandatory": [
+      { "transport": "MCL_BLE", "transport_id": 2, "profile": "IP-DATAGRAM", "profile_id": 1 }
+    ],
+    "optional": []
+  },
+  "security": { "profile": null }
+}

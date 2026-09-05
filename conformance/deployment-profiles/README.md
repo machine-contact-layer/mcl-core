@@ -31,6 +31,8 @@ suite made only of valid inputs, so the gate fails if any of these is accepted.
 | `07-wire-major-0.json` | `wire_major: 0`. Major 0 is experimental and permanent; a deployment does not select it. |
 | `08-mandatory-and-optional.json` | The same transport and profile in both lists, which makes "optional" a lie about a bearer that is in fact required. |
 | `09-unknown-layer.json` | A conformance layer that `spec/conformance-profiles-v1.md` does not define. |
+| `10-name-id-disagree.json` | `MCL_BLE` against `transport_id: 2`. The names are redundant with the numbers on purpose, and a mismatch is an error rather than a silent reinterpretation of which bearer is meant. |
+| `11-hostname-locator.json` | `peer-7.fleet.example` as a transport name — a peer locator that **no address heuristic would flag**. It is rejected by the registry-name grammar, which is why §4 of the schema makes the grammar authoritative and the shape scan mere defence in depth. |
 
 ## What is not covered yet
 

@@ -240,7 +240,9 @@ static const char *parse_bearer_array(const char *p, const char *end,
  * registry says is Experimental Use and therefore committed to replacement.
  */
 static int registry_status(const char *root, long transport_id, long profile_id,
-                           char *status_out, size_t status_size)
+                           char *status_out, size_t status_size,
+                           char *name_out, size_t name_size,
+                           char *transport_name_out, size_t transport_name_size)
 {
     char path[512];
     static char buf[MAX_FILE_SIZE];
@@ -275,6 +277,32 @@ static int registry_status(const char *root, long transport_id, long profile_id,
     if (p == NULL) return -3;
 
     end = buf + n;
+
+    /*
+     * The registry's own name for this transport, so a profile cannot put
+     * arbitrary text -- an address included -- in the `transport` field. The
+     * grammar is what makes peer data impossible here; the heuristic scan is
+     * only defence in depth behind it.
+     */
+    {
+        const char *t = strstr(buf, "\"transport_name\"");
+        if (t != NULL) {
+            t = strchr(t, ':');
+            if (t != NULL) {
+                if (parse_string(t + 1, end, transport_name_out,
+                                 transport_name_size) == NULL) return -3;
+            }
+        }
+    }
+
+    {
+        const char *q = strstr(p, "\"name\"");
+        if (q == NULL || q >= end) return -3;
+        q = strchr(q, ':');
+        if (q == NULL) return -3;
+        if (parse_string(q + 1, end, name_out, name_size) == NULL) return -3;
+    }
+
     p = strstr(p, "\"status\"");
     if (p == NULL || p >= end) return -3;
     p = strchr(p, ':');
@@ -475,12 +503,57 @@ static int validate(const char *root, const char *path)
         }
     }
 
-    /* ---- registry cross-check ---- */
-    for (i = 0u; i < prof.mandatory_count; ++i) {
-        char status[MAX_STR];
-        int rc = registry_status(root, prof.mandatory[i].transport_id,
-                                 prof.mandatory[i].profile_id,
-                                 status, sizeof(status));
+    /* ---- registry cross-check ----
+     *
+     * This is the AUTHORITATIVE check for schema section 4, not the heuristic
+     * scan. Every continuation entry's `transport` and `profile` strings must
+     * equal the names the registry gives for those identifiers, so the fields
+     * have a grammar rather than merely a shape. An address, a hostname or an
+     * encoded peer locator cannot appear here because none of them is the
+     * registry's name for a transport. The scan behind this catches free text
+     * in any field that later has no registry to check against.
+     *
+     * Optional entries are checked for name agreement too; only the Stable
+     * requirement is confined to mandatory ones, since a deployment may
+     * legitimately mention an Experimental profile as optional.
+     */
+    for (i = 0u; i < prof.mandatory_count + prof.optional_count; ++i) {
+        char status[MAX_STR], reg_name[MAX_STR], reg_transport[MAX_STR];
+        int mandatory = (i < prof.mandatory_count);
+        bearer_t *b = mandatory ? &prof.mandatory[i]
+                                : &prof.optional[i - prof.mandatory_count];
+        int rc;
+
+        reg_name[0] = '\0';
+        reg_transport[0] = '\0';
+        rc = registry_status(root, b->transport_id, b->profile_id,
+                             status, sizeof(status),
+                             reg_name, sizeof(reg_name),
+                             reg_transport, sizeof(reg_transport));
+        if (rc == 0) {
+            if (reg_transport[0] != '\0' &&
+                strcmp(b->transport, reg_transport) != 0) {
+                char msg[MAX_STR * 4];
+                snprintf(msg, sizeof(msg),
+                         "continuation entry says transport '%s' but "
+                         "transport_id %ld is '%s' in the registry",
+                         b->transport, b->transport_id, reg_transport);
+                fail(path, msg);
+            }
+            if (reg_name[0] != '\0' && strcmp(b->profile, reg_name) != 0) {
+                char msg[MAX_STR * 4];
+                snprintf(msg, sizeof(msg),
+                         "continuation entry says profile '%s' but "
+                         "profile_id %ld is '%s' in the registry",
+                         b->profile, b->profile_id, reg_name);
+                fail(path, msg);
+            }
+        }
+        if (!mandatory) {
+            if (rc == -1) fail(path, "optional entry names an unassigned transport_id");
+            else if (rc == -3) fail(path, "optional entry names a profile_id absent from its registry");
+            continue;
+        }
         if (rc == -1) {
             fail(path, "mandatory entry names an unassigned transport_id");
         } else if (rc == -2) {
@@ -493,7 +566,7 @@ static int validate(const char *root, const char *path)
                     "mandatory entry requires profile_id %ld, which the "
                          "registry marks '%s' -- a deployment cannot require "
                          "what the project has committed to replacing",
-                    prof.mandatory[i].profile_id, status);
+                    b->profile_id, status);
             fail(path, msg);
         }
     }
