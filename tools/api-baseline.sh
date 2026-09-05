@@ -106,7 +106,13 @@ if [ ! -f "$BASELINE" ]; then
     exit 1
 fi
 
-grep -v '^#' "$BASELINE" | grep -v '^[[:space:]]*$' | sort -u > "$WORK/baseline.txt"
+# The committed baseline is a text file, and a Windows checkout with
+# core.autocrlf=true hands it back with CRLF endings. The symbols read from
+# `nm` never carry a carriage return, so an unstripped baseline makes every
+# single symbol look renamed -- 143 false source breaks, in the exact shape
+# of a real one. Strip at the read, the same way build-spec-index.sh does.
+tr -d '\r' < "$BASELINE" \
+    | grep -v '^#' | grep -v '^[[:space:]]*$' | sort -u > "$WORK/baseline.txt"
 
 removed=$(comm -23 "$WORK/baseline.txt" "$CURRENT")
 added=$(comm -13 "$WORK/baseline.txt" "$CURRENT")

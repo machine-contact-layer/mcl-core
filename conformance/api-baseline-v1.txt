@@ -10,12 +10,23 @@
 # Regenerate deliberately: mcl-core/tools/api-baseline.sh --update
 # Never regenerate to make a diff go away.
 #
-# symbols: 132
+# symbols: 143
 mcl_ap_attenuation_db_per_m
 mcl_ap_bitrate_equal_to_propagation_bps
 mcl_ap_doppler_shift_hz
 mcl_ap_free_field_loss_db
 mcl_ap_iso_sound_speed_mps
+mcl_ap_listen_default_config
+mcl_ap_listen_flush
+mcl_ap_listen_init
+mcl_ap_listen_min_window_samples
+mcl_ap_listen_poll
+mcl_ap_listen_push
+mcl_ap_modem_crc16
+mcl_ap_modem_decode
+mcl_ap_modem_default_config
+mcl_ap_modem_encode
+mcl_ap_modem_encoded_samples
 mcl_ap_one_way_delay_s
 mcl_ap_round_trip_delay_s
 mcl_ap_saturation_pressure_kpa
