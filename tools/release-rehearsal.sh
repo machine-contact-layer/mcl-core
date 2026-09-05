@@ -55,6 +55,8 @@ run "registry governance" \
     sh "$ROOT/mcl-core/tools/check-registry-governance.sh"
 run "specification index" \
     sh "$ROOT/mcl-core/tools/build-spec-index.sh" --check
+run "specification maturity" \
+    sh "$ROOT/mcl-core/tools/check-maturity.sh"
 run "feature traceability" \
     sh "$ROOT/mcl-core/tools/check-traceability.sh"
 run "deployment profiles" \

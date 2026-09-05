@@ -1,0 +1,32 @@
+# Which document is normative for each Stable claim in V1_SCOPE.md.
+#
+# WHY THIS FILE EXISTS
+#
+# V1_SCOPE.md says what v1.0 claims. The specification index says what status
+# each document carries. Nothing connected the two, so the release could -- and
+# did -- claim a surface Stable while the only document specifying it said
+# "Research Draft. Not normative. Not a basis for an implementation."
+#
+# A reader who believes the scope table and a reader who believes the document
+# reach opposite conclusions about whether they may implement against it, and
+# both are reading the release. That is the defect check-maturity.sh exists to
+# make impossible.
+#
+# The mapping is written by hand ON PURPOSE. Which document is normative for a
+# claim is an editorial judgement, and a script that guessed it from filenames
+# would silently guess wrong and then certify its own guess.
+#
+# Format: <claim>\t<repo/path/to/spec.md>
+# A claim may name more than one document; every one of them must be Stable.
+# Lines beginning with # are comments.
+
+Common header at major 1	mcl-wire/spec/common-header-v0.2.md
+Stable Tier-0 object body layouts	mcl-wire/spec/tier0-layout-v0.2.md
+Canonical encoding rules	mcl-wire/spec/wire-v0.md
+Link frame canonical layout at major 1	mcl-link/spec/link-v0.md
+Link frame class dispositions	mcl-link/spec/link-class-disposition-v1.md
+Minimum capability / version negotiation	mcl-link/spec/link-negotiation-v1.md
+Contact lifecycle and ownership model	mcl-link/spec/link-contact-ownership-v0.1.md
+Migration: offer / accept / challenge / response / commit / confirm	mcl-link/spec/link-handoff-control-v0.1.md
+IP-DATAGRAM profile 1	mcl-ip/spec/ip-datagram-profile-v1.md
+BLE-GATT profile 1	mcl-ble/spec/ble-gatt-profile-v1.md

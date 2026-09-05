@@ -16,6 +16,14 @@ build if it is out of date.
 
 **Stable documents, read from the tree at generation time:**
 
+- `mcl-wire/spec/common-header-v0.2.md`
+- `mcl-wire/spec/tier0-layout-v0.2.md`
+- `mcl-wire/spec/wire-v0.md`
+- `mcl-link/spec/link-class-disposition-v1.md`
+- `mcl-link/spec/link-contact-ownership-v0.1.md`
+- `mcl-link/spec/link-handoff-control-v0.1.md`
+- `mcl-link/spec/link-negotiation-v1.md`
+- `mcl-link/spec/link-v0.md`
 - `mcl-ip/spec/ip-datagram-profile-v1.md`
 - `mcl-ble/spec/ble-gatt-profile-v1.md`
 
@@ -38,23 +46,23 @@ registry value the document assigns.
 
 | Document | Status |
 |---|---|
-| [`common-header-v0.2.md`](../mcl-wire/spec/common-header-v0.2.md) | Research Candidate, non-normative |
+| [`common-header-v0.2.md`](../mcl-wire/spec/common-header-v0.2.md) | Stable for the major-1 common header. Major 0 remains Experimental and |
 | [`duration-v0.1.md`](../mcl-wire/spec/duration-v0.1.md) | Research Draft |
 | [`tier0-candidate-layout-v0.1.md`](../mcl-wire/spec/tier0-candidate-layout-v0.1.md) | Research Candidate, non-normative. Superseded — retained as a record |
 | [`tier0-extensions-v0.1.md`](../mcl-wire/spec/tier0-extensions-v0.1.md) | Research Draft |
-| [`tier0-layout-v0.2.md`](../mcl-wire/spec/tier0-layout-v0.2.md) | Research Draft — normative for the seven objects below at Wire major |
-| [`wire-v0.md`](../mcl-wire/spec/wire-v0.md) | Research Draft |
+| [`tier0-layout-v0.2.md`](../mcl-wire/spec/tier0-layout-v0.2.md) | Stable for the three Stable objects — `PRESENCE`, |
+| [`wire-v0.md`](../mcl-wire/spec/wire-v0.md) | Stable for the canonical encoding rules the major-1 surface relies |
 
 ## mcl-link
 
 | Document | Status |
 |---|---|
-| [`link-class-disposition-v1.md`](../mcl-link/spec/link-class-disposition-v1.md) | proposed, satisfying `mcl-core/governance/V1_SCOPE.md` §5.3 |
-| [`link-contact-ownership-v0.1.md`](../mcl-link/spec/link-contact-ownership-v0.1.md) | Research Draft |
+| [`link-class-disposition-v1.md`](../mcl-link/spec/link-class-disposition-v1.md) | Stable, satisfying `mcl-core/governance/V1_SCOPE.md` §5.3. |
+| [`link-contact-ownership-v0.1.md`](../mcl-link/spec/link-contact-ownership-v0.1.md) | Stable for the contact lifecycle and the link/contact ownership rule - |
 | [`link-frame-classes-v0.1.md`](../mcl-link/spec/link-frame-classes-v0.1.md) | Research Draft |
-| [`link-handoff-control-v0.1.md`](../mcl-link/spec/link-handoff-control-v0.1.md) | Research Draft |
-| [`link-negotiation-v1.md`](../mcl-link/spec/link-negotiation-v1.md) | Candidate |
-| [`link-v0.md`](../mcl-link/spec/link-v0.md) | Research Draft |
+| [`link-handoff-control-v0.1.md`](../mcl-link/spec/link-handoff-control-v0.1.md) | Stable for the migration control sequence -- offer, accept, challenge, |
+| [`link-negotiation-v1.md`](../mcl-link/spec/link-negotiation-v1.md) | Stable. |
+| [`link-v0.md`](../mcl-link/spec/link-v0.md) | Stable for the Link frame canonical layout at major 1, which is |
 | [`machine-card.md`](../mcl-link/spec/machine-card.md) | Research Draft |
 | [`version-context-negotiation-v0.1.md`](../mcl-link/spec/version-context-negotiation-v0.1.md) | Research Draft |
 
