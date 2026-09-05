@@ -744,10 +744,17 @@ contention does not collapse first contact into a reply storm.
 
 1. Interoperability is claimed **under a named conformance layer**, never as
    "implements MCL". A machine with no microphone may truthfully claim the
-   foundation layer; it may not claim the stranger-contact layer. The layers,
-   the mandatory rendezvous profile, the deployment-profile schema, the security
-   carrier and the named security profile are the work this criterion requires,
-   in the dependency order of `research/TWO_BUILDER_AUDIT.md` §5.
+   foundation layer; it may not claim the stranger-contact layer. The layers are
+   specified in `spec/conformance-profiles-v1.md`: **`MCL Base 1`** is complete
+   and claimable now, **`MCL Stranger-Contact 1`** is normatively complete but
+   unclaimable while `AP-BOOTSTRAP-1` does not exist, and
+   **`MCL Secure-Stranger 1`** is a reserved name. The mandatory rendezvous
+   profile, the deployment-profile schema, the security carrier and the named
+   security profile remain, in the dependency order of
+   `research/TWO_BUILDER_AUDIT.md` §5.
+   **Base 1 alone does not close this row.** It names the honest claim for the
+   arranged-bearer case; the criterion is about strangers, so row 35 closes on
+   Stranger-Contact 1.
 2. This criterion is a **release gate**, not an aspiration. v1.0.0 is not tagged
    until it passes under a named conformance profile.
 3. Nothing in §5.9 is weakened or withdrawn. (a), (b) and (c) remain required

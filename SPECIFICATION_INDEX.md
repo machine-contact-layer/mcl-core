@@ -29,6 +29,7 @@ registry value the document assigns.
 
 | Document | Status |
 |---|---|
+| [`conformance-profiles-v1.md`](../mcl-core/spec/conformance-profiles-v1.md) | Candidate |
 | [`core-v0.md`](../mcl-core/spec/core-v0.md) | Research Draft |
 | [`shared-primitives-v0.1.md`](../mcl-core/spec/shared-primitives-v0.1.md) | Research Draft |
 

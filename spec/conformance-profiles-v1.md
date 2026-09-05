@@ -1,0 +1,237 @@
+# MCL Conformance Profiles v1
+
+Status: **Candidate**
+
+Defines the named claims an implementation may make about itself, and what each
+one guarantees to a machine that has never met it.
+
+This document may not be promoted past Candidate while any layer it names holds
+an unresolved forward reference. §5.2 currently holds one, and names it.
+
+## 1. Why this exists
+
+`research/TWO_BUILDER_AUDIT.md` asked whether two builders who never coordinate
+can build to the published package and still be guaranteed a common
+first-contact path. They cannot. Every transport binding is individually
+optional, so an implementation carrying MCL-IP and MCL-AP and one carrying
+MCL-BLE and MCL-UWB both conform to v1 completely and share nothing.
+
+The vocabulary was missing. "Implements MCL" describes a legal implementation;
+it does not describe an implementation another machine can rely on. A
+conformance profile is the second statement.
+
+The governing rule, from `governance/V1_SCOPE.md` §5.10:
+
+> For every configurable choice, ask whether two conformant implementations can
+> independently choose different values and consequently fail to communicate. If
+> they can, either a layer mandates a common baseline or a deployment profile
+> selects one.
+
+## 2. Three kinds of profile, which are not the same thing
+
+Readers conflate these, and the registries make it easy to. They answer
+different questions and are assigned by different means.
+
+| | Answers | Assigned in | Example |
+|---|---|---|---|
+| **Transport profile** | How do bytes cross *this* medium? | a per-transport registry, by number | `IP-DATAGRAM = 1` under `transport_id = 2` |
+| **Conformance profile** | What may another machine assume I implement? | this document, by name | `MCL Base 1` |
+| **Deployment profile** | Which optional pieces are mandatory *here*? | a deployment authority, by publication | a city's required bearer and trust anchors |
+
+A transport profile makes one medium unambiguous. It cannot make two
+implementations meet, because implementing it is optional. A conformance profile
+fixes what is mandatory for everyone claiming it. A deployment profile narrows
+further, for one place, without changing MCL.
+
+Conformance profiles are named rather than numbered because they are claims made
+in documentation and conformance statements, not values carried in a frame. §7
+explains why that distinction is deliberate.
+
+## 3. Rules common to every layer
+
+1. **Layers are cumulative.** Claiming a layer claims every requirement of the
+   layers it extends.
+2. **A claim is all or nothing.** An implementation that meets part of a layer
+   claims the layer below it. There is no partial claim, and no "claims X except".
+3. **A claim is about an implementation, not a deployment.** Configuration that
+   disables a mandatory capability at runtime does not withdraw the claim; the
+   implementation still contains it. An implementation that cannot perform a
+   requirement *at all* may not claim the layer, whatever it is configured to do.
+4. **Refusal is conformant behaviour.** A layer requires that a machine can
+   speak; it never requires that a machine agrees. Policy refusals at any point
+   are conformant — `governance/ARCHITECTURE_CHARTER.md` §2.10.1.
+5. **Every requirement below is testable.** A requirement that cannot be
+   checked by the conformance kit does not belong in a conformance profile, and
+   §8 records the obligation for each.
+
+## 4. MCL Base 1
+
+**Claim:** *given a bearer both machines already share, two `MCL Base 1`
+implementations interoperate.*
+
+### 4.1 Required
+
+- **Wire major 1**, encode and decode, including the canonical-encoding and
+  zero-padding checks, and refusal of every unassigned major.
+- **The Stable Tier-0 kernel:** `PRESENCE`, `TRANSPORT_OFFER`,
+  `TRANSPORT_ACCEPT`, produced and consumed, at major 1.
+- **Link major 1**, the frame layout, and the frozen class dispositions of
+  `spec/link-class-disposition-v1.md`.
+- **Capability and version negotiation** as specified in
+  `mcl-link/spec/link-negotiation-v1.md`, including the selection function and
+  the floor.
+- **Refusal semantics.** Unknown opcode, unassigned major, reserved non-zero
+  bit, stale context and inadmissible object are refused, never guessed.
+- **At least one transport binding**, so that the implementation can be made to
+  communicate at all. Which one is unconstrained, and that is exactly why Base 1
+  guarantees nothing about meeting a stranger.
+
+### 4.2 Not required
+
+A bearer in common with anyone; a microphone or speaker; discovery of any kind;
+migration; cryptography.
+
+### 4.3 What this layer is honestly for
+
+Fleets provisioned by one owner, machines paired at manufacture, deployments
+where a bearer is arranged out of band, simulation and test harnesses, and
+libraries embedded in a larger product. This is the majority of real use today
+and it is a first-class claim, not a degraded one.
+
+**Base 1 does not permit any statement about meeting an unknown machine.** An
+implementation claiming only Base 1 must not describe itself as capable of
+stranger contact.
+
+## 5. MCL Stranger-Contact 1
+
+**Claim:** *two `MCL Stranger-Contact 1` implementations placed within physical
+range of one another, given no prior configuration, no shared network, no shared
+credential and no operator, will detect one another and exchange first contact.*
+
+Extends Base 1.
+
+### 5.1 Required
+
+- Everything in Base 1.
+- **`AP-BOOTSTRAP-1`**, implemented in both directions: emit and receive. This
+  is the single mandatory-to-implement rendezvous path and it is what makes the
+  claim above true. A layer that let an implementation choose *which* rendezvous
+  profile to implement would reproduce the empty intersection this document
+  exists to remove.
+- **Reception and generation of `TRANSPORT_OFFER` and `TRANSPORT_ACCEPT`** over
+  the bootstrap path, so a richer bearer can be proposed and answered.
+- **Shared-medium behaviour** as `AP-BOOTSTRAP-1` specifies it:
+  listen-before-transmit, reply scheduling, duplicate suppression, and backoff.
+  A machine that answers every `PRESENCE` immediately is not conformant, because
+  a street with ten of them is a street with no contact.
+- **An explicit no-common-bearer outcome.** Where the offer and accept find no
+  bearer in common, the implementation must report that as a distinct, legible
+  result. Silence is not conformant. This is the difference between a failure
+  a builder can diagnose and one they cannot.
+
+### 5.2 The forward reference that blocks promotion
+
+**`AP-BOOTSTRAP-1` does not exist.** It is not `AP-LAB-FSK-EXPERIMENTAL`
+(profile 192), which carries raw Wire bytes, sits in the Experimental Use range,
+and under `governance/GOVERNANCE.md` §4.3 is never relabelled Stable. It is not
+the current `mcl_ap_modem_*` default configuration, which is deterministic and
+measured but was selected from one path in one room and degrades sharply with
+frame length.
+
+Until `AP-BOOTSTRAP-1` is specified, bake-off selected, clean-room implemented
+and assigned a Standards Action identifier, **no implementation may claim
+`MCL Stranger-Contact 1`**, and this document stays Candidate.
+
+### 5.3 What this layer does NOT guarantee
+
+**It guarantees meeting. It does not guarantee continuing.**
+
+Two Stranger-Contact 1 machines are guaranteed to detect one another and
+exchange first contact. Whether they can then migrate to a richer bearer depends
+on their having one in common, and no layer can mandate that: a roadside unit
+may reasonably have Ethernet and no radio, and a field sensor may reasonably
+have BLE and no network. Requiring both of every machine would exclude honest
+implementations to buy a guarantee that a deployment profile provides better.
+
+So continuation is **best-effort at this layer and guaranteed by a deployment
+profile**, which is what §2 says a deployment profile is for. The failure, when
+it happens, is explicit by §5.1.
+
+It also guarantees nothing about identity, authenticity or authority. Acoustic
+reception is proximity evidence and never proof of co-presence; the medium is
+observable, injectable and relayable.
+
+## 6. MCL Secure-Stranger 1
+
+**Reserved name. Not specified.**
+
+Extends Stranger-Contact 1 and will require: a common continuing bearer selected
+by the deployment profile, a named MCL security profile, a credential-reference
+and proof format, a trust-anchor interface, and the separation of cryptographic
+proof from trust from authorisation that `ARCHITECTURE_CHARTER.md` requires.
+
+It is named here so the layer above Stranger-Contact has one name rather than
+several, and so that nobody assigns the name to something else. It is not
+specifiable until the security carrier (`V1_SCOPE.md` §5.10, and
+`research/TWO_BUILDER_AUDIT.md` §3.6) is settled and a suite is selected by
+measurement.
+
+## 7. Why the layer is not carried on the wire
+
+An implementation's conformance profile is declared in its conformance
+statement. It is **not** a field, a flag, or a feature bit.
+
+**It could not do its job as one.** The layer guarantees a precondition that
+must hold *before* any exchange occurs. A value readable only after two machines
+have already met cannot guarantee that they can meet.
+
+**And it would be a claim, not a fact.** `mcl-link/spec/link-negotiation-v1.md`
+§7 is explicit that a `CAPABILITY` frame is a claim and that reception is not
+verification. A conformance bit would add a second unverifiable claim whose only
+effect would be to invite implementations to trust it.
+
+Two mechanisms are specifically not to be reached for:
+
+- **Feature bits.** `features` exists and its table is empty by design, with
+  unknown bits failing closed by construction. Assigning one to mean "I am
+  Stranger-Contact 1" would put an implementation-wide property into a
+  per-contact negotiation, where it would be both unverifiable and too late.
+- **`capability_tag`.** `V1_SCOPE.md` §4.2 defines it as a sender-controlled
+  opaque revision token that a receiver MUST scope to one peer and MUST NOT
+  compare across peers as a capability identity. It cannot carry this and must
+  not be made to.
+
+What *is* discovered on the wire stays discovered on the wire: which bearers a
+peer offers is what `TRANSPORT_OFFER` is for, and no new mechanism is needed.
+
+## 8. Test obligations
+
+The conformance kit must be able to decide each claim from outside the
+implementation.
+
+| Requirement | How it is checked |
+|---|---|
+| Base 1, Wire major 1 and the Stable kernel | C4 cross-decode against the clean-room implementation, both directions, including matching refusals |
+| Base 1, Link major 1 and class dispositions | C4, plus the frozen vectors |
+| Base 1, negotiation and the floor | the negotiation suite, both roles |
+| Base 1, refusal semantics | the negative vectors; a refusal that decodes is a failure |
+| Stranger-Contact 1, bootstrap carriage | PCM vectors decoded, and emitted PCM decoded by an implementation that shares no code |
+| Stranger-Contact 1, shared-medium behaviour | a multi-responder campaign, three machines or more, measuring that contact survives contention |
+| Stranger-Contact 1, no-common-bearer outcome | an offer naming only bearers the peer lacks; the distinct result is required output |
+| The end-to-end claim | `V1_SCOPE.md` §5.10, two implementations given only the release, a deployment profile and its trust anchors |
+
+A layer whose obligations have not been run is not claimed. The conformance
+statement records which were run and against what.
+
+## 9. Assignment and change control
+
+Layer names are assigned by MCL Standards Action in this document. There is no
+numeric registry, because these values are never carried in a frame (§7) and a
+registry of unassignable numbers would invite exactly the wire encoding this
+document forbids.
+
+Adding a layer, or changing what an existing layer requires, is a change to this
+document under `governance/SPECIFICATION_PROCESS.md`. **A layer's requirements
+may not be weakened after any implementation has claimed it**: an implementation
+that met the claim must not silently come to mean less than it did. A weaker
+guarantee gets a new name.
