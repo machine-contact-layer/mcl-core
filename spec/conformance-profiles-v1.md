@@ -129,18 +129,37 @@ Extends Base 1.
   result. Silence is not conformant. This is the difference between a failure
   a builder can diagnose and one they cannot.
 
-### 5.2 The forward reference that blocks promotion
+### 5.2 The forward reference, and what became of it
 
-**`AP-BOOTSTRAP-1` does not exist.** It is not `AP-LAB-FSK-EXPERIMENTAL`
-(profile 192), which carries raw Wire bytes, sits in the Experimental Use range,
-and under `governance/GOVERNANCE.md` §4.3 is never relabelled Stable. It is not
-the current `mcl_ap_modem_*` default configuration, which is deterministic and
-measured but was selected from one path in one room and degrades sharply with
-frame length.
+**Resolved on 2026-09-06.** `AP-BOOTSTRAP-1` now exists:
+`mcl-ap/spec/ap-bootstrap-1.md`, normatively complete and implementable from
+that document alone. This section previously said the profile did not exist and
+that no implementation could claim `MCL Stranger-Contact 1` as a result. That is
+no longer true, and the section is rewritten rather than quietly deleted,
+because what the layer guarantees changed.
 
-Until `AP-BOOTSTRAP-1` is specified, bake-off selected, clean-room implemented
-and assigned a Standards Action identifier, **no implementation may claim
-`MCL Stranger-Contact 1`**, and this document stays Candidate.
+It is still **not** `AP-LAB-FSK-EXPERIMENTAL` (profile 192), which carries raw
+Wire bytes, sits in the Experimental Use range, and under
+`governance/GOVERNANCE.md` §4.3 is never relabelled Stable. Profile 192 was not
+mutated.
+
+**The profile is Candidate, and the claim inherits that.** An implementation may
+now claim `MCL Stranger-Contact 1`, and the claim carries the caveat that its
+bootstrap profile is not frozen — `MCL_CONFORMANCE_CAVEAT_BOOTSTRAP_CANDIDATE`
+in `mcl-sdk/include/mcl/conformance.h`, so the qualification travels in code and
+not only in prose.
+
+The reason is stated in §11 of the profile and is not a documentation gap: every
+measurement of that waveform comes from **one transmitter class**, and there is
+direct evidence the choice does not travel — a laptop speaker with a measured
+notch at one of the two tones recovered 1 of 3 where the reference transmitter
+recovers 9 of 15. Promotion needs a band swept on transmitters that are not the
+reference one, a clean-room receiver, PCM vectors, a contention campaign and an
+assigned identifier.
+
+Granting the claim outright would overstate it; refusing it now would understate
+it, because the specification a builder needs is in the tree and implementable.
+The caveat is how both are avoided.
 
 ### 5.3 What this layer does NOT guarantee
 

@@ -746,8 +746,10 @@ contention does not collapse first contact into a reply storm.
    "implements MCL". A machine with no microphone may truthfully claim the
    foundation layer; it may not claim the stranger-contact layer. The layers are
    specified in `spec/conformance-profiles-v1.md`: **`MCL Base 1`** is complete
-   and claimable now, **`MCL Stranger-Contact 1`** is normatively complete but
-   unclaimable while `AP-BOOTSTRAP-1` does not exist, and
+   and claimable now, **`MCL Stranger-Contact 1`** is normatively complete and,
+   since `AP-BOOTSTRAP-1` landed on 2026-09-06, **claimable with a caveat** —
+   the bootstrap profile is Candidate, and the claim carries that rather than
+   sounding frozen — and
    **`MCL Secure-Stranger 1`** is a reserved name. The **deployment-profile
    schema now exists** — `spec/deployment-profile-v1.md`, with
    `tools/validate_deployment_profile.c`, a reference deployment and nine

@@ -70,6 +70,7 @@ registry value the document assigns.
 
 | Document | Status |
 |---|---|
+| [`ap-bootstrap-1.md`](../mcl-ap/spec/ap-bootstrap-1.md) | Candidate. Normatively complete and implementable from this |
 | [`ap-bootstrap-requirements-v0.1.md`](../mcl-ap/spec/ap-bootstrap-requirements-v0.1.md) | Research Draft |
 | [`ap-v0.md`](../mcl-ap/spec/ap-v0.md) | Research Draft |
 | [`bootstrap-link-convergence.md`](../mcl-ap/spec/bootstrap-link-convergence.md) | Research Draft |
