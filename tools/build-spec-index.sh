@@ -148,11 +148,18 @@ done
     echo "| Document | Purpose |"
     echo "|---|---|"
     echo "| [\`governance/V1_SCOPE.md\`](governance/V1_SCOPE.md) | What v1.0 claims. The authority for every disposition. |"
-    echo "| [\`governance/RELEASE_GATE_V1.md\`](governance/RELEASE_GATE_V1.md) | The 34 rows that must close before a tag exists. |"
+    # Counted, not written. This line said "34 rows" for as long as there were
+    # 34 of them, and the first row added to the ledger would have made the
+    # generated index quietly wrong about the document it is indexing. Rows are
+    # the lines whose first cell is a bare integer, which excludes sub-rows such
+    # as 34a.
+    gate_rows=$(grep -cE '^\| [0-9]+ \|' "$ROOT/mcl-core/governance/RELEASE_GATE_V1.md" || true)
+    echo "| [\`governance/RELEASE_GATE_V1.md\`](governance/RELEASE_GATE_V1.md) | The $gate_rows rows that must close before a tag exists. |"
     echo "| [\`governance/GOVERNANCE.md\`](governance/GOVERNANCE.md) | How the project operates today, and what it cannot do. |"
     echo "| [\`governance/ARCHITECTURE_CHARTER.md\`](governance/ARCHITECTURE_CHARTER.md) | The invariants no layer may violate. |"
     echo "| [\`governance/REGISTRY_POLICY.md\`](governance/REGISTRY_POLICY.md) | Allocation policy shared by every registry. |"
     echo "| [\`governance/MACHINE_CLASS_AUDIT.md\`](governance/MACHINE_CLASS_AUDIT.md) | Why \`machine_class\` left the Stable body. |"
+    echo "| [\`research/TWO_BUILDER_AUDIT.md\`](research/TWO_BUILDER_AUDIT.md) | Whether two uncoordinated builders are guaranteed a path. The basis for \`V1_SCOPE.md\` §5.10. |"
     echo "| [\`SECURITY.md\`](SECURITY.md) | What v1.0 does not protect against, and how to report what it does. |"
     echo "| [\`conformance/independent/SPEC_GAPS.md\`](conformance/independent/SPEC_GAPS.md) | What a clean-room implementer had to work out. |"
     echo "| [\`conformance/api-baseline-v1.txt\`](conformance/api-baseline-v1.txt) | The public symbol surface. |"

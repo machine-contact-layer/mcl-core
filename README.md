@@ -56,9 +56,11 @@ What you configure:
 - **Which transports** you will speak, and whether you will migrate at all
 - **What may be disclosed** at each stage, and over which medium
 - **Whether a security profile runs**, and what must pass before it does
-- **Which cryptography, if any** — MCL defines the interface a mechanism plugs
-  into, never the mechanism. Bring your own stack, your secure element, or a
-  named profile for talking to strangers. MCL never holds a private key
+- **Which cryptography, if any** — the design rule is that MCL will define the
+  interface a mechanism plugs into, never the mechanism: you bring your own
+  stack or your secure element, and MCL never holds a private key. **That
+  interface does not exist yet.** No `sign`, `verify`, `aead` or credential
+  lookup callback ships in any repository today
 - **Whether you hand off**, or keep MCL as the ongoing channel
 
 ## Three ways people use it
@@ -83,6 +85,15 @@ how to reach each other over BLE or Wi-Fi, and complete verification there.
 > Today MCL supports the first two shapes and the transport migration the third
 > one needs. **The security profile itself does not exist yet** — no
 > cryptography is implemented in any repository. See [`SECURITY.md`](SECURITY.md).
+
+> **And the first shape is not yet guaranteed between strangers.** Every
+> transport binding is individually optional, so two conformant implementations
+> can share no bearer at all; the one bearer needing no prior arrangement is
+> acoustic, and it remains Experimental. Contact between machines that share a
+> bearer *by prior arrangement* works today and is measured. Contact between two
+> products that never coordinated is the floor this project is raising before it
+> tags v1.0 — see [`research/TWO_BUILDER_AUDIT.md`](research/TWO_BUILDER_AUDIT.md)
+> and [`governance/V1_SCOPE.md`](governance/V1_SCOPE.md) §5.10.
 
 ## What makes this different from just picking a protocol
 

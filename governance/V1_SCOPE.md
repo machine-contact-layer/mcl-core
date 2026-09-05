@@ -695,6 +695,79 @@ says so in `ICS.md`, in `mcl-core/README.md`, and in the release manifest — in
 the same words, so a reader cannot find a weaker version of the statement by
 looking somewhere else.
 
+### 5.10 The builder-interoperability floor
+
+§5.9 answers "can these specifications be implemented from the text". It does
+not answer a second question, which went unasked until `research/TWO_BUILDER_AUDIT.md`
+put it plainly:
+
+> Can two builders who never coordinate with each other build to the published
+> MCL package and still be **guaranteed** a common first-contact path?
+
+Today the answer is no, and not because of a defect in any binding. Transports
+are individually optional, so a product implementing IP and AP and a product
+implementing BLE and UWB are both fully conformant and share nothing. BLE
+rendezvous advertising is conformant to omit. IP assigns no port and defers
+discovery. The one bearer needing no prior arrangement is acoustic, and it is
+Experimental. **The guaranteed intersection of two conformant v1 implementations
+is empty.**
+
+**Decision.** The floor is raised before v1.0.0 rather than documented as a
+limitation. A release that says "bring your own prearranged bearer" would be
+truthful and would not be the layer `README.md` describes.
+
+#### The acceptance criterion
+
+Two implementations receive only the MCL release, the same deployment profile,
+and that deployment's trust anchors. They receive **no** peer address, port, MAC,
+`source_ref`, `endpoint_token`, shared secret, manual pairing step, or hidden
+test configuration. They are powered on in one another's presence and must
+reach, unaided:
+
+```text
+mutual detection
+    -> bootstrap acquisition
+    -> PRESENCE exchanged
+    -> a common richer bearer identified
+    -> TRANSPORT_OFFER / TRANSPORT_ACCEPT
+    -> candidate path validated
+    -> contact migrated to that bearer
+    -> authentication, where the deployment requires it
+    -> security evidence surfaced separately from trust and authorisation
+    -> local policy decides: continue on MCL, or hand off
+```
+
+A three-or-more machine variant must also pass, to establish that shared-air
+contention does not collapse first contact into a reply storm.
+
+#### What this changes
+
+1. Interoperability is claimed **under a named conformance layer**, never as
+   "implements MCL". A machine with no microphone may truthfully claim the
+   foundation layer; it may not claim the stranger-contact layer. The layers,
+   the mandatory rendezvous profile, the deployment-profile schema, the security
+   carrier and the named security profile are the work this criterion requires,
+   in the dependency order of `research/TWO_BUILDER_AUDIT.md` §5.
+2. This criterion is a **release gate**, not an aspiration. v1.0.0 is not tagged
+   until it passes under a named conformance profile.
+3. Nothing in §5.9 is weakened or withdrawn. (a), (b) and (c) remain required
+   and remain satisfied; this is a fourth requirement they never covered,
+   because they measure whether *these* specifications can be implemented, not
+   whether two independent products are guaranteed to meet.
+4. The acoustic bootstrap this requires carries no credentials and no sensitive
+   identity material. First contact stays public and minimal; authentication
+   happens after migration, on the richer bearer. That was always the intended
+   architecture and it is what keeps the criterion affordable — a bare Ed25519
+   signature does not fit in an acoustic frame, and under this design nothing
+   asks it to.
+
+#### Status
+
+`OPEN`. The audit is recorded; the work is not begun. The prior release
+closeout stands as engineering — gates, bundle, provenance and evidence are
+unaffected and remain valid — but v1.0.0 is **reopened in scope** and the
+release bundle is expected to be stale until §5.10 closes.
+
 ## 6. The go/no-go rule
 
 > MCL v1.0.0 ships only when every feature called **Stable** has one unambiguous
