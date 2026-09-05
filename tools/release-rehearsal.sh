@@ -57,6 +57,8 @@ run "specification index" \
     sh "$ROOT/mcl-core/tools/build-spec-index.sh" --check
 run "feature traceability" \
     sh "$ROOT/mcl-core/tools/check-traceability.sh"
+run "deployment profiles" \
+    sh "$ROOT/mcl-core/tools/check-deployment-profiles.sh"
 run "provenance and licensing" \
     sh "$ROOT/mcl-core/tools/check-provenance.sh"
 run "go/no-go audit" \

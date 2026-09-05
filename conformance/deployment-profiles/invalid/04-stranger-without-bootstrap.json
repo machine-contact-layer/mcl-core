@@ -1,0 +1,11 @@
+{
+  "schema": "mcl-deployment-profile/v1",
+  "profile_id": "FIXTURE-STRANGER-NO-BOOTSTRAP",
+  "revision": 1,
+  "requires": {
+    "wire_major": 1, "link_major": 1,
+    "conformance_layer": "MCL Stranger-Contact 1"
+  },
+  "continuation": { "mandatory": [], "optional": [] },
+  "security": { "profile": null }
+}

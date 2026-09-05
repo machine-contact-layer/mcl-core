@@ -748,10 +748,13 @@ contention does not collapse first contact into a reply storm.
    specified in `spec/conformance-profiles-v1.md`: **`MCL Base 1`** is complete
    and claimable now, **`MCL Stranger-Contact 1`** is normatively complete but
    unclaimable while `AP-BOOTSTRAP-1` does not exist, and
-   **`MCL Secure-Stranger 1`** is a reserved name. The mandatory rendezvous
-   profile, the deployment-profile schema, the security carrier and the named
-   security profile remain, in the dependency order of
-   `research/TWO_BUILDER_AUDIT.md` §5.
+   **`MCL Secure-Stranger 1`** is a reserved name. The **deployment-profile
+   schema now exists** — `spec/deployment-profile-v1.md`, with
+   `tools/validate_deployment_profile.c`, a reference deployment and nine
+   negative fixtures in the gates — so a deployment can guarantee *continuation*
+   where no conformance layer honestly can. The mandatory rendezvous profile,
+   the security carrier and the named security profile remain, in the dependency
+   order of `research/TWO_BUILDER_AUDIT.md` §5.
    **Base 1 alone does not close this row.** It names the honest claim for the
    arranged-bearer case; the criterion is about strangers, so row 35 closes on
    Stranger-Contact 1.

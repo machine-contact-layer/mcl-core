@@ -1,0 +1,13 @@
+{
+  "schema": "mcl-deployment-profile/v1",
+  "profile_id": "FIXTURE-EXPERIMENTAL-MANDATORY",
+  "revision": 1,
+  "requires": { "wire_major": 1, "link_major": 1, "conformance_layer": "MCL Base 1" },
+  "continuation": {
+    "mandatory": [
+      { "transport": "MCL_BLE", "transport_id": 3, "profile": "BLE-X0-GATT-EXPERIMENTAL", "profile_id": 192 }
+    ],
+    "optional": []
+  },
+  "security": { "profile": null }
+}

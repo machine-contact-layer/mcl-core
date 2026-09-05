@@ -31,6 +31,7 @@ registry value the document assigns.
 |---|---|
 | [`conformance-profiles-v1.md`](../mcl-core/spec/conformance-profiles-v1.md) | Candidate |
 | [`core-v0.md`](../mcl-core/spec/core-v0.md) | Research Draft |
+| [`deployment-profile-v1.md`](../mcl-core/spec/deployment-profile-v1.md) | Candidate |
 | [`shared-primitives-v0.1.md`](../mcl-core/spec/shared-primitives-v0.1.md) | Research Draft |
 
 ## mcl-wire
@@ -61,6 +62,7 @@ registry value the document assigns.
 
 | Document | Status |
 |---|---|
+| [`ap-bootstrap-requirements-v0.1.md`](../mcl-ap/spec/ap-bootstrap-requirements-v0.1.md) | Research Draft |
 | [`ap-v0.md`](../mcl-ap/spec/ap-v0.md) | Research Draft |
 | [`bootstrap-link-convergence.md`](../mcl-ap/spec/bootstrap-link-convergence.md) | Research Draft |
 

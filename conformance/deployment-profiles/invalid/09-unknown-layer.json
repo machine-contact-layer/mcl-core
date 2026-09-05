@@ -1,0 +1,8 @@
+{
+  "schema": "mcl-deployment-profile/v1",
+  "profile_id": "FIXTURE-UNKNOWN-LAYER",
+  "revision": 1,
+  "requires": { "wire_major": 1, "link_major": 1, "conformance_layer": "MCL Ultra 9" },
+  "continuation": { "mandatory": [], "optional": [] },
+  "security": { "profile": null }
+}

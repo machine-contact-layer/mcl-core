@@ -1,0 +1,11 @@
+{
+  "schema": "mcl-deployment-profile/v1",
+  "profile_id": "FIXTURE-BOTH-LISTS",
+  "revision": 1,
+  "requires": { "wire_major": 1, "link_major": 1, "conformance_layer": "MCL Base 1" },
+  "continuation": {
+    "mandatory": [ { "transport": "MCL_IP", "transport_id": 2, "profile": "IP-DATAGRAM", "profile_id": 1 } ],
+    "optional":  [ { "transport": "MCL_IP", "transport_id": 2, "profile": "IP-DATAGRAM", "profile_id": 1 } ]
+  },
+  "security": { "profile": null }
+}

@@ -36,7 +36,7 @@ different questions and are assigned by different means.
 |---|---|---|---|
 | **Transport profile** | How do bytes cross *this* medium? | a per-transport registry, by number | `IP-DATAGRAM = 1` under `transport_id = 2` |
 | **Conformance profile** | What may another machine assume I implement? | this document, by name | `MCL Base 1` |
-| **Deployment profile** | Which optional pieces are mandatory *here*? | a deployment authority, by publication | a city's required bearer and trust anchors |
+| **Deployment profile** | Which optional pieces are mandatory *here*? | a deployment authority, by publication, against `spec/deployment-profile-v1.md` | a city's required bearer |
 
 A transport profile makes one medium unambiguous. It cannot make two
 implementations meet, because implementing it is optional. A conformance profile
@@ -154,8 +154,10 @@ have BLE and no network. Requiring both of every machine would exclude honest
 implementations to buy a guarantee that a deployment profile provides better.
 
 So continuation is **best-effort at this layer and guaranteed by a deployment
-profile**, which is what §2 says a deployment profile is for. The failure, when
-it happens, is explicit by §5.1.
+profile**, which is what §2 says a deployment profile is for. That schema now
+exists — `spec/deployment-profile-v1.md`, with a validator and fixtures — and it
+derives the guarantee from the profile's content rather than letting a
+deployment declare one. The failure, when it happens, is explicit by §5.1.
 
 It also guarantees nothing about identity, authenticity or authority. Acoustic
 reception is proximity evidence and never proof of co-presence; the medium is
