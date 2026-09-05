@@ -281,11 +281,19 @@ ARTIFACTS
 } > "$BUNDLE/manifest.txt"
 
 # Checksums over the artifacts, computed from the working tree.
+#
+# -b is not decoration. Coreutils prints " *" before the path in binary mode
+# and two spaces in text mode, and it picks the default from the platform: a
+# bundle built under Git for Windows and one built under Linux produced
+# byte-different SHA256SUMS.txt files carrying identical digests. Both verify,
+# so nothing was ever wrong -- but every line changed on a rebuild, which
+# hides the one line that mattered. Forcing binary mode makes the bundle a
+# function of the tree rather than of the host that built it.
 : > "$BUNDLE/SHA256SUMS.txt"
 grep -v '^#' "$BUNDLE/artifacts.txt" | while read -r path; do
     [ -n "$path" ] || continue
     if [ -f "$ROOT/$path" ]; then
-        (cd "$ROOT" && sha256sum "$path") >> "$BUNDLE/SHA256SUMS.txt"
+        (cd "$ROOT" && sha256sum -b "$path") >> "$BUNDLE/SHA256SUMS.txt"
     else
         echo "WARNING: artifact missing: $path" >&2
     fi
