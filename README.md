@@ -149,7 +149,13 @@ Stated plainly, because scope creep is how interoperability layers die.
 
 ### If you are a builder integrating MCL into a machine
 
-Read [`spec/core-v0.md`](spec/core-v0.md) for what MCL can say, then
+**Start with [`mcl-sdk/BUILDER_GUIDE.md`](https://github.com/machine-contact-layer/mcl-sdk/blob/main/BUILDER_GUIDE.md).**
+It answers the ten questions in order — install, attach a transport, announce,
+hear a peer, migrate, authenticate, trust roots, capabilities, conformance, and
+what will change under you — and says plainly where the answer today is "MCL
+does not do that yet".
+
+Then [`spec/core-v0.md`](spec/core-v0.md) for what MCL can say, and
 [`../mcl-sdk`](https://github.com/machine-contact-layer/mcl-sdk) for the
 developer API. The integration model that matters:
 
