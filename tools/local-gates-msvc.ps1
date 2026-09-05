@@ -25,8 +25,25 @@
 
 param(
     [string]$Root = (Resolve-Path (Join-Path $PSScriptRoot '..\..')).Path,
-    [string]$Work = (Join-Path $env:TEMP 'mclgates-msvc')
+    [string]$Work
 )
+
+# The build directory is keyed to the tree being built.
+#
+# A CMake cache records the source directory it was generated from and refuses
+# to be reused for a different one. With a single fixed work directory, running
+# this against a second checkout -- a fresh clone, which is exactly how a
+# release rehearsal should be run -- failed all eight repositories at configure
+# time with "does not match the source used to generate cache" and reported 0
+# test targets run. Nothing was wrong with either tree. That is the same defect
+# as a gate reading a carriage return: an answer about this machine wearing the
+# shape of an answer about the code.
+if (-not $Work) {
+    $md5 = [System.Security.Cryptography.MD5]::Create()
+    $bytes = [System.Text.Encoding]::UTF8.GetBytes($Root.ToLowerInvariant())
+    $key = ([System.BitConverter]::ToString($md5.ComputeHash($bytes)) -replace '-', '').Substring(0, 8).ToLowerInvariant()
+    $Work = Join-Path $env:TEMP "mclgates-msvc-$key"
+}
 
 $ErrorActionPreference = 'Continue'
 $repos = @('mcl-core', 'mcl-wire', 'mcl-link', 'mcl-sdk',
