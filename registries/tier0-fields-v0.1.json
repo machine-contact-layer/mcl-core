@@ -277,10 +277,10 @@
  ],
  "summary": {
   "total": 21,
-  "assigned": 8,
-  "provisional": 10,
+  "assigned": 9,
+  "provisional": 9,
   "open": 3,
-  "note": "Ten fields carry values that two independent implementations would not agree on, and three have gaps that need a decision rather than an assignment. That is the honest state, and it is recorded here rather than discovered by whoever writes the second implementation. ttl and validity left the open column when they were given one shared duration encoding; capability_digest left it by being renamed to capability_tag, which is what it always was.",
+  "note": "Nine fields carry values that two independent implementations would not agree on, and three have gaps that need a decision rather than an assignment. That is the honest state, and it is recorded here rather than discovered by whoever writes the second implementation. ttl and validity left the open column when they were given one shared duration encoding; capability_digest left it by being renamed to capability_tag, which is what it always was; and profile_id left the provisional column on 2026-09-06, when it stopped being true that no transport had a normative profile registry -- IP-DATAGRAM 1 and BLE-GATT 1 are Stable and assigned.",
   "these_counts_are_checked": "tools/validate_field_registry.c counts the entries and fails if this block disagrees. It was written because this block was first filled in by hand as 6/9/6, which was wrong in the direction that overstates how much of Tier-0 is interoperable. The fix for a miscount is not to recount more carefully."
  },
  "governance": {
