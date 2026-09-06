@@ -10,7 +10,7 @@
 # Regenerate deliberately: mcl-core/tools/api-baseline.sh --update
 # Never regenerate to make a diff go away.
 #
-# symbols: 148
+# symbols: 155
 mcl_ap_attenuation_db_per_m
 mcl_ap_bitrate_equal_to_propagation_bps
 mcl_ap_doppler_shift_hz
@@ -44,6 +44,7 @@ mcl_ble_reassemble
 mcl_ble_reassembler_reset
 mcl_ble_rendezvous_ad_encode
 mcl_ble_rendezvous_ad_matches
+mcl_conformance_caveat_name
 mcl_conformance_evaluate
 mcl_conformance_layer_name
 mcl_conformance_unmet_name
@@ -130,6 +131,12 @@ mcl_node_send_framed_tier0
 mcl_node_send_framed_tier0_ext
 mcl_node_send_handoff
 mcl_node_send_tier0
+mcl_rdv_deliver
+mcl_rdv_init
+mcl_rdv_poll
+mcl_rdv_reply_delay_ms
+mcl_rdv_start
+mcl_rdv_state
 mcl_rendezvous_beacon_decode
 mcl_rendezvous_beacon_encode
 mcl_rendezvous_beacon_matches
