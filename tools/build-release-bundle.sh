@@ -164,6 +164,18 @@ done
 cat > "$BUNDLE/artifacts.txt" <<'ARTIFACTS'
 # Normative specifications and conformance artifacts that constitute this
 # release. Paths are relative to the eight-repository root.
+#
+# THE ACOUSTIC VECTORS ARE HERE ON PURPOSE, BINARY AND ALL.
+#
+# A conformance corpus whose bytes are not pinned is not a corpus: two
+# implementations can only be compared against samples that cannot drift, and
+# "regenerate the vectors" is exactly how a failing cross-test quietly becomes
+# a passing one. They are the only binary artifacts in this bundle and they
+# earn it.
+#
+# The two conformance/deployment profile documents are here because a builder
+# cannot determine what they may claim without them, and AP-BOOTSTRAP-1 is here
+# because the guaranteed interoperability floor rests on it.
 mcl-core/SPECIFICATION_INDEX.md
 mcl-core/SECURITY.md
 mcl-core/REPORTING.md
@@ -199,6 +211,19 @@ mcl-ip/spec/ip-datagram-profile-v1.md
 mcl-ip/registries/ip-profiles-v0.1.json
 mcl-ble/spec/ble-gatt-profile-v1.md
 mcl-ble/registries/ble-profiles-v0.1.json
+mcl-core/spec/conformance-profiles-v1.md
+mcl-core/spec/deployment-profile-v1.md
+mcl-ap/spec/ap-bootstrap-1.md
+mcl-ap/conformance/vectors/VECTORS.md
+mcl-ap/conformance/vectors/01-presence-10b.wav
+mcl-ap/conformance/vectors/02-transport-accept-16b.wav
+mcl-ap/conformance/vectors/03-transport-offer-17b.wav
+mcl-ap/conformance/vectors/04-refuse-bad-crc.wav
+mcl-ap/conformance/vectors/05-refuse-zero-length.wav
+mcl-ap/conformance/vectors/06-refuse-length-over-cap.wav
+mcl-ap/conformance/vectors/07-refuse-truncated.wav
+mcl-ap/conformance/vectors/08-refuse-no-preamble.wav
+mcl-ap/conformance/vectors/09-refuse-silence.wav
 ARTIFACTS
 
 {
