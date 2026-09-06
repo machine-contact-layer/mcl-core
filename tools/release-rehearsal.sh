@@ -79,6 +79,12 @@ echo
 
 run "local gates (GCC/Clang/sanitizers/cross)" \
     sh "$ROOT/mcl-core/tools/local-gates.sh"
+# Runs BEFORE everything that builds. A stale binary fabricates both false
+# passes and false failures, so a rehearsal whose harnesses can run one is
+# reporting about code that may never have been compiled. It cost three
+# byte-identical runs and two wrong conclusions to learn that once.
+run "test harnesses cannot run a stale binary" \
+    sh "$ROOT/mcl-core/tools/check-test-harnesses.sh"
 run "C4 cross-implementation" \
     python3 "$ROOT/mcl-core/conformance/independent/test_independent.py"
 run "C5 profile interoperability" \

@@ -124,6 +124,25 @@ Extends Base 1.
   listen-before-transmit, reply scheduling, duplicate suppression, and backoff.
   A machine that answers every `PRESENCE` immediately is not conformant, because
   a street with ten of them is a street with no contact.
+- **Round ownership**, `AP-BOOTSTRAP-1` §8.1. A machine that has emitted this
+  round's `PRESENCE` is the solicitor and may not also respond to another; a
+  machine responding to somebody's solicitation may not consume a fellow
+  responder's offer. **This is required, not advisory, and it is not a
+  refinement of contention.** Without it two machines still converge — the
+  roles they land in happen to be complementary — and three do not, at all: 600
+  simulated seconds of three machines produced 36 bearer agreements, zero path
+  validations and zero migrations, in a stable cycle where every machine was an
+  acceptor and none was ever a controller. A layer that guaranteed contact
+  between two implementations and not among three would be guaranteeing the
+  easy case.
+- **A random `migration_ref`**, `AP-BOOTSTRAP-1` §8.2, because on this medium
+  it is what selects one responder out of several. A value derived from
+  `source_ref` is not sufficient: `source_ref` carries no uniqueness property,
+  so two builders may legally share one and a derived reference then names both
+  of their contenders with a single acceptance.
+- **The timing parameters of `AP-BOOTSTRAP-1` §7.2, unmodified.** None of them
+  appears on the wire, so two builders who chose differently each behave
+  correctly by their own lights, contend by neither's, and cannot detect it.
 - **An explicit no-common-bearer outcome.** Where the offer and accept find no
   bearer in common, the implementation must report that as a distinct, legible
   result. Silence is not conformant. This is the difference between a failure
@@ -177,6 +196,18 @@ profile**, which is what §2 says a deployment profile is for. That schema now
 exists — `spec/deployment-profile-v1.md`, with a validator and fixtures — and it
 derives the guarantee from the profile's content rather than letting a
 deployment declare one. The failure, when it happens, is explicit by §5.1.
+
+**Even a bearer both machines hold may not be reachable, and that gap is one
+layer down.** Agreement names a bearer; it does not open one. For BLE the
+asymmetry is structural rather than accidental: `TRANSPORT_OFFER` carries an
+`endpoint_token` and `TRANSPORT_ACCEPT` does not, so the acceptor can find the
+offerer and the offerer cannot find the acceptor — and `BLE-GATT-1`, correctly
+for a carriage profile, makes advertising explicitly optional. Two conformant
+builders can therefore each wait for the other to connect.
+`mcl-ble/spec/ble-activate-1.md` closes it and is **Candidate**, so until it or
+an equivalent is Stable, continuation over a BLE candidate bearer is not
+guaranteed between builders who never coordinate. Stated here because it is
+exactly the kind of thing a layer like this exists to stop being a surprise.
 
 It also guarantees nothing about identity, authenticity or authority. Acoustic
 reception is proximity evidence and never proof of co-presence; the medium is

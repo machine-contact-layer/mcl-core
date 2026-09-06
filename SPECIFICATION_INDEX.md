@@ -87,6 +87,7 @@ registry value the document assigns.
 | Document | Status |
 |---|---|
 | [`binding-v0.md`](../mcl-ble/spec/binding-v0.md) | Research Draft |
+| [`ble-activate-1.md`](../mcl-ble/spec/ble-activate-1.md) | Candidate. Normatively complete and implementable from this |
 | [`ble-gatt-profile-v1.md`](../mcl-ble/spec/ble-gatt-profile-v1.md) | Stable |
 
 ## mcl-uwb
