@@ -30,6 +30,42 @@ run() {
     fi
 }
 
+#
+# TOOLCHAIN PREFLIGHT
+#
+# This is not the silent skip the header above rules out -- it is the other
+# half of the same rule. A gate that fails because THIS MACHINE lacks a
+# compiler must not look identical to a gate that fails because the TREE is
+# wrong.
+#
+# Run under a Windows git shell, this script reported
+#
+#     FAILED: local gates (GCC/Clang/sanitizers/cross) ...
+#
+# with the tree in perfect order, because that shell has no cc. Anyone reading
+# that summary would go looking for a defect that was never there -- and a
+# later run that fixed nothing would look like a repair. So the rehearsal
+# refuses to start rather than return a verdict about a tree it did not test.
+MISSING=""
+for tool in cc gcc clang cmake ctest python3 git; do
+    command -v "$tool" > /dev/null 2>&1 || MISSING="$MISSING $tool"
+done
+if [ -n "$MISSING" ]; then
+    echo "=== MCL release rehearsal ==="
+    echo
+    echo "REFUSING TO RUN. This shell is missing:$MISSING"
+    echo
+    echo "The rehearsal exercises POSIX compilers, and without them it would"
+    echo "report FAIL for every gate that needs one -- which says nothing"
+    echo "about the tree. Run it under the POSIX toolchain:"
+    echo
+    echo "  wsl.exe -d Ubuntu-24.04 -- bash -lc 'cd \$MCL && sh mcl-core/tools/release-rehearsal.sh'"
+    echo
+    echo "where \$MCL is this tree under /mnt/c. The MSVC half is separate and"
+    echo "is tools/local-gates-msvc.ps1, run from PowerShell."
+    exit 2
+fi
+
 echo "=== MCL release rehearsal ==="
 echo "root: $ROOT"
 echo
