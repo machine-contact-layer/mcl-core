@@ -33,3 +33,16 @@ c205a80a2e6c45d48d03c4e625087656fa969c8ae6e3b3ae6b6350a616256814 *mcl-link/regis
 b069ff9ddcd0f768cd75f1e4314939d7c5df1deb29bbb47f1a6d36fc5d347856 *mcl-ip/registries/ip-profiles-v0.1.json
 65d45da1b9f11369016e28a683573aba406fe927854777e4e42aa7e522b71daa *mcl-ble/spec/ble-gatt-profile-v1.md
 3609d089d8aeb5c6c24152d7a24a810c244b663ba19ad760c01a1af0665702d3 *mcl-ble/registries/ble-profiles-v0.1.json
+b2f235259155c97a95d35413eaf6b9c4afcc992aee6e635b4840c10607bd08ca *mcl-core/spec/conformance-profiles-v1.md
+3f8d744a8dd9f06ab5d01ae9279b5762cec00916b4d789a15c4ed68e43d0ff2c *mcl-core/spec/deployment-profile-v1.md
+9186c553bfc1c80363240cc3bace2a4522df75422d00d24f0fd67495f27f9ec8 *mcl-ap/spec/ap-bootstrap-1.md
+bf559e293194a0053f2e8f2437ecb14a22ea67be4069096661302244374fbcc3 *mcl-ap/conformance/vectors/VECTORS.md
+7966b2124fe69d7dc1fb8049f7c253ad1e9a5b2b86b9afa1f7fd694f082d0465 *mcl-ap/conformance/vectors/01-presence-10b.wav
+f1365436c653a718268feff62a4ba26d3a52b9b146f865108cdf1cafedeffd49 *mcl-ap/conformance/vectors/02-transport-accept-16b.wav
+6e3777c148aed01e28a17df82f1a9efd4989603509f99789d9079ebb86df80aa *mcl-ap/conformance/vectors/03-transport-offer-17b.wav
+dae8bf448dd691c703ec6b6f531614242d31e35b81834c1d0d500e30e1b8d465 *mcl-ap/conformance/vectors/04-refuse-bad-crc.wav
+517e6f6fb7f623a6bad37519a2e56a338e1c8dbe4b72fd530e72a02bb8b40d5d *mcl-ap/conformance/vectors/05-refuse-zero-length.wav
+9b13717e610dd3260e064eab8e22a56018f00ac55e976068a69321b3707b4877 *mcl-ap/conformance/vectors/06-refuse-length-over-cap.wav
+5a2d3a81f168bbbf8b3c57e925dd25f606a78566927a0a791faf7bc4c274598e *mcl-ap/conformance/vectors/07-refuse-truncated.wav
+096eac6b0d63663629dbdf5b130f46a50b2577b6e11779f2fb64c8bdfe69f8a4 *mcl-ap/conformance/vectors/08-refuse-no-preamble.wav
+e294409b36a8ac1893b23336eeab5202d3e84ce4f66c7572aa1589c43d43c1ff *mcl-ap/conformance/vectors/09-refuse-silence.wav

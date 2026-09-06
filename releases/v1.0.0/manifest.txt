@@ -1,5 +1,5 @@
 MCL v1.0.0 release manifest
-built: 2026-09-06T00:24:46Z
+built: 2026-09-06T00:34:52Z
 
 COMMITS
 
@@ -12,11 +12,11 @@ COMMITS
   exactly this and recorded a stale mcl-core hash. Stating which
   entry is which is the honest fix; claiming to know it is not.
 
-  mcl-core 18815acfa3a287b026cbe91fcf80b274363d200b
+  mcl-core 774198a4954cc0caeb3d89bc20e9f25c873ced31
   mcl-wire 26f28f8359e02e9398e9fea402504c9f5ff4fded
   mcl-link 7defa6a5380acc7b6961e8f594b4ea2a71b0d679
   mcl-sdk bb39c2659348b1bdf6989ac6d6a874513a15d27f
-  mcl-ap 8c79f8ccd13192fc9ad0fa47a0a00cd1623123b5
+  mcl-ap 336dbc39845ccfef966c79bd5479701a06a89119
   mcl-ip 2233629de1e82f99ef36f2a13f55878a9b17bf8e
   mcl-ble 31993948b34d01dde5f5cd5cb1e80e819a6104a4
   mcl-uwb fb11644bd053208b28db68df3f2eca748fc47a5c
@@ -100,6 +100,19 @@ ARTIFACTS
   mcl-ip/registries/ip-profiles-v0.1.json
   mcl-ble/spec/ble-gatt-profile-v1.md
   mcl-ble/registries/ble-profiles-v0.1.json
+  mcl-core/spec/conformance-profiles-v1.md
+  mcl-core/spec/deployment-profile-v1.md
+  mcl-ap/spec/ap-bootstrap-1.md
+  mcl-ap/conformance/vectors/VECTORS.md
+  mcl-ap/conformance/vectors/01-presence-10b.wav
+  mcl-ap/conformance/vectors/02-transport-accept-16b.wav
+  mcl-ap/conformance/vectors/03-transport-offer-17b.wav
+  mcl-ap/conformance/vectors/04-refuse-bad-crc.wav
+  mcl-ap/conformance/vectors/05-refuse-zero-length.wav
+  mcl-ap/conformance/vectors/06-refuse-length-over-cap.wav
+  mcl-ap/conformance/vectors/07-refuse-truncated.wav
+  mcl-ap/conformance/vectors/08-refuse-no-preamble.wav
+  mcl-ap/conformance/vectors/09-refuse-silence.wav
 
 REPRODUCING
 
