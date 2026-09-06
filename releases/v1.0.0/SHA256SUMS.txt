@@ -15,7 +15,7 @@ e6508bff6bafc920bb1f4f4fd79a68a03c515e3f1b6e3bf254d65827d17e9d56 *mcl-core/confo
 d43e909d7705da0bddf657ac389727e0c3f6fc642d170613732b17a6baea9b37 *mcl-core/conformance/api-baseline-v1.txt
 3f59bf848119b4289bfefaddbbf57b389fb58ce0ab5523c2f8bb74374b39d027 *mcl-core/conformance/independent/SPEC_GAPS.md
 f742a2e0b21c28d7afaaf255ea6641147fffc02b7db2004279b3aa56ae0b3bab *mcl-core/registries/semantic-codes-v0.2.json
-157f6e61be172305b3f839497bf441e06776bea9868dec0e8b7f421863c3624a *mcl-core/registries/tier0-fields-v0.1.json
+860e21f58ad3bb31b45e877bf214cc1d51c7febcdcb716182d6926df16b22e15 *mcl-core/registries/tier0-fields-v0.1.json
 01e5a6200dde14f832e7776fb201619ed02f3b3900b3440e9e11934d18b0562c *mcl-wire/spec/common-header-v0.2.md
 5a07fea4ec2a84051ea2b69bfcef9149afb1ee0be2258272527408cb3cd21bea *mcl-wire/spec/tier0-layout-v0.2.md
 c5f59043b81a77e2f8becc19a87019e3162379a0f17bea9e193877663c6ac9c3 *mcl-wire/spec/duration-v0.1.md
