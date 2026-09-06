@@ -98,6 +98,37 @@ report_fatal "$(printf '%b' "$gh" | sed '/^$/d')" "no workflow directories"
 section "hardcoded Tier-0 field counts (FATAL: stale four times already)"
 report_fatal "$(tracked_grep '(Sixteen|Thirteen|[0-9]+) of the (21|twenty-one)' || true)" "no hardcoded field counts"
 
+# ANY NUMBER THAT CAN BE DERIVED MUST NOT BE HAND-MAINTAINED IN RELEASE PROSE.
+#
+# Learned four times on Tier-0 field counts, then again on the specification
+# index row count, and then twice more in one ledger on the same day: row 14
+# said "143 symbols" while api-baseline-v1.txt held 155, and row 30 said "35
+# artifacts" while artifacts.txt held 48. Every one of those numbers is one
+# command away from the file that owns it.
+#
+# The rule this enforces is narrow on purpose: prose may CITE the file, and may
+# not restate its count. Numbers inside generated files, and inside evidence
+# recording what a run actually produced, are untouched -- those are results,
+# not summaries.
+section "hand-copied derived counts in release prose (FATAL)"
+# GOVERNANCE PROSE ONLY, and never generated bundles or evidence.
+#
+# The scope is narrow because the words are not reserved. "16 symbols" in
+# AP-BOOTSTRAP-1 is the FSK training sequence -- a physical quantity that
+# document owns and must state. What this forbids is a RELEASE LEDGER restating
+# a number another file already computes, which is where it went stale twice in
+# one day. A generated manifest describing its own contents is the source, not
+# a copy of one.
+prose_grep() {
+    for repo in $REPOS; do
+        git -C "$ROOT/$repo" grep -nIE "$1" -- 'governance/*.md' \
+            ':!*/evidence/*' ':!*evidence/*' ':!*/releases/*' 2>/dev/null \
+            | sed "s|^|$repo/|" || true
+    done
+}
+report_fatal "$(prose_grep '[0-9]+ symbols' || true)" "no hand-copied API symbol counts"
+report_fatal "$(prose_grep '[0-9]+ (artifacts|checksums)' || true)" "no hand-copied artifact counts"
+
 # ------------------------------------------------------------------ INFO
 section "status: draft, in tracked specifications"
 report_info "$(tracked_grep '^\**[Ss]tatus:?\**.*(Research Draft|draft)' || true)" "draft status lines"

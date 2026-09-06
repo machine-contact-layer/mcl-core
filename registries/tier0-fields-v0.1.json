@@ -254,9 +254,15 @@
     "TRANSPORT_ACCEPT"
    ],
    "width_bits": 8,
-   "status": "provisional",
-   "meaning": "Which profile of the named transport.",
-   "gap": "Profile identifiers are per-transport and no transport has a normative profile registry yet. Values in the Experimental Use range are the only ones currently meaningful, and only between parties that agreed externally."
+   "status": "assigned",
+   "meaning": "Which profile of the named transport. Transport-scoped: the value is resolved through the profile registry of the transport named by transport_id, so the same number means different things under different transports and MUST NOT be compared across them.",
+   "zero": "Reserved. An uninitialised field never names a profile.",
+   "registries": {
+    "2": "mcl-ip/registries/ip-profiles-v0.1.json (IP-DATAGRAM = 1, Stable)",
+    "3": "mcl-ble/registries/ble-profiles-v0.1.json (BLE-GATT = 1, Stable)",
+    "1": "mcl-ap: AP-BOOTSTRAP-1 is specified and Candidate; NO identifier is assigned to it yet. Profile 192 is Experimental Use and is never relabelled."
+   },
+   "note": "This entry read 'provisional -- no transport has a normative profile registry yet' after two transports had normative profile registries and Stable assignments in them. A field registry that describes the state before the assignment tells an implementer the opposite of what the release ships."
   },
   {
    "name": "source_ref",

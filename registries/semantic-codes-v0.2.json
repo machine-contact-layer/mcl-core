@@ -1,6 +1,6 @@
 {
- "registry_version": "0.2-draft",
- "status": "provisional",
+ "registry_version": "0.2",
+ "status": "active",
  "wire_header_model": {
   "major_version_bits": 4,
   "category_bits": 4,
@@ -22,13 +22,13 @@
   {
    "code": 0,
    "name": "CONTACT",
-   "status": "provisional",
+   "status": "stable",
    "opcodes": [
     {
      "code": 0,
      "name": "PRESENCE",
      "tier0_candidate": true,
-     "status": "provisional"
+     "status": "stable"
     }
    ]
   },
@@ -186,19 +186,19 @@
   {
    "code": 8,
    "name": "TRANSPORT",
-   "status": "provisional",
+   "status": "stable",
    "opcodes": [
     {
      "code": 0,
      "name": "TRANSPORT_OFFER",
      "tier0_candidate": true,
-     "status": "provisional"
+     "status": "stable"
     },
     {
      "code": 1,
      "name": "TRANSPORT_ACCEPT",
      "tier0_candidate": true,
-     "status": "provisional"
+     "status": "stable"
     }
    ]
   },
@@ -252,5 +252,6 @@
   "review": "GOVERNANCE.md 4.2",
   "promotion": "GOVERNANCE.md 4.3 -- an Experimental Use value is NEVER relabelled Stable. Promotion assigns a NEW value in the Standards Action range after an independent implementation has interoperated using the experimental one, and re-runs conformance evidence on the final assigned bytes.",
   "deprecation": "GOVERNANCE.md 4.4 -- a retired assignment becomes a permanent tombstone. Its value is never reused and a decoder must refuse it, because a peer that once meant something by that value would otherwise be misread rather than refused."
- }
+ },
+ "status_note": "The registry as a whole is active. Each category and opcode carries its own status: 'stable' means the code is frozen and carried by Wire major 1, 'provisional' means assigned but not frozen. The registry-level status was 'provisional' while every code was, which stopped being true when Wire major 1 was cut and made this file contradict V1_SCOPE.md section 3.2."
 }

@@ -45,7 +45,7 @@ and non-overclaiming* is itself the requirement.
 | 11 | Link major 1 | `DONE` | Cut. Layout byte-identical; class dispositions frozen. |
 | 12 | Immutable major-1 vectors | `DONE` | `tier0-major1-v1.0.json` — 3 positive with **field values**, 6 negative, regenerated on the assigned profile bytes before first publication and recording that revision. `validate_major1_vectors.c` in the gates, 39 checks. |
 | 13 | SDK release engineering | `DONE` | `install-and-verify.sh` — install, external consumer, negative control. |
-| 14 | Public API freeze | `DONE` | `api-baseline.sh`, in the gates. Baseline regenerated deliberately on the release candidate: **143 symbols**, the 11 additions being the `mcl_ap_modem_*` and `mcl_ap_listen_*` functions, each verified declared in a public header. The gate permits additions within a major, so a stale baseline passes while promising less than the release ships — the baseline is therefore refreshed at the candidate, not left to drift. Also fixed here: the gate read the committed baseline without stripping carriage returns, so a Windows checkout with `core.autocrlf=true` reported **every** symbol as renamed — 143 false source breaks in the exact shape of a real one. Reproduced, then fixed at the read. |
+| 14 | Public API freeze | `DONE` | `api-baseline.sh`, in the gates. The baseline is regenerated deliberately at each release candidate. **The symbol count is not repeated here**: it is derivable from `conformance/api-baseline-v1.txt`, this row said 143 while the file held 155, and a hand-maintained copy of a derivable number is a defect waiting to happen. Take it from the file. The gate permits additions within a major, so a stale baseline passes while promising less than the release ships — the baseline is therefore refreshed at the candidate, not left to drift. Also fixed here: the gate read the committed baseline without stripping carriage returns, so a Windows checkout with `core.autocrlf=true` reported **every** symbol as renamed — 143 false source breaks in the exact shape of a real one. Reproduced, then fixed at the read. |
 | 15 | Clean-room independent implementation | `DONE` | `conformance/independent/`, Python, zero shared code. |
 | 16 | C4 independent interoperability | `DONE` | 803 checks, both directions, matching refusals, every profile range carried. |
 | 17 | C5 Stable-profile interoperability | `DONE` | 108 checks **on the assigned value 1**, both profiles. Includes checks read from the registry files, so relabelling 192 fails the suite — verified by doing it. |
@@ -61,7 +61,7 @@ and non-overclaiming* is itself the requirement.
 | 27 | Public Candidate release | `EXTERNAL` | Everything a repository can carry is present and checked: `check-publication-readiness.sh` (front doors, absolute paths, secrets, claim boundary, no hosted CI) and `governance/PUBLISHING.md` (the order, and the evidence-disclosure decisions the owner takes). **The remaining act is one step and is not in this tree: making the eight repositories readable by other people.** |
 | 28 | Interoperability gate | `DONE` | `V1_SCOPE.md` §5.9 defines what v1.0 requires, in three mandatory parts, and all three are met: (a) two implementations independent of each other's code cross-decoding, C4 803 + C5 108; (b) over-air between distinct devices on IP, BLE and acoustic; (c) the stack compiled by a different toolchain for a different architecture, running on an ESP32-S3 and interoperating over air — `mcl-ap/experiments/008-embedded-node/`. **See the note below: this row was narrowed by an explicit scope decision, and what it no longer covers is stated in the release.** |
 | 29 | Errata and defect-report process | `DONE` | `REPORTING.md` (what a useful report is, and what happens to it) and `errata/README.md` (the list, empty at v1.0.0 by design, with the format and the never-silently-rewrite rule). `GOVERNANCE.md` §6 defines the process; these make it usable by someone who has just found a defect. |
-| 30 | Final release bundle | `DONE` | `releases/v1.0.0/` — 8 commits, 35 artifacts, 35 checksums, rebuilt **once** on 2026-09-06 after the row-35 scope work closed, which is what returning this row to `WAIT_DEP` was for. It was stale by design throughout that work and the rehearsal reported it as the single failing check the whole time. |
+| 30 | Final release bundle | `DONE` | `releases/v1.0.0/` — the artifact and checksum counts are in `artifacts.txt` and `SHA256SUMS` and are **not** copied here; this row said 35 after the bundle grew to 48. Rebuilt **once** on 2026-09-06 after the row-35 scope work closed, which is what returning this row to `WAIT_DEP` was for. It was stale by design throughout that work and the rehearsal reported it as the single failing check the whole time. |
 | 31 | Reconstructability check | `DONE` | `build-release-bundle.sh --verify` → RECONSTRUCTION VERIFIED on the rebuilt bundle. The digests are taken over the working tree, so before the line-ending policy landed a clone made by Git for Windows with `core.autocrlf=true` failed all of them on a tree where nothing had changed — reproduced deliberately, then fixed at the cause. The same defect was caught again on 2026-09-06 in Experiment 011's evidence, where run logs were hashed as CRLF while git stores LF; caught before it reached this bundle. |
 | 32 | Final clean-room release rehearsal | `DONE` | `release-rehearsal.sh`, green on the release commits. Two gates were added during row 35 and are part of this run: `check-maturity.sh`, which found eight places where a Stable claim rested on a document calling itself Research Draft, and `mcl-ap/conformance/check-vectors.sh`, which cross-tests the reference and an independent receiver on one corpus against one set of expectations. |
 | 33 | Final go/no-go audit | `DONE` | `go-no-go-audit.sh` — 0 fatal, on the release commits. |
@@ -104,9 +104,21 @@ specification-reading defects. It was written by the same author. E6 remains
 ## What remains
 
 ```text
-27    make the eight repositories readable by other people
-34    tag v1.0.0, after that
+35    the builder-interoperability floor          ACTIVE
+27    make the eight repositories readable        EXTERNAL
+34    tag v1.0.0, after both                      WAIT_DEP
 ```
+
+**Row 35 is listed first because it is the one still being worked.** This
+section named only 27 and 34 while row 35 sat above it marked `ACTIVE`, which is
+the same defect the row states forbid under a softer word -- a summary that
+disagrees with the table it summarises. Take the open set from the table's
+states, not from this list.
+
+Row 35 closes on evidence that is not yet in the tree: a zero-prior-knowledge
+two-builder run through migration, and a three-or-more machine contention
+campaign. Both need machines in a room. What has closed inside the tree is
+recorded in the row.
 
 Row 27 is one action in a settings page. It is not a technical question and it
 cannot be answered from inside this tree.
