@@ -57,6 +57,8 @@ run "specification index" \
     sh "$ROOT/mcl-core/tools/build-spec-index.sh" --check
 run "specification maturity" \
     sh "$ROOT/mcl-core/tools/check-maturity.sh"
+run "AP-BOOTSTRAP-1 vectors, both receivers" \
+    sh "$ROOT/mcl-ap/conformance/check-vectors.sh"
 run "feature traceability" \
     sh "$ROOT/mcl-core/tools/check-traceability.sh"
 run "deployment profiles" \
