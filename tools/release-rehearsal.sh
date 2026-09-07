@@ -107,6 +107,8 @@ run "deployment profiles" \
     sh "$ROOT/mcl-core/tools/check-deployment-profiles.sh"
 run "reference deployment: document vs SDK" \
     sh "$ROOT/mcl-core/tools/check-reference-deployment.sh"
+run "clean-checkout adoption path" \
+    sh "$ROOT/mcl-core/tools/check-adoption-path.sh"
 run "provenance and licensing" \
     sh "$ROOT/mcl-core/tools/check-provenance.sh"
 run "go/no-go audit" \
