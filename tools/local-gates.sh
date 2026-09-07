@@ -106,7 +106,7 @@ INC="-I$ROOT/mcl-wire/include -I$ROOT/mcl-link/include -I$ROOT/mcl-sdk/include \
 
 SRCS="$ROOT/mcl-wire/src/wire.c $ROOT/mcl-wire/src/extension.c \
       $ROOT/mcl-link/src/link.c $ROOT/mcl-link/src/contact.c \
-      $ROOT/mcl-link/src/rendezvous.c $ROOT/mcl-link/src/handoff.c \
+      $ROOT/mcl-link/src/endpoint_rendezvous.c $ROOT/mcl-link/src/handoff.c \
       $ROOT/mcl-link/src/control.c \
       $ROOT/mcl-sdk/src/sdk.c \
       $ROOT/mcl-ip/src/ip_binding.c $ROOT/mcl-ble/src/ble_binding.c \
@@ -173,6 +173,12 @@ cat > "$WORK/hdr.cpp" <<'CPPEOF'
 #include "mcl/extension.h"
 #include "mcl/link.h"
 #include "mcl/contact.h"
+/* BOTH rendezvous headers, deliberately. mcl-link's endpoint rendezvous
+   and mcl-sdk's coordinator were once both installed as mcl/rendezvous.h
+   with the same include guard, so an integrator using the SDK facade with
+   any binding could not compile whichever one lost the include path. This
+   smoke test never caught it because it only ever named one of them. */
+#include "mcl/endpoint_rendezvous.h"
 #include "mcl/rendezvous.h"
 #include "mcl/handoff.h"
 #include "mcl/control.h"
@@ -180,7 +186,12 @@ cat > "$WORK/hdr.cpp" <<'CPPEOF'
 #include "mcl/ip_binding.h"
 #include "mcl/ble_binding.h"
 #include "mcl/uwb_binding.h"
-int main() { mcl_handoff_control_t c; c.operation = MCL_HANDOFF_OP_COMMIT; return int(c.operation) - 3; }
+/* A symbol from EACH rendezvous header is used, not merely included: two
+   headers sharing an include guard compile silently, and only a use of
+   the one that lost fails. */
+int main() { mcl_handoff_control_t c; c.operation = MCL_HANDOFF_OP_COMMIT;
+             mcl_rdv_t coordinator; (void)coordinator;
+             return int(c.operation) - 3 + int(MCL_RENDEZVOUS_BEACON_SIZE) - 8; }
 CPPEOF
 for CXX in g++ clang++; do
   if $CXX -std=c++17 -Wall -Wextra -Werror $INC -c "$WORK/hdr.cpp" -o "$WORK/hdr.$CXX.o" \
@@ -241,7 +252,16 @@ else
   fail "feature traceability"; grep -E 'FAIL|broken link' "$WORK/trace.log"
 fi
 
-# ---------------------------------------------------------------- 9. provenance
+# ---------------------------------------------------------------- 9. reference deployment
+note "reference deployment: document vs SDK"
+if sh "$ROOT/mcl-core/tools/check-reference-deployment.sh" > "$WORK/dep.log" 2>&1; then
+  printf '  %s
+' "$(grep 'SDK        bearers' "$WORK/dep.log")"
+else
+  fail "reference deployment"; grep -E 'FAIL' "$WORK/dep.log"
+fi
+
+# ---------------------------------------------------------------- 10. provenance
 note "provenance and licensing"
 if sh "$ROOT/mcl-core/tools/check-provenance.sh" > "$WORK/prov.log" 2>&1; then
   printf '  %s

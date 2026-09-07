@@ -44,7 +44,7 @@ Capability negotiation|mcl-link/spec/link-negotiation-v1.md|-|mcl_link_capabilit
 Version selection|mcl-link/spec/link-negotiation-v1.md|-|mcl_link_negotiation_select|mcl-link/tests/test_negotiation.c|mcl-link/tests/test_negotiation.c|-
 Contact lifecycle|mcl-link/spec/link-contact-ownership-v0.1.md|-|mcl_contact_begin|mcl-link/tests/test_contact.c|mcl-link/tests/test_contact.c|mcl-sdk/evidence
 Migration handoff|mcl-link/spec/link-handoff-control-v0.1.md|mcl-link/registries/handoff-ops-v0.1.json|mcl_handoff_control_encode|mcl-link/tests/test_handoff.c|mcl-link/tests/test_handoff.c|mcl-sdk/evidence
-Rendezvous beacon|mcl-link/spec/link-handoff-control-v0.1.md|-|mcl_rendezvous_beacon_encode|mcl-link/tests/test_rendezvous.c|mcl-link/tests/test_rendezvous.c|-
+Rendezvous beacon|mcl-link/spec/link-handoff-control-v0.1.md|-|mcl_rendezvous_beacon_encode|mcl-link/tests/test_endpoint_rendezvous.c|mcl-link/tests/test_endpoint_rendezvous.c|-
 Transport IDs|mcl-link/spec/link-v0.md|mcl-link/registries/transport-ids-v0.1.json|-|mcl-sdk/tests/test_transport_registry_binding.c|mcl-sdk/tests/test_transport_registry_binding.c|-
 Transport-aware SDK|mcl-link/spec/link-contact-ownership-v0.1.md|-|mcl_node_send_framed_tier0|mcl-sdk/tests/test_sdk_framed.c|mcl-sdk/tests/test_sdk_framed.c|mcl-sdk/evidence
 Multi-contact isolation|mcl-link/spec/link-contact-ownership-v0.1.md|-|mcl_node_init|mcl-sdk/tests/test_multi_contact.c|mcl-sdk/tests/test_multi_contact.c|-
