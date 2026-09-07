@@ -149,7 +149,15 @@ Stated plainly, because scope creep is how interoperability layers die.
 
 ### If you are a builder integrating MCL into a machine
 
-**Start with [`mcl-sdk/BUILDER_GUIDE.md`](https://github.com/machine-contact-layer/mcl-sdk/blob/main/BUILDER_GUIDE.md).**
+**Start with [`mcl-sdk/QUICKSTART.md`](https://github.com/machine-contact-layer/mcl-sdk/blob/main/QUICKSTART.md)**,
+which goes from a clone to two machines in contact in eight steps. The
+integration surface is `mcl/machine.h`: you supply a clock, randomness, a way to
+move bytes, a way to open a bearer and a policy answer, and MCL keeps PRESENCE,
+contention, OFFER/ACCEPT, activation, path validation and migration. One named
+deployment profile, `MCL-REFERENCE-DEPLOYMENT-1`, so nobody has to choose among
+equivalent combinations before seeing it work.
+
+**Then [`mcl-sdk/BUILDER_GUIDE.md`](https://github.com/machine-contact-layer/mcl-sdk/blob/main/BUILDER_GUIDE.md).**
 It answers the ten questions in order — install, attach a transport, announce,
 hear a peer, migrate, authenticate, trust roots, capabilities, conformance, and
 what will change under you — and says plainly where the answer today is "MCL

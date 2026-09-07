@@ -194,7 +194,7 @@ def build_cross_check():
         os.path.join(ROOT, "mcl-link", "src", "negotiation.c"),
         os.path.join(ROOT, "mcl-link", "src", "contact.c"),
         os.path.join(ROOT, "mcl-link", "src", "handoff.c"),
-        os.path.join(ROOT, "mcl-link", "src", "rendezvous.c"),
+        os.path.join(ROOT, "mcl-link", "src", "endpoint_rendezvous.c"),
         os.path.join(ROOT, "mcl-ip", "src", "ip_binding.c"),
         os.path.join(ROOT, "mcl-ble", "src", "ble_binding.c"),
     ]
