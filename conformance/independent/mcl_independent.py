@@ -381,7 +381,14 @@ FLAG_FRESHNESS = 0x08
 FLAG_FRAME_CHECK = 0x10
 FLAG_RESERVED = 0xE0
 
+# Link majors. Both are legal and the layout is byte-identical; major 1 is the
+# Stable one, cut 2026-09-04, and a decoder that accepts only major 0 cannot
+# receive a Stable frame at all. This implementation was written when
+# link-v0.md still said "link_major is 0 for this draft" and refused major 1
+# because of it; the document has been corrected and so has this.
 LINK_MAJOR = 0
+LINK_STABLE_MAJOR = 1
+LINK_MAJORS = (LINK_MAJOR, LINK_STABLE_MAJOR)
 LINK_CLASS_COUNT = 10
 LINK_CLASS_ADAPT = 7
 FRAME_MAX_PAYLOAD = 1024
@@ -409,6 +416,8 @@ def _crc32(data):
 def encode_frame(frame_class, flags, source_ref, payload,
                  destination_ref=0, session_ref=0, sequence=0, freshness_ms=0,
                  link_major=LINK_MAJOR):
+    if link_major not in LINK_MAJORS:
+        raise MclError("unsupported link major")
     if frame_class >= LINK_CLASS_COUNT:
         raise MclError("unknown frame class")
     if frame_class == LINK_CLASS_ADAPT:
@@ -442,7 +451,7 @@ def decode_frame(data):
         raise MclError("truncated frame")
     link_major = data[0] >> 4
     frame_class = data[0] & 0xF
-    if link_major != LINK_MAJOR:
+    if link_major not in LINK_MAJORS:
         raise MclError("unsupported link major")
     if frame_class >= LINK_CLASS_COUNT:
         raise MclError("unknown frame class")

@@ -293,6 +293,54 @@ def test_cross_implementation(binary):
     except mcl.MclError as exc:
         check(False, "independent rejected C's frame: %s" % exc)
 
+    # --- THE STABLE LINK MAJOR, WHICH NOTHING HERE USED TO CARRY --------
+    #
+    # Link major 1 was cut on 2026-09-04 and every case above runs at major 0.
+    # That was not a deliberate scope choice: link-v0.md's layout section still
+    # said "link_major is 0 for this draft", this implementation was written
+    # from that sentence, and its decoder refused major 1 outright. So the
+    # Stable Link major had never been decoded by anything but the reference,
+    # while the release claimed cross-implementation coverage of the Stable
+    # surface. The document is corrected; these are the cases that would have
+    # caught it.
+    stable_frame = mcl.encode_frame(
+        frame_class=0, flags=mcl.FLAG_SEQUENCE | mcl.FLAG_FRAME_CHECK,
+        source_ref=0x0BADCAFE, payload=payload, sequence=7,
+        link_major=mcl.LINK_STABLE_MAJOR)
+    check(stable_frame[0] >> 4 == 1, "independent emits the Stable Link major")
+    # Byte-identical apart from the nibble -- EXCEPT the frame check, which
+    # covers the first byte and therefore must differ. Asserting the whole tail
+    # was identical failed here, correctly: a CRC that did not change when the
+    # major changed would mean it was not covering the header at all.
+    check(stable_frame[1:-4] == frame[1:-4],
+          "major 1 is byte-identical to major 0 apart from the nibble")
+    check(stable_frame[-4:] != frame[-4:],
+          "and the frame check differs, because it covers the byte that moved")
+    rc, out = c_call(binary, "decode_frame", stable_frame.hex())
+    check(rc == 0 and out == "ok",
+          "C accepts an independently framed Stable-major frame (%s)" % out)
+
+    rc, out = c_call(binary, "encode_frame_major1", "")
+    check(rc == 0, "C encodes at the Stable Link major")
+    try:
+        got = mcl.decode_frame(bytes.fromhex(out))
+        check(got["link_major"] == 1, "independent reads Link major 1")
+        inner = mcl.decode_tier0(got["payload"])
+        check(inner["kind"] == "PRESENCE", "and the Stable object inside it")
+    except mcl.MclError as exc:
+        check(False, "independent rejected C's Stable-major frame: %s" % exc)
+
+    # A major neither side implements is refused by both, rather than
+    # interpreted. Built by hand: no encoder here will produce one.
+    alien = bytes([0x20]) + stable_frame[1:]
+    try:
+        mcl.decode_frame(alien)
+        check(False, "independent must refuse an unimplemented Link major")
+    except mcl.MclError:
+        check(True, "independent refuses an unimplemented Link major")
+    rc, out = c_call(binary, "decode_frame", alien.hex())
+    check(rc != 0, "and so does C")
+
     # --- The CRC agrees, which is the sharpest single check -------------
     # This implementation computes CRC-32 from the polynomial rather than
     # calling zlib, so agreement here means both derived the same function

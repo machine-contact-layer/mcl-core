@@ -281,6 +281,42 @@ int main(int argc, char **argv)
         return 0;
     }
 
+    /*
+     * The same frame at the STABLE Link major.
+     *
+     * Nothing in the layout moves between major 0 and major 1 -- the major
+     * exists because the version policy reserves 0 for pre-standard work --
+     * so this verb differs from encode_frame only in the high nibble of the
+     * first byte. It exists because no cross-implementation case had ever
+     * carried a major-1 frame, and the clean-room implementation turned out to
+     * refuse one.
+     */
+    if (strcmp(argv[1], "encode_frame_major1") == 0) {
+        mcl_wire_tier0_t obj;
+        mcl_link_frame_t frame;
+        (void)build_object("PRESENCE", &obj);
+        if (mcl_wire_tier0_encode_at_major(MCL_WIRE_STABLE_MAJOR, &obj, scratch,
+                                           sizeof(scratch), &written) !=
+                MCL_WIRE_OK) {
+            return 1;
+        }
+        memset(&frame, 0, sizeof(frame));
+        frame.frame_class = MCL_LINK_CLASS_CONTACT;
+        frame.flags = (uint8_t)(MCL_LINK_FLAG_SEQUENCE |
+                                MCL_LINK_FLAG_FRAME_CHECK);
+        frame.source_ref = 0x0BADCAFEu;
+        frame.sequence = 7u;
+        frame.payload = scratch;
+        frame.payload_len = (uint16_t)written;
+        if (mcl_link_frame_encode_at_major(MCL_LINK_STABLE_MAJOR, &frame,
+                                           buffer, sizeof(buffer), &size) !=
+                MCL_LINK_OK) {
+            return 1;
+        }
+        print_hex(buffer, size);
+        return 0;
+    }
+
     if (strcmp(argv[1], "decode_capability") == 0) {
         mcl_link_capability_t cap;
         size = from_hex(argc > 2 ? argv[2] : "", buffer, sizeof(buffer));
