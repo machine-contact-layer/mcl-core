@@ -98,6 +98,29 @@ if [ "$VERIFY" -eq 1 ]; then
     done < "$BUNDLE/artifacts.txt"
 
     echo
+    echo "-- bundled developer SDK builds and runs its contract test"
+    sdk_archive="$BUNDLE/mcl-developer-sdk.tar.gz"
+    if [ ! -f "$sdk_archive" ]; then
+        echo "  FAIL developer SDK archive is missing"
+        failures=$((failures + 1))
+    else
+        sdk_work=$(mktemp -d)
+        if tar -xzf "$sdk_archive" -C "$sdk_work" &&
+           (cd "$sdk_work/mcl-developer-sdk" && sha256sum -c SHA256SUMS.txt >/dev/null) &&
+           cmake -S "$sdk_work/mcl-developer-sdk" -B "$sdk_work/build" \
+               -DCMAKE_BUILD_TYPE=Release >/dev/null &&
+           cmake --build "$sdk_work/build" --config Release -j 4 >/dev/null &&
+           ctest --test-dir "$sdk_work/build" --build-config Release \
+               --output-on-failure; then
+            echo "  ok   self-contained SDK checksum, build and contract test"
+        else
+            echo "  FAIL self-contained SDK did not reconstruct"
+            failures=$((failures + 1))
+        fi
+        rm -rf "$sdk_work"
+    fi
+
+    echo
     if [ "$failures" -ne 0 ]; then
         echo "$failures reconstruction failure(s)."
         echo "RECONSTRUCTION FAILED"
@@ -155,6 +178,17 @@ if [ "$dirty" -ne 0 ]; then
     exit 1
 fi
 
+# The adoption artifact, not merely the repositories that maintain it. A
+# builder receives one include tree, one CMake project, the named deployment
+# profile, its required specifications, and an executable machine contract.
+sdk_work=$(mktemp -d)
+"$ROOT/mcl-sdk/packaging/make-developer-sdk.sh" \
+    "$sdk_work/mcl-developer-sdk" >/dev/null
+tar --sort=name --mtime='@0' --owner=0 --group=0 --numeric-owner \
+    -C "$sdk_work" -cf - mcl-developer-sdk | gzip -n \
+    > "$BUNDLE/mcl-developer-sdk.tar.gz"
+rm -rf "$sdk_work"
+
 : > "$BUNDLE/commits.txt"
 for repo in $REPOS; do
     printf '%s %s\n' "$repo" "$(git -C "$ROOT/$repo" rev-parse HEAD)" \
@@ -170,8 +204,8 @@ cat > "$BUNDLE/artifacts.txt" <<'ARTIFACTS'
 # A conformance corpus whose bytes are not pinned is not a corpus: two
 # implementations can only be compared against samples that cannot drift, and
 # "regenerate the vectors" is exactly how a failing cross-test quietly becomes
-# a passing one. They are the only binary artifacts in this bundle and they
-# earn it.
+# a passing one. The developer SDK archive is also binary: it is the actual
+# one-package adoption surface, not another claim that the source repos suffice.
 #
 # The two conformance/deployment profile documents are here because a builder
 # cannot determine what they may claim without them, and AP-BOOTSTRAP-1 is here
@@ -225,6 +259,8 @@ mcl-ap/conformance/vectors/07-refuse-truncated.wav
 mcl-ap/conformance/vectors/08-refuse-no-preamble.wav
 mcl-ap/conformance/vectors/09-refuse-silence.wav
 ARTIFACTS
+printf 'mcl-core/releases/%s/mcl-developer-sdk.tar.gz\n' "$VERSION" \
+    >> "$BUNDLE/artifacts.txt"
 
 {
     echo "MCL $VERSION release manifest"
@@ -264,6 +300,8 @@ ARTIFACTS
     echo "                    empty by design"
     echo "  Feature bits      none assigned; same disposition"
     echo "  Cryptography      none. See mcl-core/SECURITY.md"
+    echo "  Developer SDK     mcl-developer-sdk.tar.gz; one CMake build, named"
+    echo "                    deployment profile and executable machine contract"
     echo
     echo "WHAT THIS RELEASE DOES NOT CLAIM"
     echo
