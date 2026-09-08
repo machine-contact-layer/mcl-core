@@ -102,6 +102,29 @@ fi
 
 # ------------------------------------------------------------- 4. secrets
 echo
+echo "-- device and local-topology identifiers inside retained records (a decision)"
+ids=""
+for repo in $REPOS; do
+    hit=$(git -C "$ROOT/$repo" grep -lIE \
+        '(Android device:|device serial|serial number|(^|[^A-Za-z])MAC([ :=]| address)|BSSID|192\.168\.[0-9]+\.[0-9]+)' \
+        -- '*evidence/*' '*/runs/*' 2>/dev/null | sed "s|^|$repo/|" || true)
+    [ -n "$hit" ] && ids="$ids$hit
+"
+done
+ids=$(printf '%s' "$ids" | sed '/^$/d' | LC_ALL=C sort -u)
+if [ -n "$ids" ]; then
+    n=$(echo "$ids" | wc -l | tr -d ' ')
+    DECISIONS=$((DECISIONS + n))
+    echo "  $n retained record(s) name a physical device or private test topology."
+    echo "  Preserve the record; decide whether each directory is publishable as-is:"
+    echo "$ids" | head -20 | sed 's/^/       /'
+    [ "$n" -gt 20 ] && echo "       ... and $((n - 20)) more"
+else
+    echo "  ok   none"
+fi
+
+# ------------------------------------------------------------- 5. secrets
+echo
 echo "-- no credential-shaped strings (FATAL)"
 sec=""
 for repo in $REPOS; do
@@ -119,7 +142,7 @@ else
     echo "  ok   none"
 fi
 
-# ----------------------------------------------- 5. the claim boundary is said
+# ----------------------------------------------- 6. the claim boundary is said
 echo
 echo "-- the release states what it does NOT claim, in every place a reader looks"
 for f in "mcl-core/README.md" "mcl-core/conformance/ICS.md" \
@@ -133,7 +156,7 @@ for f in "mcl-core/README.md" "mcl-core/conformance/ICS.md" \
     fi
 done
 
-# --------------------------------------------------------------- 6. no CI
+# --------------------------------------------------------------- 7. no CI
 echo
 echo "-- no hosted CI configuration (this project uses none, deliberately)"
 ci=0
