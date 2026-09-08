@@ -121,6 +121,21 @@ two-builder run through migration, and a three-or-more machine contention
 campaign. Both need machines in a room. What has closed inside the tree is
 recorded in the row.
 
+**Adoption surface completed in code on 2026-09-09, but not yet physically
+qualified.** The normal integrator now includes only `mcl/machine.h`; the
+facade owns rendezvous, ordered bearer trial, activation, validation, policy,
+migration, retries and cleanup behind a versioned eight-operation platform
+contract. A generated developer SDK provides one CMake build, the named
+deployment profile, required profile/security documents, resource envelope,
+one-header external-consumer check, and an executable machine contract test.
+The release builder now emits that SDK as a checksummed archive and refuses
+reconstruction if the archive cannot build and pass its contract test. The
+DFR1154 runs this facade; the Android arm64 adapter around the same facade
+builds offline and preserves sent/refused/uncertain transmission outcomes and
+asynchronous candidate refusal. **That Android adapter has not been installed
+or run in the current campaign**, so none of this replaces the two physical
+Row 35 runs named above.
+
 Row 27 is one action in a settings page. It is not a technical question and it
 cannot be answered from inside this tree.
 
