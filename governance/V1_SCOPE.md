@@ -775,10 +775,13 @@ contention does not collapse first contact into a reply storm.
 
 #### Status
 
-`OPEN`. The audit is recorded; the work is not begun. The prior release
-closeout stands as engineering — gates, bundle, provenance and evidence are
-unaffected and remain valid — but v1.0.0 is **reopened in scope** and the
-release bundle is expected to be stale until §5.10 closes.
+`OPEN`. The public machine facade, generated developer SDK, platform adapters
+and physical campaign are implemented. Retained zero-prior runs reached acoustic
+negotiation and exact BLE token discovery, then failed at central activation.
+The board adapter correction is under hardware verification; neither full
+zero-prior migration nor the 3+ shared-air contention criterion is closed.
+Earlier software passes remain evidence for their exact revisions, not a final
+release verdict. The bundle is rebuilt only after section 5.10 closes.
 
 ## 6. The go/no-go rule
 

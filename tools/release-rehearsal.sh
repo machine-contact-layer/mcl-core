@@ -89,6 +89,8 @@ run "C4 cross-implementation" \
     python3 "$ROOT/mcl-core/conformance/independent/test_independent.py"
 run "C5 profile interoperability" \
     python3 "$ROOT/mcl-core/conformance/independent/test_profiles_c5.py"
+run "BLE probe verdict regressions" \
+    python3 -m unittest discover -s "$ROOT/mcl-ble/hardware/host-ble-probe" -p 'test_*.py'
 run "installable package + external consumer" \
     sh "$ROOT/mcl-sdk/packaging/install-and-verify.sh"
 run "public API surface" \

@@ -1,0 +1,90 @@
+=== MCL publication readiness ===
+
+-- every repository has the files a reader lands on
+  ok   mcl-core
+  ok   mcl-wire
+  ok   mcl-link
+  ok   mcl-sdk
+  ok   mcl-ap
+  ok   mcl-ip
+  ok   mcl-ble
+  ok   mcl-uwb
+
+-- mcl-core carries the shared process documents
+  ok   mcl-core/SECURITY.md
+  ok   mcl-core/LICENSING.md
+  ok   mcl-core/CONTRIBUTING.md
+  ok   mcl-core/CODE_OF_CONDUCT.md
+  ok   mcl-core/REPORTING.md
+  ok   mcl-core/SPECIFICATION_INDEX.md
+  ok   mcl-core/errata/README.md
+
+-- no absolute user paths in tracked scripts (FATAL)
+  ok   none
+
+-- absolute user paths inside EVIDENCE (a decision, never an edit)
+  15 evidence file(s) name a local path. Publishing them discloses a
+  username. Editing them is NOT an option -- decide per directory:
+       mcl-ap/experiments/002-path-characterization/evidence/dfr1154-20260902/response-01.txt
+       mcl-ap/experiments/002-path-characterization/evidence/dfr1154-20260902/response-02.txt
+       mcl-ap/experiments/002-path-characterization/evidence/dfr1154-20260902/response-03.txt
+       mcl-ap/experiments/008-embedded-node/evidence/e4-node-host-to-board-frame-20260904/run.log
+       mcl-ap/experiments/008-embedded-node/evidence/e4-node-host-to-board-wire-20260904/run.log
+       mcl-ap/experiments/011-bootstrap-over-air/evidence/band-1500-6300-presence-20260906/run.log
+       mcl-ap/experiments/011-bootstrap-over-air/evidence/band-6000-7200-offer-20260906/run.log
+       mcl-ap/experiments/011-bootstrap-over-air/evidence/board-g75-20260906/run.log
+       mcl-ap/experiments/011-bootstrap-over-air/evidence/pilot-board-levelled/run.log
+       mcl-ap/experiments/011-bootstrap-over-air/evidence/pilot-board/run.log
+       mcl-ap/experiments/011-bootstrap-over-air/evidence/pilot-capped/run.log
+       mcl-ap/experiments/011-bootstrap-over-air/evidence/pilot-g75/run.log
+       mcl-ap/experiments/011-bootstrap-over-air/evidence/pilot-quiet/run.log
+       mcl-ap/experiments/012-multi-transmitter-band/evidence/board-20260906/run.log
+       mcl-ap/experiments/012-multi-transmitter-band/evidence/host-speaker-20260906/run.log
+
+-- device and local-topology identifiers inside retained records (a decision)
+  20 retained record(s) name a physical device or private test topology.
+  Preserve the record; decide whether each directory is publishable as-is:
+       mcl-ap/experiments/012-multi-transmitter-band/evidence/20260908-live-com3-speaker-check/board-log.ndjson
+       mcl-ip/evidence/e4-udp-2g4-20260902/README.md
+       mcl-ip/evidence/e4-udp-2g4-20260902/board-serial.log
+       mcl-ip/evidence/e4-udp-2g4-20260902/host-output.txt
+       mcl-ip/hardware/dfr1154-udp-check/runs/20260908-stable-major-over-air.log
+       mcl-sdk/evidence/e4-dual-transport-migration-20260903/README.md
+       mcl-sdk/evidence/e4-dual-transport-migration-20260903/board-serial.log
+       mcl-sdk/evidence/e4-dual-transport-migration-20260903/host-output.txt
+       mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-activation-worker/flash.log
+       mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-activation-worker/peripheral-board.log
+       mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-activation-worker/readback-failed-01.log
+       mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-activation-worker/readback-failed-02.log
+       mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-activation-worker/readback-incomplete-03.log
+       mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-activation-worker/readback.log
+       mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-activation-worker/retry-positive.log
+       mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-activation-worker/stop-during-activation.log
+       mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-activation-worker/windows-central-unavailable-board-01.log
+       mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-activation-worker/windows-central-unavailable-board-02.log
+       mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-android-dfr-zero-prior-attempt-01.md
+       mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-android-dfr-zero-prior-attempts-02-03.md
+
+-- no credential-shaped strings (FATAL)
+  ok   none
+
+-- the release states what it does NOT claim, in every place a reader looks
+  ok   mcl-core/README.md
+  ok   mcl-core/conformance/ICS.md
+  ok   mcl-core/governance/V1_SCOPE.md
+  ok   mcl-core/releases/v1.0.0/manifest.txt
+
+-- no hosted CI configuration (this project uses none, deliberately)
+  ok   none
+
+=== SUMMARY ===
+fatal:      0
+decisions:  35
+
+READY, as far as a script can tell.
+
+What remains is not in this tree and cannot be:
+  - making the repositories readable by other people
+  - deciding the 35 evidence file(s) above, if any
+
+See mcl-core/governance/PUBLISHING.md for the order those happen in.

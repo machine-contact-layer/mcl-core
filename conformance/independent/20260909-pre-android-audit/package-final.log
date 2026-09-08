@@ -1,0 +1,42 @@
+=== single-package developer SDK verification ===
+wsl : .......
+At line:2 char:1
++ wsl -d Ubuntu-24.04 -- sh /mnt/c/Users/marsm/Downloads/mcl/mcl-sdk/pa ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (.......:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+----------------------------------------------------------------------
+Ran 7 tests in 0.013s
+
+OK
+Packaged Markdown: 281 local links verified across all documents
+MCL developer SDK assembled at /tmp/tmp.QY0OIo4Aou/mcl-developer-sdk
+Build with: cmake -S "/tmp/tmp.QY0OIo4Aou/mcl-developer-sdk" -B BUILD_DIRECTORY
+  one package configured, built and installed
+Internal ctest changing into directory: /tmp/tmp.QY0OIo4Aou/build-sdk
+Test project /tmp/tmp.QY0OIo4Aou/build-sdk
+    Start 1: mcl_machine_contract
+1/1 Test #1: mcl_machine_contract .............   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.00 sec
+Packaged Markdown: 281 local links verified across all documents
+mcl_node_bytes=136
+mcl_rendezvous_bytes=328
+mcl_machine_bytes=600
+ap_modem_scratch_bytes=76912
+ap_listener_state_bytes=160
+ap_min_window_pcm16_samples=47360
+ap_min_window_bytes=94720
+131 checks, 0 failed
+EXTERNAL MACHINE CONSUMER OK
+Manual Wire/Link/rendezvous/migration code: 0
+  public MCL headers used by OEM application: 1
+  manual Wire construction: 0
+  manual Link construction: 0
+  manual rendezvous state: 0
+  manual migration state: 0
+  peer-specific configuration: 0
+SINGLE-PACKAGE DEVELOPER SDK PASSED
