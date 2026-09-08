@@ -79,8 +79,10 @@ echo
 
 # ------------------------------------------------------ 2. QUICKSTART section 03
 echo "  QUICKSTART 03: build"
-if cmake -S "$WORK/tree/mcl-sdk" -B "$WORK/build" > "$WORK/cmake.log" 2>&1 &&
-   cmake --build "$WORK/build" -j 4 >> "$WORK/cmake.log" 2>&1; then
+if cmake -S "$WORK/tree/mcl-sdk" -B "$WORK/build" \
+        -DCMAKE_BUILD_TYPE=Release > "$WORK/cmake.log" 2>&1 &&
+   cmake --build "$WORK/build" --config Release -j 4 \
+        >> "$WORK/cmake.log" 2>&1; then
     echo "    build ok"
 else
     fail "the documented build command does not work on a clean export"
@@ -90,19 +92,37 @@ else
     exit 1
 fi
 
-if ctest --test-dir "$WORK/build" --output-on-failure > "$WORK/ctest.log" 2>&1; then
+if ctest --test-dir "$WORK/build" -C Release --output-on-failure \
+        > "$WORK/ctest.log" 2>&1; then
     echo "    $(grep -c 'Passed' "$WORK/ctest.log") test(s) passed"
 else
     fail "the documented test command fails on a clean export"
     grep -E 'Failed|\*\*\*' "$WORK/ctest.log" | head -10 | sed 's/^/      /'
 fi
 
+echo "  QUICKSTART 03: one self-contained developer package"
+if sh "$WORK/tree/mcl-sdk/packaging/verify-developer-sdk.sh" \
+        > "$WORK/developer-sdk.log" 2>&1; then
+    echo "    package built; scratch high-level consumer passed"
+else
+    fail "the single-package developer SDK does not work from committed files"
+    tail -25 "$WORK/developer-sdk.log" | sed 's/^/      /'
+fi
+
 # ------------------------------------------------------ 3. QUICKSTART section 04
 echo "  QUICKSTART 04: run two machines"
-if [ ! -x "$WORK/build/mcl_sdk_first_contact" ]; then
+EXAMPLE=
+for candidate in \
+    "$WORK/build/mcl_sdk_first_contact" \
+    "$WORK/build/mcl_sdk_first_contact.exe" \
+    "$WORK/build/Release/mcl_sdk_first_contact.exe"
+do
+    if [ -f "$candidate" ]; then EXAMPLE=$candidate; break; fi
+done
+if [ -z "$EXAMPLE" ]; then
     fail "the example the Quickstart tells a newcomer to run was not built"
 else
-    if "$WORK/build/mcl_sdk_first_contact" > "$WORK/example.log" 2>&1; then
+    if "$EXAMPLE" > "$WORK/example.log" 2>&1; then
         if grep -q 'CONTACT ESTABLISHED' "$WORK/example.log"; then
             echo "    reached CONTACT ESTABLISHED"
         else
@@ -126,12 +146,23 @@ fi
 
 # ------------------------------------------------------ 4. QUICKSTART section 07
 echo "  QUICKSTART 07: conformance an adopter can run"
-if python3 "$WORK/tree/mcl-core/conformance/independent/test_independent.py" \
+PYTHON=
+if command -v python3 > /dev/null 2>&1; then
+    PYTHON=python3
+elif command -v python > /dev/null 2>&1; then
+    PYTHON=python
+fi
+if [ -n "$PYTHON" ] &&
+   "$PYTHON" "$WORK/tree/mcl-core/conformance/independent/test_independent.py" \
         > "$WORK/c4.log" 2>&1; then
     echo "    C4 independent implementation ok"
 else
     fail "C4 does not run from a clean export"
-    tail -10 "$WORK/c4.log" | sed 's/^/      /'
+    if [ -f "$WORK/c4.log" ]; then
+        tail -10 "$WORK/c4.log" | sed 's/^/      /'
+    else
+        echo "      neither python3 nor python is available"
+    fi
 fi
 
 if sh "$WORK/tree/mcl-core/tools/check-reference-deployment.sh" \
