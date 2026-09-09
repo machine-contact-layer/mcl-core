@@ -1,0 +1,53 @@
+=== MCL release rehearsal ===
+root: /mnt/c/Users/marsm/Downloads/mcl
+
+-- the eight repositories are at their release commits
+   mcl-core  73081d0
+   mcl-wire  4f4c838
+   mcl-link  d9819cb
+   mcl-sdk   cd33b2c
+   mcl-ap    b28a411
+   mcl-ip    fac3874
+   mcl-ble   cbf80c3
+   mcl-uwb   abf8268
+
+local gates (GCC/Clang/sanitizers/cross)   PASS
+test harnesses cannot run a stale binary   PASS
+C4 cross-implementation                    PASS
+C5 profile interoperability                PASS
+BLE probe verdict regressions              PASS
+installable package + external consumer    PASS
+public API surface                         PASS
+registry governance                        PASS
+specification index                        PASS
+specification maturity                     PASS
+AP-BOOTSTRAP-1 vectors, both receivers     PASS
+feature traceability                       PASS
+deployment profiles                        PASS
+reference deployment: document vs SDK      PASS
+clean-checkout adoption path               PASS
+provenance and licensing                   PASS
+go/no-go audit                             PASS
+publication readiness                      PASS
+release bundle reconstruction              FAIL
+        ok   mcl-core/releases/v1.0.0/mcl-developer-sdk.tar.gz
+      
+      -- bundled developer SDK builds and runs its contract test
+      Internal ctest changing into directory: /tmp/tmp.7ee3ogOLu4/build
+      Test project /tmp/tmp.7ee3ogOLu4/build
+          Start 1: mcl_machine_contract
+      1/1 Test #1: mcl_machine_contract .............   Passed    0.00 sec
+      
+      100% tests passed, 0 tests failed out of 1
+      
+      Total Test time (real) =   0.00 sec
+        ok   self-contained SDK checksum, build and contract test
+      
+      1 reconstruction failure(s).
+      RECONSTRUCTION FAILED
+
+=== SUMMARY ===
+18 passed
+FAILED: release bundle reconstruction
+
+REHEARSAL FAILED

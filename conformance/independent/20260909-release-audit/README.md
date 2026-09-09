@@ -49,3 +49,24 @@ matching digest; arbitrary release binaries remain refused.
 
 No protocol constants, role/token rules, or conformance criteria were relaxed.
 No publication or release tag is authorized by this record.
+
+## Final software receipts
+
+The final source checkpoint was SDK `cd33b2c` and core `73081d0`.
+The following checks were completed before this receipt-only update:
+
+| Check | Result | Receipt |
+| --- | --- | --- |
+| MSVC strict builds and tests | 43 targets passed | `msvc.log` |
+| SDK regression suite | 9 targets passed | `sdk-tests.log` |
+| POSIX release rehearsal | 18 checks passed; bundle reconstruction failed | `posix-rehearsal.log` |
+| Sealed device evidence verification | Passed; release approval remains false | `DEVICE_VERIFICATION.json` |
+
+The reconstruction failure remains open. The existing archive predates the
+final fixes; it has not been rebuilt to bypass the physical release blocker.
+The rehearsal's publication-readiness and go/no-go script results are software
+checks and do not establish physical qualification or public-review completion.
+
+`verify_devices.py` verifies the SDK campaign's 150 artifact digests and the
+selected physical regression receipts. `SHA256SUMS.txt` binds this audit's
+files, excluding the checksum file itself. Logs were normalized to UTF-8/LF.

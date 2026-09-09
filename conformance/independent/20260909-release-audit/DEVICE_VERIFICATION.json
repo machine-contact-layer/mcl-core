@@ -1,0 +1,24 @@
+{
+  "device_regressions": {
+    "final-lifecycle-03": {
+      "role": "central",
+      "session": "E54DB407",
+      "both_endpoints_migrated": true
+    },
+    "final-lifecycle-05": {
+      "role": "peripheral",
+      "session": "4FF8E555",
+      "both_endpoints_migrated": true
+    }
+  },
+  "retry_resources": [
+    "13152",
+    "7668",
+    "5392",
+    "5364"
+  ],
+  "readback_match": true,
+  "stop_cancelled": true,
+  "three_machine_qualified": false,
+  "release_approved": false
+}
