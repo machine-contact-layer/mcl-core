@@ -6,8 +6,8 @@
 # A conformance corpus whose bytes are not pinned is not a corpus: two
 # implementations can only be compared against samples that cannot drift, and
 # "regenerate the vectors" is exactly how a failing cross-test quietly becomes
-# a passing one. They are the only binary artifacts in this bundle and they
-# earn it.
+# a passing one. The developer SDK archive is also binary: it is the actual
+# one-package adoption surface, not another claim that the source repos suffice.
 #
 # The two conformance/deployment profile documents are here because a builder
 # cannot determine what they may claim without them, and AP-BOOTSTRAP-1 is here
@@ -60,3 +60,4 @@ mcl-ap/conformance/vectors/06-refuse-length-over-cap.wav
 mcl-ap/conformance/vectors/07-refuse-truncated.wav
 mcl-ap/conformance/vectors/08-refuse-no-preamble.wav
 mcl-ap/conformance/vectors/09-refuse-silence.wav
+mcl-core/releases/v1.0.0/mcl-developer-sdk.tar.gz
