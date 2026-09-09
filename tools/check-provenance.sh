@@ -104,6 +104,18 @@ unaccounted=0
 for repo in $REPOS; do
     for f in $(git -C "$ROOT/$repo" ls-files | grep -iE '\.(png|jpe?g|gif|bmp|wav|mp3|bin|zip|gz|tar|so|dll|dylib|a|o|obj|exe|pdf|jar|whl|class)$' || true); do
         case "$f" in
+            releases/*/mcl-developer-sdk.tar.gz)
+                dir=$(dirname "$ROOT/$repo/$f")
+                expected=$(awk -v path="*$repo/$f" '$2 == path {print $1}' "$dir/SHA256SUMS.txt" 2>/dev/null || true)
+                actual=$(sha256sum "$ROOT/$repo/$f" | cut -d ' ' -f 1)
+                if [ "$repo" != mcl-core ] || [ ! -f "$dir/README.md" ] ||
+                   [ "$expected" != "$actual" ] ||
+                   ! grep -Fxq "$repo/$f" "$dir/artifacts.txt"; then
+                    echo "  FAIL $repo/$f lacks release provenance or its recorded digest differs"
+                    FAILURES=$((FAILURES + 1))
+                    unaccounted=$((unaccounted + 1))
+                fi
+                ;;
             *evidence/*|*experiments/*|*conformance/vectors/*)
                 dir=$(dirname "$ROOT/$repo/$f")
                 # Walk up to the nearest README.

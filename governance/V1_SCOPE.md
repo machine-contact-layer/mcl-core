@@ -776,10 +776,12 @@ contention does not collapse first contact into a reply storm.
 #### Status
 
 `OPEN`. The public machine facade, generated developer SDK, platform adapters
-and physical campaign are implemented. Retained zero-prior runs reached acoustic
-negotiation and exact BLE token discovery, then failed at central activation.
-The board adapter correction is under hardware verification; neither full
-zero-prior migration nor the 3+ shared-air contention criterion is closed.
+and physical campaign are implemented. Retained two-device zero-prior runs now
+reach migration and explicit policy admission in both BLE orientations.
+The three-machine attempts did not migrate; Windows omitted the complete
+required advertising beacon. Later adapter corrections have revision-specific
+regression logs. The 3+ shared-air contention criterion remains open; see
+`../conformance/independent/20260909-release-audit/README.md`.
 Earlier software passes remain evidence for their exact revisions, not a final
 release verdict. The bundle is rebuilt only after section 5.10 closes.
 

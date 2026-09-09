@@ -180,3 +180,19 @@ reuses its client and cancels before teardown. Board diagnostics establish
 address/beacon contracts, two failed-attempt resource recovery with live acoustic
 decode, and Windows-to-board peripheral GATT round trip. These are component
 and recovery checks, not Row 35 closure. The next required peer is Android.
+
+### 2026-09-09 final device regression and release hold
+
+The later audit completed the independent Windows-to-Android exact diagnostic
+round trip and both-role zero-prior DFR/Android migration with explicit policy.
+The final board image was read back exactly and passed cancelled-retry resource
+recovery with live acoustic decoding and STOP cancellation. The final Android
+adapter also passed the notification-before-readiness-service ordering that
+failed an earlier run. See
+`../conformance/independent/20260909-release-audit/README.md` for exact artifacts.
+
+Row 35 remains open: two three-machine attempts failed, and the tested Windows
+port cannot advertise the complete BLE-ACTIVATE-1 beacon. A third qualified
+peer, final bundle reconstruction on qualified sources and the separate public
+review/disclosure gates are still required. No release or paper-compilation
+approval is issued by this private campaign.
