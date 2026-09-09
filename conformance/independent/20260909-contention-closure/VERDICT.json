@@ -1,0 +1,26 @@
+{
+  "three_machine_qualified": false,
+  "release_approved": false,
+  "reason": "Requested per-cell physical predicates remain incomplete; collision recheck failed to migrate within 120 seconds.",
+  "observed_migrated_sessions": [
+    "E0585224",
+    "46269E56",
+    "08810099"
+  ],
+  "all_three_live_ap_exchange_and_foreign_accept_observed": true,
+  "board_early_receive_fix_exercised": true,
+  "board_readback_match": true,
+  "retry_and_stop_pass": true,
+  "msvc_test_targets_passed": 43,
+  "sdk_commit": "97ec6a9",
+  "core_audit_commit": "684daf2",
+  "bundle_rebuilt": false,
+  "public_release_performed": false,
+  "posix_rehearsal": {
+    "passed": 18,
+    "failed": [
+      "release bundle reconstruction"
+    ],
+    "final_release_rehearsal": false
+  }
+}

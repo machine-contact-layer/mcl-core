@@ -92,3 +92,19 @@ before transmission. DFR recovered 17 frames and heard 3 unrecovered frames,
 but no pair migrated within 120 seconds. Windows ended EXHAUSTED and DFR ended
 ANNOUNCING. This is a negative cell, not a pass assembled from another trial.
 All participants were stopped or had returned to their reporting state.
+
+
+## Reviewable checkpoint
+
+SDK source and 75 digest-verified campaign artifacts are committed in
+`97ec6a9` (implementation/evidence commit `d620523`). The governance clarification
+is committed in core `684daf2`. `VERDICT.json` records the conservative
+machine-readable decision. The diagnostic sessions do not authorize public
+publication, a Stable tag, or a final exact-source bundle rebuild.
+
+
+The completed software rehearsal passed 18 checks and failed only release
+bundle reconstruction. The older bundle remains unchanged while the physical
+gate is open. This run started with uncommitted adapter/audit changes and was
+not an exact-final-head release rehearsal; its receipts state the starting
+commits. MSVC passed 43 targets. No final release approval follows from either.
