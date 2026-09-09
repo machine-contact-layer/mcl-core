@@ -196,3 +196,26 @@ port cannot advertise the complete BLE-ACTIVATE-1 beacon. A third qualified
 peer, final bundle reconstruction on qualified sources and the separate public
 review/disclosure gates are still required. No release or paper-compilation
 approval is issued by this private campaign.
+
+### Contention interpretation correction, 2026-09-09
+
+The earlier statement requiring a third complete BLE peer was too strong.
+Section 5.10 now states the physical AP contention invariant explicitly.
+Windows may participate through real independent room-audio AP without being
+a qualified BLE continuation port. The prior failed runs remain failures;
+this clarification supplies no missing migration or contention evidence.
+Row 35 remains ACTIVE until the three bounded physical cells pass.
+
+
+### Bounded contention campaign receipt, 2026-09-10
+
+The final traced campaign reached DFR/Android migration with Windows physically
+present in three runs: E0585224, 46269E56 and 08810099. The first run includes
+valid AP transmission/reception by all three and an ignored later Windows
+ACCEPT. A board readiness-ordering defect found during this campaign was fixed
+and exercised by the second run. These results supersede the earlier claim
+that no three-device run migrated. They do not establish every requested
+collision and third-party-traffic predicate; Row 35 remains ACTIVE. See
+`../conformance/independent/20260909-contention-closure/README.md`
+for the exact successful results, failed attempts and remaining limits.
+No third complete BLE port is required by this interpretation.

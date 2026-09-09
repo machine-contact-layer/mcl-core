@@ -740,6 +740,24 @@ mutual detection
 A three-or-more machine variant must also pass, to establish that shared-air
 contention does not collapse first contact into a reply storm.
 
+**Contention interpretation clarified 2026-09-09.** The third participant
+requires its own physical microphone/speaker path, canonical AP waveform and
+rendezvous rules, independent clock/RNG/source reference, and actual shared-air
+transmission and reception without peer-specific coordination. It need not
+implement the continuation bearer. The selected DFR/Android pair must still
+validate, undergo explicit policy admission and migrate. This does not qualify
+Windows as a complete BLE port or its damaged speaker for transmitter diversity.
+
+The bounded physical campaign covers simultaneous startup, deliberately induced
+contention/collision with bounded recovery, and unrelated valid third-party AP
+traffic during pair formation. Retain timestamps, AP frames and source/session
+references, retry/deferral evidence and final states for all three. Require
+coherent selection, no cyclic or cross-pair agreement, no transaction hijack,
+and actual DFR/Android migration in each cell. Startup alone or an unobserved
+third participant cannot pass. No peer filtering or preselected pair may be
+introduced to force the outcome.
+
+
 #### What this changes
 
 1. Interoperability is claimed **under a named conformance layer**, never as
@@ -804,3 +822,17 @@ requirement in §5.9 — (a) implementations independent of each other's code, (
 over-air between distinct devices, (c) a different toolchain and architecture on
 an embedded target. It does not mean organisational independence, and §5.9 says
 so in the release rather than leaving a reader to assume the stronger reading.
+
+
+### Bounded contention campaign receipt, 2026-09-10
+
+The final traced campaign reached DFR/Android migration with Windows physically
+present in three runs: E0585224, 46269E56 and 08810099. The first run includes
+valid AP transmission/reception by all three and an ignored later Windows
+ACCEPT. A board readiness-ordering defect found during this campaign was fixed
+and exercised by the second run. These results supersede the earlier claim
+that no three-device run migrated. They do not establish every requested
+collision and third-party-traffic predicate; Row 35 remains ACTIVE. See
+`../conformance/independent/20260909-contention-closure/README.md`
+for the exact successful results, failed attempts and remaining limits.
+No third complete BLE port is required by this interpretation.
