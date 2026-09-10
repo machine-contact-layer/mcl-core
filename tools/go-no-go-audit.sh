@@ -41,7 +41,7 @@ tracked_grep() {
     for repo in $REPOS; do
         git -C "$ROOT/$repo" grep -nIE "$pattern" -- \
             ':!*/evidence/*' ':!*evidence/*' \
-            ':!*/conformance/independent/*-rc/*' \
+            ':!conformance/independent/20260910-private-rc/*' \
             ':!*go-no-go-audit.sh' 2>/dev/null \
             | sed "s|^|$repo/|" || true
     done
@@ -123,7 +123,7 @@ section "hand-copied derived counts in release prose (FATAL)"
 prose_grep() {
     for repo in $REPOS; do
         git -C "$ROOT/$repo" grep -nIE "$1" -- 'governance/*.md' \
-            ':!*/evidence/*' ':!*evidence/*' ':!*/releases/*' ':!*/conformance/independent/*-rc/*' 2>/dev/null \
+            ':!*/evidence/*' ':!*evidence/*' ':!*/releases/*' ':!conformance/independent/20260910-private-rc/*' 2>/dev/null \
             | sed "s|^|$repo/|" || true
     done
 }
