@@ -1,0 +1,96 @@
+=== MCL go/no-go audit ===
+Tracked files only. Evidence directories are excluded: they record what
+was true on a date and are never edited.
+
+-- unfinished-work markers (FATAL: none may ship)
+  ok   no TODO/FIXME/XXX/HACK/TBD
+
+-- placeholder text (FATAL)
+  ok   no placeholders
+
+-- GitHub Actions (FATAL: this project uses none, deliberately)
+  ok   no workflow directories
+
+-- hardcoded Tier-0 field counts (FATAL: stale four times already)
+  ok   no hardcoded field counts
+
+-- hand-copied derived counts in release prose (FATAL)
+  ok   no hand-copied API symbol counts
+  ok   no hand-copied artifact counts
+
+-- status: draft, in tracked specifications
+  18 occurrence(s) of draft status lines -- review each:
+       mcl-core/schema/core-v0.yaml:2:status: research-draft
+       mcl-core/spec/core-v0.md:3:Status: **Research Draft**
+       mcl-core/spec/shared-primitives-v0.1.md:3:Status: **Research Draft**
+       mcl-wire/spec/duration-v0.1.md:3:**Status:** Research Draft
+       mcl-wire/spec/tier0-extensions-v0.1.md:3:**Status:** Research Draft
+       mcl-link/research/mcl-s1-benchmark-design.md:3:Status: **Research Draft.** Selects nothing, assigns nothing, and contains no
+       mcl-link/research/mcl-s1-benchmark-round1.md:3:Status: **Research Draft.** Selects nothing. Round 1 measures the dimensions
+       mcl-link/research/security-carrier-design.md:3:Status: **Research Draft.** Decides no cryptography and selects no suite. It
+       mcl-link/spec/link-frame-classes-v0.1.md:3:**Status:** Research Draft
+       mcl-link/spec/machine-card.md:3:Status: **Research Draft**
+       mcl-link/spec/version-context-negotiation-v0.1.md:3:Status: **Research Draft**
+       mcl-ap/spec/ap-bootstrap-requirements-v0.1.md:3:Status: **Research Draft**
+       mcl-ap/spec/ap-v0.md:3:Status: **Research Draft**
+       mcl-ap/spec/bootstrap-link-convergence.md:3:Status: **Research Draft**
+       mcl-ip/spec/binding-v0.md:3:Status: **Research Draft**
+       mcl-ble/spec/binding-v0.md:3:Status: **Research Draft**
+       mcl-uwb/README.md:35:**Status: Research Draft.** Nothing here is frozen. Assigned transport id
+       mcl-uwb/spec/binding-v0.md:3:Status: **Research Draft**
+
+-- provisional registry entries
+  41 occurrence(s) of provisional entries -- review each:
+       mcl-core/conformance/header-v0.2-vectors.json:2:  "status": "provisional",
+       mcl-core/registries/semantic-codes-v0.2.json:38:   "status": "provisional",
+       mcl-core/registries/semantic-codes-v0.2.json:44:     "status": "provisional"
+       mcl-core/registries/semantic-codes-v0.2.json:50:     "status": "provisional"
+       mcl-core/registries/semantic-codes-v0.2.json:57:   "status": "provisional",
+       mcl-core/registries/semantic-codes-v0.2.json:63:     "status": "provisional"
+       mcl-core/registries/semantic-codes-v0.2.json:69:     "status": "provisional"
+       mcl-core/registries/semantic-codes-v0.2.json:76:   "status": "provisional",
+       mcl-core/registries/semantic-codes-v0.2.json:82:     "status": "provisional"
+       mcl-core/registries/semantic-codes-v0.2.json:88:     "status": "provisional"
+       mcl-core/registries/semantic-codes-v0.2.json:95:   "status": "provisional",
+       mcl-core/registries/semantic-codes-v0.2.json:101:     "status": "provisional"
+       mcl-core/registries/semantic-codes-v0.2.json:107:     "status": "provisional"
+       mcl-core/registries/semantic-codes-v0.2.json:114:   "status": "provisional",
+       mcl-core/registries/semantic-codes-v0.2.json:120:     "status": "provisional"
+       mcl-core/registries/semantic-codes-v0.2.json:126:     "status": "provisional"
+       mcl-core/registries/semantic-codes-v0.2.json:132:     "status": "provisional"
+       mcl-core/registries/semantic-codes-v0.2.json:138:     "status": "provisional"
+       mcl-core/registries/semantic-codes-v0.2.json:144:     "status": "provisional"
+       mcl-core/registries/semantic-codes-v0.2.json:151:   "status": "provisional",
+       ... and 21 more
+
+-- experimental profile values appearing in examples
+  2 occurrence(s) of experimental profile uses -- review each:
+       mcl-ip/README.md:52:| `profile_id = 192` | **Experimental Use, permanently.** It was never relabelled: profile 1 is a separate assignment. Evidence gathered under 192 stays evidence about 192. |
+       mcl-ble/README.md:45:| `profile_id = 192` | **Experimental Use, permanently.** It was never relabelled: profile 1 is a separate assignment. Evidence gathered under 192 stays evidence about 192. |
+
+-- old API signatures that were replaced
+  ok   no obsolete signatures
+
+-- the other gate checks still pass
+  ok   check-registry-governance.sh
+  ok   check-traceability.sh
+  ok   check-provenance.sh
+  ok   api-baseline.sh
+  ok   check-publication-readiness.sh
+  ok   build-spec-index.sh --check
+
+=== SUMMARY ===
+fatal findings:         0
+informational findings: 61
+
+An informational finding is not automatically a problem. 'Research Draft'
+on a document v1.0 does not make Stable is correct. A provisional registry
+entry for a Candidate object is correct. Experimental profile 192 in a
+test is correct -- that is the value C4/C5 run against. Each still has to
+be LOOKED AT, which is why they are listed rather than counted.
+
+GO/NO-GO: no fatal findings.
+
+This is NOT a release authorization. It says nothing about whether the
+RELEASE_GATE_V1.md rows are DONE. A tree with no TODOs and a complete
+specification index can still be missing independent review.

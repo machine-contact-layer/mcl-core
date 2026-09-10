@@ -28,3 +28,12 @@ not as a transmitter-diversity endpoint or a complete BLE implementation.
 Release engineering receipts will be sealed here after execution. The bundle
 is a private candidate; public visibility, external review and Stable tags
 remain separate. AP-BOOTSTRAP-1 and BLE-ACTIVATE-1 retain their Candidate caveats.
+
+## Release engineering closure
+
+POSIX rehearsal passed 20 checks; MSVC passed 43 test targets; go/no-go
+reported no fatal findings. The bundle records source revisions before the
+manifest commit. Final ledger status and its checksum are sealed afterward;
+no SDK archive or executable source is changed by that bookkeeping.
+A final reconstruction verifies the sealed metadata. Public visibility and
+external review remain required before Stable tags.

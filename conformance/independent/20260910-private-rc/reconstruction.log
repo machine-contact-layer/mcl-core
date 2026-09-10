@@ -1,0 +1,82 @@
+=== reconstructing v1.0.0 from its bundle alone ===
+
+-- every named commit exists and is what the manifest says
+  ok   mcl-core 935b92294bc2
+  ok   mcl-wire 4f4c838ede1a
+  ok   mcl-link d9819cb704c3
+  ok   mcl-sdk d8468307cbfd
+  ok   mcl-ap b882ae593ccd
+  ok   mcl-ip fac38748e6e7
+  ok   mcl-ble cbf80c350e14
+  ok   mcl-uwb abf826806714
+
+-- checksums match the artifacts they name
+  ok   49 artifact(s) verified against the working tree
+
+-- every artifact the manifest names is present
+  ok   mcl-core/SPECIFICATION_INDEX.md
+  ok   mcl-core/SECURITY.md
+  ok   mcl-core/REPORTING.md
+  ok   mcl-core/errata/README.md
+  ok   mcl-core/governance/PUBLISHING.md
+  ok   mcl-core/LICENSING.md
+  ok   mcl-core/CONTRIBUTING.md
+  ok   mcl-core/governance/V1_SCOPE.md
+  ok   mcl-core/governance/RELEASE_GATE_V1.md
+  ok   mcl-core/governance/GOVERNANCE.md
+  ok   mcl-core/governance/ARCHITECTURE_CHARTER.md
+  ok   mcl-core/governance/REGISTRY_POLICY.md
+  ok   mcl-core/governance/MACHINE_CLASS_AUDIT.md
+  ok   mcl-core/conformance/ICS.md
+  ok   mcl-core/conformance/api-baseline-v1.txt
+  ok   mcl-core/conformance/independent/SPEC_GAPS.md
+  ok   mcl-core/registries/semantic-codes-v0.2.json
+  ok   mcl-core/registries/tier0-fields-v0.1.json
+  ok   mcl-wire/spec/common-header-v0.2.md
+  ok   mcl-wire/spec/tier0-layout-v0.2.md
+  ok   mcl-wire/spec/duration-v0.1.md
+  ok   mcl-wire/spec/tier0-extensions-v0.1.md
+  ok   mcl-wire/registries/extension-ids-v0.1.json
+  ok   mcl-wire/conformance/vectors/tier0-major1-v1.0.json
+  ok   mcl-link/spec/link-v0.md
+  ok   mcl-link/spec/link-class-disposition-v1.md
+  ok   mcl-link/spec/link-negotiation-v1.md
+  ok   mcl-link/spec/link-handoff-control-v0.1.md
+  ok   mcl-link/spec/link-contact-ownership-v0.1.md
+  ok   mcl-link/registries/transport-ids-v0.1.json
+  ok   mcl-link/registries/handoff-ops-v0.1.json
+  ok   mcl-ip/spec/ip-datagram-profile-v1.md
+  ok   mcl-ip/registries/ip-profiles-v0.1.json
+  ok   mcl-ble/spec/ble-gatt-profile-v1.md
+  ok   mcl-ble/registries/ble-profiles-v0.1.json
+  ok   mcl-core/spec/conformance-profiles-v1.md
+  ok   mcl-core/spec/deployment-profile-v1.md
+  ok   mcl-ap/spec/ap-bootstrap-1.md
+  ok   mcl-ap/conformance/vectors/VECTORS.md
+  ok   mcl-ap/conformance/vectors/01-presence-10b.wav
+  ok   mcl-ap/conformance/vectors/02-transport-accept-16b.wav
+  ok   mcl-ap/conformance/vectors/03-transport-offer-17b.wav
+  ok   mcl-ap/conformance/vectors/04-refuse-bad-crc.wav
+  ok   mcl-ap/conformance/vectors/05-refuse-zero-length.wav
+  ok   mcl-ap/conformance/vectors/06-refuse-length-over-cap.wav
+  ok   mcl-ap/conformance/vectors/07-refuse-truncated.wav
+  ok   mcl-ap/conformance/vectors/08-refuse-no-preamble.wav
+  ok   mcl-ap/conformance/vectors/09-refuse-silence.wav
+  ok   mcl-core/releases/v1.0.0/mcl-developer-sdk.tar.gz
+
+-- bundled developer SDK builds and runs its contract test
+Internal ctest changing into directory: /tmp/tmp.l8sVnzvduJ/build
+Test project /tmp/tmp.l8sVnzvduJ/build
+    Start 1: mcl_machine_contract
+1/1 Test #1: mcl_machine_contract .............   Passed    0.00 sec
+
+100% tests passed, 0 tests failed out of 1
+
+Total Test time (real) =   0.01 sec
+  ok   self-contained SDK checksum, build and contract test
+
+RECONSTRUCTION VERIFIED
+
+What this does NOT establish: that the release is correct, or that a
+clean checkout on another machine builds. It establishes that the
+bundle names real commits, real artifacts, and correct checksums.

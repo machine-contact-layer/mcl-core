@@ -1,0 +1,52 @@
+=== MCL release rehearsal ===
+root: /mnt/c/Users/marsm/Downloads/mcl
+
+-- the eight repositories are at their release commits
+   mcl-core  935b922
+   mcl-wire  4f4c838
+   mcl-link  d9819cb
+   mcl-sdk   d846830
+   mcl-ap    b882ae5
+   mcl-ip    fac3874
+   mcl-ble   cbf80c3
+   mcl-uwb   abf8268
+
+local gates (GCC/Clang/sanitizers/cross)   PASS
+test harnesses cannot run a stale binary   PASS
+Row 35 sealed physical receipt             PASS
+C4 cross-implementation                    PASS
+C5 profile interoperability                PASS
+BLE probe verdict regressions              PASS
+installable package + external consumer    PASS
+public API surface                         PASS
+registry governance                        PASS
+specification index                        PASS
+specification maturity                     PASS
+AP-BOOTSTRAP-1 vectors, both receivers     PASS
+feature traceability                       PASS
+deployment profiles                        PASS
+reference deployment: document vs SDK      PASS
+clean-checkout adoption path               PASS
+provenance and licensing                   PASS
+go/no-go audit                             PASS
+publication readiness                      PASS
+release bundle reconstruction              PASS
+
+=== SUMMARY ===
+20 passed
+
+REHEARSAL PASSED
+
+WHAT THIS DOES NOT COVER:
+  - MSVC. Run mcl-core/tools/local-gates-msvc.ps1 on the Windows side.
+    A claim of 'all compilers' needs both halves.
+  - Hardware. No experiment runs here. The E3/E4 evidence stands on the
+    rigs its READMEs name and is not re-measured by a software pass.
+  - Independent review. EVERY CHECK HERE WAS WRITTEN BY THIS PROJECT,
+    including the one that checks the others. Passing them all says
+    the tree is self-consistent, not that it is right.
+    v1.0.0 does not claim that two organisations have interoperated,
+    that anyone outside this project has implemented these
+    specifications, or that anyone outside has reviewed them.
+    V1_SCOPE.md section 5.9. The first outside report goes to
+    mcl-core/REPORTING.md and is a v1.1 event.
