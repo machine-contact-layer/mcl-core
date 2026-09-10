@@ -86,16 +86,23 @@ how to reach each other over BLE or Wi-Fi, and complete verification there.
 > one needs. **The security profile itself does not exist yet** — no
 > cryptography is implemented in any repository. See [`SECURITY.md`](SECURITY.md).
 
-> **And the first shape is not yet guaranteed between strangers.** Every
-> transport binding is individually optional, so two conformant implementations
-> can share no bearer at all; the one bearer needing no prior arrangement is
-> acoustic, and it remains Experimental. Contact between machines that share a
-> bearer *by prior arrangement* works today and is measured. Contact between two
-> products that never coordinated is the floor this project is raising before it
-> tags v1.0 — see [`research/TWO_BUILDER_AUDIT.md`](research/TWO_BUILDER_AUDIT.md)
-> and [`governance/V1_SCOPE.md`](governance/V1_SCOPE.md) §5.10.
+> **MCL Base 1 is the v1.0 stable floor.** It covers regular communication
+> between machines that already share a bearer, including provisioned fleets,
+> manufacture-paired products and fixed deployments. Discovery, microphone/
+> speaker rendezvous and cryptography are not Base 1 requirements.
+>
+> **MCL Stranger-Contact 1 extends Base 1.** It provides an optional zero-prior
+> ingress path when no bearer is shared. Its AP/BLE profile remains Candidate,
+> with the physical evidence and caveats recorded in the release receipt. A
+> contact may remain on MCL, migrate, or be handed to a richer protocol.
 
 ## What makes this different from just picking a protocol
+
+MCL Base 1 is the v1.0 stable floor for regular communication between
+machines that already share a bearer. Stranger-Contact 1 is an optional
+Candidate ingress profile for zero-prior rendezvous; it extends Base 1 and
+does not redefine MCL. A contact may remain on MCL, migrate, or be handed to a
+richer protocol.
 
 **It requires no prior relationship — and does not forbid one.** No shared
 network, no common PKI, no pairing step someone performed in a factory. Machines
@@ -233,11 +240,12 @@ and the `evidence/` directories in the binding repositories.
 
 ## Status
 
-**v1.0 candidate.** The Stable surface is frozen: Wire major 1, Link major 1,
+**v1.0 private candidate.** The Stable surface is frozen: Wire major 1, Link major 1,
 three Stable Tier-0 objects, two Stable transport profiles with assigned
 identifiers, nine Stable Link classes. What v1.0 does and does not cover is
 decided in [`governance/V1_SCOPE.md`](governance/V1_SCOPE.md), and the release
 gate is [`governance/RELEASE_GATE_V1.md`](governance/RELEASE_GATE_V1.md).
+Public visibility and external review are separate owner-controlled gates.
 
 | Layer | Implementation | Physical evidence |
 |---|---|---|
