@@ -2,14 +2,14 @@
 root: /mnt/c/Users/marsm/Downloads/mcl
 
 -- the eight repositories are at their release commits
-   mcl-core  935b922
-   mcl-wire  4f4c838
+   mcl-core  04dcb95
+   mcl-wire  ce1d6e3
    mcl-link  d9819cb
-   mcl-sdk   d846830
-   mcl-ap    b882ae5
+   mcl-sdk   9d1f436
+   mcl-ap    18aad8d
    mcl-ip    fac3874
    mcl-ble   cbf80c3
-   mcl-uwb   abf8268
+   mcl-uwb   5324fd0
 
 local gates (GCC/Clang/sanitizers/cross)   PASS
 test harnesses cannot run a stale binary   PASS
