@@ -46,4 +46,4 @@ dae8bf448dd691c703ec6b6f531614242d31e35b81834c1d0d500e30e1b8d465 *mcl-ap/conform
 5a2d3a81f168bbbf8b3c57e925dd25f606a78566927a0a791faf7bc4c274598e *mcl-ap/conformance/vectors/07-refuse-truncated.wav
 096eac6b0d63663629dbdf5b130f46a50b2577b6e11779f2fb64c8bdfe69f8a4 *mcl-ap/conformance/vectors/08-refuse-no-preamble.wav
 e294409b36a8ac1893b23336eeab5202d3e84ce4f66c7572aa1589c43d43c1ff *mcl-ap/conformance/vectors/09-refuse-silence.wav
-ced81fbd06e0f960222e35699a41997560de1efe226af6088e59042277e11033 *mcl-core/releases/v1.0.0/mcl-developer-sdk.tar.gz
+14d1907161877f1868c7278250be0a3a0f3351b7ab283323a016bf3b6fcb9b27 *mcl-core/releases/v1.0.0/mcl-developer-sdk.tar.gz
