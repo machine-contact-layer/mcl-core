@@ -1,14 +1,14 @@
 === reconstructing v1.0.0 from its bundle alone ===
 
 -- every named commit exists and is what the manifest says
-  ok   mcl-core 935b92294bc2
-  ok   mcl-wire 4f4c838ede1a
+  ok   mcl-core d0e32809f8ca
+  ok   mcl-wire ce1d6e3072ed
   ok   mcl-link d9819cb704c3
-  ok   mcl-sdk d8468307cbfd
-  ok   mcl-ap b882ae593ccd
+  ok   mcl-sdk 9d1f436a6eb9
+  ok   mcl-ap 18aad8de0ea8
   ok   mcl-ip fac38748e6e7
   ok   mcl-ble cbf80c350e14
-  ok   mcl-uwb abf826806714
+  ok   mcl-uwb 5324fd0446a9
 
 -- checksums match the artifacts they name
   ok   49 artifact(s) verified against the working tree
@@ -65,8 +65,8 @@
   ok   mcl-core/releases/v1.0.0/mcl-developer-sdk.tar.gz
 
 -- bundled developer SDK builds and runs its contract test
-Internal ctest changing into directory: /tmp/tmp.l8sVnzvduJ/build
-Test project /tmp/tmp.l8sVnzvduJ/build
+Internal ctest changing into directory: /tmp/tmp.GPKRFLT4C1/build
+Test project /tmp/tmp.GPKRFLT4C1/build
     Start 1: mcl_machine_contract
 1/1 Test #1: mcl_machine_contract .............   Passed    0.00 sec
 
