@@ -6,7 +6,7 @@
 207eed90edb52ea1b81bafdae5a7c9e7a0a319a63939dd821888e54fb8fb4ec0 *mcl-core/LICENSING.md
 903309ba2b10b31c5e60519268f9b113cd447005757bb06b81e8b8503db39b76 *mcl-core/CONTRIBUTING.md
 5242ffc8deb4973cc1ad5b0317faff27ea5b9310897d3c32b648bbdf89d42fec *mcl-core/governance/V1_SCOPE.md
-aae41d760a1e506664e3dfc8b3bef93072edc428bdce9f18c5f103bcbe62a44a *mcl-core/governance/RELEASE_GATE_V1.md
+23e776bc2f72a195971d364eb2fe4d2b613086f3513a01d4c3b44b5888209cba *mcl-core/governance/RELEASE_GATE_V1.md
 7c0794f7372dd5fe2b3cd2056ce08a468520d3f78842c9291186477dc71496e1 *mcl-core/governance/GOVERNANCE.md
 696369d8bc76c3f1b00f3e66622f0e5b404641e008fde80c9bad8635413e0ee2 *mcl-core/governance/ARCHITECTURE_CHARTER.md
 3cf85cb41a1efe1e7c75c65a420653cdb0bad0a10324b368604e26db3163b396 *mcl-core/governance/REGISTRY_POLICY.md
@@ -46,4 +46,4 @@ dae8bf448dd691c703ec6b6f531614242d31e35b81834c1d0d500e30e1b8d465 *mcl-ap/conform
 5a2d3a81f168bbbf8b3c57e925dd25f606a78566927a0a791faf7bc4c274598e *mcl-ap/conformance/vectors/07-refuse-truncated.wav
 096eac6b0d63663629dbdf5b130f46a50b2577b6e11779f2fb64c8bdfe69f8a4 *mcl-ap/conformance/vectors/08-refuse-no-preamble.wav
 e294409b36a8ac1893b23336eeab5202d3e84ce4f66c7572aa1589c43d43c1ff *mcl-ap/conformance/vectors/09-refuse-silence.wav
-676852853e35e57020514db62fc88aa15ef6a0f44d5c1d50fa34f0105902bfac *mcl-core/releases/v1.0.0/mcl-developer-sdk.tar.gz
+ced81fbd06e0f960222e35699a41997560de1efe226af6088e59042277e11033 *mcl-core/releases/v1.0.0/mcl-developer-sdk.tar.gz
