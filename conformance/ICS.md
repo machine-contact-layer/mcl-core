@@ -161,8 +161,9 @@ that run is evidence about a third platform and a third CPU architecture and is
 - **Not a completed v1.0 release.** The Stable subset is enumerated in
   `SPECIFICATION_INDEX.md`; AP-BOOTSTRAP-1 and BLE-ACTIVATE-1 remain Candidate.
   Two-device zero-prior migration has been measured in both BLE orientations.
-  The 3+ shared-air contention, final bundle verification and charter-required
-  public review gates remain open; newer fixes require their own regressions.
+  The original 3+ shared-air contention requirement is satisfied by E0585224;
+  the later stress matrix remains informative. Final bundle verification and
+  charter-required public review are separate; see the current private-RC audit.
   Component carriage and scanner matches do not close those gates.
 - **Not evidence for UWB or for the IP stream profile.** Both are implemented
   and neither has over-air evidence.

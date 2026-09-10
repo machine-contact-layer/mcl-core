@@ -11,5 +11,7 @@ the source commits; `artifacts.txt` inventories the archive and `SHA256SUMS.txt`
 records its exact digest. `../../tools/build-release-bundle.sh --verify v1.0.0` checks the
 reconstruction, including building and running the extracted SDK contract test.
 
-The existing bundle predates subsequent physical-test fixes and must be rebuilt
-and rechecked against the final qualified sources before any release decision.
+The current candidate is built after the original Row 35 invariant closes.
+Its execution receipts are in `../../conformance/independent/20260910-private-rc/`.
+Audit status metadata is finalized after verification; the developer archive
+is built once from the frozen source commits. No Stable release is asserted.

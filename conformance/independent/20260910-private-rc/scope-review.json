@@ -1,0 +1,5 @@
+{
+  "review_file": "Review_Rollout_Findings.md",
+  "sha256": "012d5a63fa276b75fe1e4e118047bf38653cd9065414b7c76c957d79ec340f84",
+  "decision": "Use original three-or-more-machine shared-air invariant; later three-cell stress matrix is informative; preserve all negative evidence; no more physical development."
+}

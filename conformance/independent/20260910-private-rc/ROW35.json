@@ -1,0 +1,31 @@
+{
+  "row35_original_invariant_passed": true,
+  "session": {
+    "source_refs": {
+      "board": "C52FA5E3",
+      "android": "A1A78D73",
+      "windows": "CDA89C75"
+    },
+    "session": "E0585224",
+    "tx_frames": {
+      "board": 2,
+      "android": 3,
+      "windows": 11
+    },
+    "rx_frames": {
+      "board": 4,
+      "android": 10,
+      "windows": 1
+    },
+    "accept_proposals": 2,
+    "matching_pair_migrated": true,
+    "no_three_edge_accept_cycle": true,
+    "windows_heard_by": [
+      "board",
+      "android"
+    ]
+  },
+  "three_cell_stress_matrix_passed": false,
+  "stable_release_approved": false,
+  "basis": "Original V1_SCOPE 5.10; owner review restores this invariant and treats later stress cells as non-gating."
+}

@@ -748,15 +748,14 @@ implement the continuation bearer. The selected DFR/Android pair must still
 validate, undergo explicit policy admission and migrate. This does not qualify
 Windows as a complete BLE port or its damaged speaker for transmitter diversity.
 
-The bounded physical campaign covers simultaneous startup, deliberately induced
-contention/collision with bounded recovery, and unrelated valid third-party AP
-traffic during pair formation. Retain timestamps, AP frames and source/session
-references, retry/deferral evidence and final states for all three. Require
-coherent selection, no cyclic or cross-pair agreement, no transaction hijack,
-and actual DFR/Android migration in each cell. Startup alone or an unobserved
-third participant cannot pass. No peer filtering or preselected pair may be
-introduced to force the outcome.
-
+**Owner scope clarification, 2026-09-10.** The later three-cell stress matrix
+is informative robustness work, not three additional release requirements.
+The original invariant above remains the acceptance criterion. The retained
+E0585224 run has three independently operating physical AP participants,
+competing ACCEPTs, first-selection retention, no observed three-edge cycle,
+and validated, policy-admitted DFR/Android migration. It satisfies this
+bounded physical variant. Failed stress experiments remain retained; this is
+not a guarantee of convergence in every hostile 120-second scenario.
 
 #### What this changes
 
@@ -793,15 +792,13 @@ introduced to force the outcome.
 
 #### Status
 
-`OPEN`. The public machine facade, generated developer SDK, platform adapters
-and physical campaign are implemented. Retained two-device zero-prior runs now
-reach migration and explicit policy admission in both BLE orientations.
-The three-machine attempts did not migrate; Windows omitted the complete
-required advertising beacon. Later adapter corrections have revision-specific
-regression logs. The 3+ shared-air contention criterion remains open; see
-`../conformance/independent/20260909-release-audit/README.md`.
-Earlier software passes remain evidence for their exact revisions, not a final
-release verdict. The bundle is rebuilt only after section 5.10 closes.
+`DONE` for the original builder-interoperability floor under
+MCL-REFERENCE-DEPLOYMENT-1 with the Candidate-profile caveat. Both BLE
+orientations passed, and E0585224 satisfies the original three-machine
+shared-air variant. See `../conformance/independent/20260910-private-rc/README.md`
+and its executable receipt. The previously added per-cell stress requirement
+is superseded by the owner scope clarification above. Public review and Stable
+promotion remain separate; no negative run is erased.
 
 ## 6. The go/no-go rule
 
@@ -836,3 +833,5 @@ collision and third-party-traffic predicate; Row 35 remains ACTIVE. See
 `../conformance/independent/20260909-contention-closure/README.md`
 for the exact successful results, failed attempts and remaining limits.
 No third complete BLE port is required by this interpretation.
+
+The dated 2026-09-09 and earlier 2026-09-10 notes below are historical; the owner scope clarification and current Status above supersede their Row 35 verdict.

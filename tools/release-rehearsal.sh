@@ -85,6 +85,8 @@ run "local gates (GCC/Clang/sanitizers/cross)" \
 # byte-identical runs and two wrong conclusions to learn that once.
 run "test harnesses cannot run a stale binary" \
     sh "$ROOT/mcl-core/tools/check-test-harnesses.sh"
+run "Row 35 sealed physical receipt" \
+    python3 "$ROOT/mcl-core/conformance/independent/20260910-private-rc/verify_row35.py"
 run "C4 cross-implementation" \
     python3 "$ROOT/mcl-core/conformance/independent/test_independent.py"
 run "C5 profile interoperability" \
