@@ -89,9 +89,18 @@ manifest, the artifact inventory and the evidence index.
 
 ## What this is
 
-A **public candidate**. The specifications have been read by nobody outside
-this project. Charter section 6 requires public external review before any
-Stable promotion, and that review has not happened yet.
+The **Stable** release, tagged after public Candidate review.
+
+Charter section 6 requires public external review before any Stable
+promotion. That review is what release gate row 36 records, and this tag
+cannot be created while row 36 is open -- the script refuses. The review
+reports and what was done about them are in \`errata/\`; an empty \`errata/\`
+means reviewers reported nothing that required correction, not that nobody
+read it.
+
+The Candidate period itself has no tag and no release page. It was the
+public repositories at their frozen candidate heads, which are the revisions
+listed below.
 
 ## Component revisions
 
@@ -120,7 +129,9 @@ open.
 
 ## What is NOT claimed
 
-  - no independent organisation has implemented or reviewed this
+  - no independent organisation has IMPLEMENTED this; public review under
+    charter section 6 has happened, interoperability with a second
+    independent implementation has not
   - no cryptographic profile exists in any repository
   - AP bootstrap and BLE activation are Candidate, not Stable
   - no physical UWB qualification
@@ -167,7 +178,7 @@ while read -r repo commit; do
             ;;
         --confirm)
             git -C "$dir" tag -a "$VERSION" "$commit" \
-                -m "MCL $VERSION -- public candidate. See mcl-core releases/$VERSION."
+                -m "MCL $VERSION -- Stable release after public Candidate review. See mcl-core releases/$VERSION."
             echo "  tagged $repo $VERSION -> $commit"
             ;;
         --push)

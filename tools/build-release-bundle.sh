@@ -302,7 +302,8 @@ cat >> "$BUNDLE/EVIDENCE_INDEX.json" <<'EVJSON'
     "AP bootstrap and BLE activation remain Candidate",
     "Failed 120-second three-machine stress run preserved rather than discarded",
     "No physical UWB qualification",
-    "No cryptographic profile exists in any repository"
+    "No cryptographic profile exists in any repository",
+    "Two board-serial.log files (mcl-ble/evidence/e4-ble-gatt-20260902, mcl-ip/evidence/e4-udp-2g4-20260902) have an unresolved integrity chain: the originally recorded digest matches neither the committed bytes nor any line-ending variant. Owner disposition is to publish as-is and disclose. Neither file is cited by any claim above. See DISPOSITION.md in each directory."
   ]
 }
 EVJSON
