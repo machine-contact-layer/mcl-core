@@ -8,16 +8,31 @@
 # The last matching pattern wins, so the specific paths below override the
 # catch-all.
 
+#
+# WHY THESE PATHS NAME TWO OWNERS AND NOT ONE.
+#
+# They named only @0j0bit until 2026-09-12. That deadlocks: GitHub does not let
+# anyone approve their own pull request, and the branch ruleset grants no
+# bypass to administrators, so a pull request touching one of these paths and
+# authored by its sole code owner could never be merged by anyone. The first
+# change to hit it would have been the one recording rows 27 and 37, which
+# touches /governance/ and /releases/.
+#
+# Both named accounts have write access, which a code owner must have to count.
+# These lines currently resolve to the same two people as the catch-all, so
+# their present effect is documentary: they record which paths are authorities.
+# If the catch-all ever widens, they narrow again on their own.
+
 * @0j0bit @sed-boi
 
 # The authorities. These decide what MCL v1.0 IS, and a change here can
 # invalidate evidence, conformance claims or a published profile without
 # touching a line of C.
-/governance/    @0j0bit
-/spec/          @0j0bit
-/registries/    @0j0bit
-/deployments/   @0j0bit
-/conformance/   @0j0bit
-/releases/      @0j0bit
-/errata/        @0j0bit
-/tools/         @0j0bit
+/governance/    @0j0bit @sed-boi
+/spec/          @0j0bit @sed-boi
+/registries/    @0j0bit @sed-boi
+/deployments/   @0j0bit @sed-boi
+/conformance/   @0j0bit @sed-boi
+/releases/      @0j0bit @sed-boi
+/errata/        @0j0bit @sed-boi
+/tools/         @0j0bit @sed-boi
