@@ -46,6 +46,6 @@ dae8bf448dd691c703ec6b6f531614242d31e35b81834c1d0d500e30e1b8d465 *mcl-ap/conform
 5a2d3a81f168bbbf8b3c57e925dd25f606a78566927a0a791faf7bc4c274598e *mcl-ap/conformance/vectors/07-refuse-truncated.wav
 096eac6b0d63663629dbdf5b130f46a50b2577b6e11779f2fb64c8bdfe69f8a4 *mcl-ap/conformance/vectors/08-refuse-no-preamble.wav
 e294409b36a8ac1893b23336eeab5202d3e84ce4f66c7572aa1589c43d43c1ff *mcl-ap/conformance/vectors/09-refuse-silence.wav
-af235c293f907c7ec91992145839fc2523c3e4e74cdcd42cbaf506fc411afbf9 *mcl-core/releases/v1.0.0/mcl-developer-sdk.tar.gz
-54014c31aa9ee45059fba4b271dba9b3455cfd2c41c372fd7573280541410a88 *mcl-core/releases/v1.0.0/EVIDENCE_INDEX.json
+4dc53d640bb45826345994bc9a41d4ae79a2434ef75ce3b146412dc38a399d97 *mcl-core/releases/v1.0.0/mcl-developer-sdk.tar.gz
+28d23b6541c8715c34a0d516362552069b23aa55125185e54dcebe1db14a7e03 *mcl-core/releases/v1.0.0/EVIDENCE_INDEX.json
 61ac838002640c6e5055fb057b14480e8590af9c78ac1c265d3b4d71c09cf3c2 *mcl-core/releases/v1.0.0/REPRODUCIBILITY.md
