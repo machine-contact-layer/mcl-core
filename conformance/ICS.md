@@ -72,7 +72,7 @@ interoperate. v1.0.0 does not claim that. See `V1_SCOPE.md` §5.9.
 | Unsupported major refused | yes | Majors 0 and 1 are assigned; every other value is refused, never guessed. A Candidate object presented at major 1 is refused too — being at an assigned major is not the same as being admissible at it. |
 | `PRESENCE` | yes | 11 bytes at major 0; 10 at major 1 (no `machine_class`). |
 | `TRANSPORT_OFFER` / `TRANSPORT_ACCEPT` | yes | |
-| Extension envelope | yes | Mechanism only; **zero Stable extension IDs assigned**, by design. |
+| Extension envelope | yes | Candidate/Experimental mechanism only; **zero Stable extension IDs assigned**. |
 | Unknown critical extension refused | yes | |
 | Link frame encode/decode | yes | |
 | Link frame classes | 9 of 10 | `ADAPT` reserved and refused at both encode and decode. |
@@ -119,7 +119,7 @@ interoperate. v1.0.0 does not claim that. See `V1_SCOPE.md` §5.9.
 
 | Registry | Stable assignments |
 |---|---|
-| Semantic codes | provisional; none Stable |
+| Semantic codes | Stable for the major-1 `PRESENCE`, `TRANSPORT_OFFER`, and `TRANSPORT_ACCEPT` assignments; Candidate assignments remain provisional |
 | Tier-0 field meanings | 8 of 21 settled |
 | **Transport IDs** | **2 Stable** — `MCL_IP = 2` and `MCL_BLE = 3`, Standards Action, 2026-09-04, each named normatively by a Stable profile specification. `MCL_AP = 1` and `MCL_UWB = 4` stay provisional |
 | Handoff operations | provisional |
@@ -162,8 +162,8 @@ that run is evidence about a third platform and a third CPU architecture and is
   `SPECIFICATION_INDEX.md`; AP-BOOTSTRAP-1 and BLE-ACTIVATE-1 remain Candidate.
   Two-device zero-prior migration has been measured in both BLE orientations.
   The original 3+ shared-air contention requirement is satisfied by E0585224;
-  the later stress matrix remains informative. Final bundle verification and
-  charter-required public review are separate; see the current private-RC audit.
+  the later stress matrix remains informative. Final exact-head rehearsal and
+  charter-required public review are separate; see the current release-candidate audit.
   Component carriage and scanner matches do not close those gates.
 - **Not evidence for UWB or for the IP stream profile.** Both are implemented
   and neither has over-air evidence.

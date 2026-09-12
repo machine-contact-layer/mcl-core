@@ -4,7 +4,9 @@ Release gate item 15. A second implementation's most valuable output is not that
 it works — it is the list of places where a competent implementer, reading only
 the normative specifications, went wrong or had to guess.
 
-Three errors were made writing `mcl_independent.py`. All three were caught, and
+These findings are a dated record of the clean-room work; the recommendations
+below are historical and the current gate counts are maintained by the release
+receipts. Three errors were made writing `mcl_independent.py`. All three were caught, and
 **how** each was caught is the useful part.
 
 ## 1. `DEGRADED_STATE` — transposed the 3-bit and 7-bit fields
@@ -112,6 +114,6 @@ cd mcl-core/conformance/independent
 python3 test_independent.py
 ```
 
-Builds `cross_check.c` against the reference sources and runs 718 checks. The
+Builds `cross_check.c` against the reference sources and runs 803 checks. The
 two implementations exchange hex on a command line and share no memory, no
 header and no language.

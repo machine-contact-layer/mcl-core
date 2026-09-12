@@ -104,8 +104,9 @@ Candidate ingress profile for zero-prior rendezvous; it extends Base 1 and
 does not redefine MCL. A contact may remain on MCL, migrate, or be handed to a
 richer protocol.
 
-**It requires no prior relationship — and does not forbid one.** No shared
-network, no common PKI, no pairing step someone performed in a factory. Machines
+**A Stranger-Contact deployment requires no prior relationship — Base 1 does
+not forbid one.** No shared network, no common PKI, no pairing step someone
+performed in a factory. Machines
 that already know each other are equally at home here; they just skip the parts
 they do not need.
 
@@ -149,7 +150,7 @@ Stated plainly, because scope creep is how interoperability layers die.
   ending. Remaining as the channel between two machines that share no other
   protocol is another, and it is not a lesser one.
 - **Not a modem.** MCL-AP is one binding among several. Acoustics is a
-  universally available rendezvous medium, not the definition of MCL.
+  deployment-dependent rendezvous medium, not the definition of MCL.
 - **Not adopted, not standardized, not stable.** See Status.
 
 ## Start here
@@ -240,12 +241,13 @@ and the `evidence/` directories in the binding repositories.
 
 ## Status
 
-**v1.0 private candidate.** The Stable surface is frozen: Wire major 1, Link major 1,
+**MCL v1.0 Release Candidate.** The Stable surface is frozen: Wire major 1, Link major 1,
 three Stable Tier-0 objects, two Stable transport profiles with assigned
 identifiers, nine Stable Link classes. What v1.0 does and does not cover is
 decided in [`governance/V1_SCOPE.md`](governance/V1_SCOPE.md), and the release
 gate is [`governance/RELEASE_GATE_V1.md`](governance/RELEASE_GATE_V1.md).
-Public visibility and external review are separate owner-controlled gates.
+Stable `v1.0.0` promotion awaits the required public external review; public
+visibility and disclosure decisions are separate owner-controlled gates.
 
 | Layer | Implementation | Physical evidence |
 |---|---|---|
@@ -299,8 +301,8 @@ The clean-room implementation is independent *of the reference code* and was
 written by the same author. It found three real specification-reading defects,
 which is exactly why the last line is written the way it is: a reader who is not
 the author will find more. That is what the errata process is for —
-[`REPORTING.md`](REPORTING.md) — and the first external implementation report is
-a v1.1 event, not a reason to withhold v1.0.
+[`REPORTING.md`](REPORTING.md). Public external review is required before the
+Stable `v1.0.0` tag; later implementation reports may inform v1.1.
 
 **MCL provides no confidentiality, no cryptographic authenticity, and no peer
 authentication.** The two shapes that do not need them — open contact, and

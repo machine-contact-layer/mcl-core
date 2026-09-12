@@ -53,6 +53,8 @@ Future external standards work should preserve:
 
 ## 7. No current legal commitment
 
-The private research repositories do not yet create a formal standards-development membership regime or patent-license commitment.
+The MCL research repositories, whether private or publicly readable, do not by
+themselves create a formal standards-development membership regime or
+patent-license commitment.
 
 Before public standards participation begins, MCL should obtain legal review and adopt explicit contributor, specification copyright, patent, and trademark policies.

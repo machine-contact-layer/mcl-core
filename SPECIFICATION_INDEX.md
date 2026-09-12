@@ -17,6 +17,7 @@ build if it is out of date.
 **Stable documents, read from the tree at generation time:**
 
 - `mcl-wire/spec/common-header-v0.2.md`
+- `mcl-wire/spec/duration-v0.1.md`
 - `mcl-wire/spec/tier0-layout-v0.2.md`
 - `mcl-wire/spec/wire-v0.md`
 - `mcl-link/spec/link-class-disposition-v1.md`
@@ -47,7 +48,7 @@ registry value the document assigns.
 | Document | Status |
 |---|---|
 | [`common-header-v0.2.md`](../mcl-wire/spec/common-header-v0.2.md) | Stable for the major-1 common header. Major 0 remains Experimental and |
-| [`duration-v0.1.md`](../mcl-wire/spec/duration-v0.1.md) | Research Draft |
+| [`duration-v0.1.md`](../mcl-wire/spec/duration-v0.1.md) | Stable for the `ttl` and `validity` encoding used by the three |
 | [`tier0-candidate-layout-v0.1.md`](../mcl-wire/spec/tier0-candidate-layout-v0.1.md) | Research Candidate, non-normative. Superseded — retained as a record |
 | [`tier0-extensions-v0.1.md`](../mcl-wire/spec/tier0-extensions-v0.1.md) | Research Draft |
 | [`tier0-layout-v0.2.md`](../mcl-wire/spec/tier0-layout-v0.2.md) | Stable for the three Stable objects — `PRESENCE`, |

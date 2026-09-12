@@ -54,13 +54,17 @@ finds a gap should find the reason for the gap in the same place.
 2. Decide the evidence files the readiness check listed.
 3. Confirm the release bundle reconstructs:
    `mcl-core/tools/build-release-bundle.sh --verify v1.0.0`.
-4. **Make the eight repositories readable.** This step, and only this step, is
-   outside the tree.
+4. **Make the eight repositories readable as the MCL v1.0 Release Candidate.**
+   This step, and only this step, is outside the tree.
 5. Confirm from a logged-out session that each front door renders and that the
    links between repositories resolve. Cross-repository links are relative and
    are the first thing to break when eight repositories become eight URLs.
-6. Only then tag. `GOVERNANCE.md` §7: no tag while any gate row is open, and
-   both gate halves re-run on the exact commits being released.
+6. Solicit the charter-required public external review and record each finding
+   and its disposition in `errata/`. If any source or release artifact changes,
+   rerun the exact-head rehearsal and reconstruction.
+7. Only after disposition of that review tag Stable `v1.0.0`.
+   `GOVERNANCE.md` §7: no tag while any gate row is open, and both gate halves
+   re-run on the exact commits being released.
 
 Publishing before tagging is deliberate. A tag is a promise that a specific
 tree is what people fetched; making the tree fetchable first means the promise
@@ -69,11 +73,10 @@ is made about something that exists.
 ## What publishing starts
 
 The errata process, and it is the point rather than a side effect.
-`V1_SCOPE.md` §5.9 records that these specifications have not been read by
-anyone outside this project. `REPORTING.md` is where the first outside reader
-goes, `errata/` is where the result is recorded, and the first external
-implementation report is a v1.1 event — not a defect in v1.0 and not a reason
-to have withheld it.
+`V1_SCOPE.md` §5.9 records the limit of the private evidence. `REPORTING.md`
+is where outside readers report findings and `errata/` is where they are
+recorded and disposed. That public review is a required gate before the Stable
+`v1.0.0` tag; later external implementation work may inform v1.1.
 
 ## What publishing does not change
 

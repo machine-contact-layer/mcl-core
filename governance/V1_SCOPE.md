@@ -71,8 +71,9 @@ unrelated vendors would read every field identically.
 | `AUTHORITY_CLAIM` | **Candidate** | `authority_class` has no vocabulary and `jurisdiction` has no settled *namespace* — the registry cannot yet say whether it names a legal jurisdiction, a site, an operator or a fleet. Those are not interchangeable. |
 | `DEGRADED_STATE` | **Candidate** | `affected_capability` has no namespace; `health` has no calibration. |
 
-**What this means in one sentence:** MCL v1.0 stabilises *first contact and
-contact continuity*. It does not stabilise the *safety and coordination
+**What this means in one sentence:** MCL v1.0 stabilises *contact signalling and
+contact continuity*, whether peers already share a bearer or use the optional
+Stranger-Contact ingress. It does not stabilise the *safety and coordination
 vocabulary*, because that vocabulary does not exist yet and inventing it alone
 would be inventing it wrongly.
 
@@ -97,8 +98,8 @@ the room, and it must not be done as a side effect of cutting a release.
 | Canonical encoding rules: padding, signed representation, size limits | **Stable** | |
 | Unknown-critical-extension behaviour | **Stable** | |
 | Version rejection rules | **Stable** | |
-| Extension envelope | **Stable** | The mechanism. See §5.2 for the registry that must accompany it. |
-| Assigned Stable extension IDs | **None in v1.0** | Zero Stable extensions is a correct outcome. The mechanism and its governance must be ready; the table may be empty. |
+| Extension envelope | **Candidate** | Implemented and specified, but its only specification remains Research Draft and it has no independent decoder. It is not part of the Stable major-1 contract in v1.0. |
+| Assigned Stable extension IDs | **None in v1.0** | No Stable extension mechanism or assignment ships in v1.0. Experimental/Candidate extension work remains available at major 0. |
 | Context compression / delta encoding | **Deferred** | No codec exists. Building negotiation controls for a format that does not exist would be control machinery around nothing. |
 
 ### 3.4 Link
@@ -158,12 +159,12 @@ rediscovering the argument.
 spatial extension carrying an explicit frame declaration is the declared future
 path and remains Experimental until a real requirement arrives.
 
-**Reasoning:** MCL's premise is first contact between machines with no prior
-relationship. Such machines share no origin, no axes and no quantization *by
-construction*. A 12-bit signed `x` currently means plus or minus 2047 of
-something, measured from somewhere. Being decodable with no prior shared state is
-Tier-0's defining property, and a coordinate that needs an external frame is not
-that.
+**Reasoning:** The Stable Tier-0 surface must remain interpretable by any
+conforming peer, including a Stranger-Contact peer with no agreed spatial
+frame. Such peers share no origin, axes or quantization *by construction*. A
+12-bit signed `x` currently means plus or minus 2047 of something, measured
+from somewhere. A coordinate that needs an external frame is therefore not
+part of the Stable common surface.
 
 The alternative — keeping the fields with a permanent "MUST NOT act on these"
 rule — ships a Stable field that nobody is allowed to use, which is an invitation
@@ -376,9 +377,9 @@ evidence in [`MACHINE_CLASS_AUDIT.md`](MACHINE_CLASS_AUDIT.md).
 Every Stable registry gets a named change controller, an application procedure,
 review criteria, a promotion procedure, a deprecation procedure with permanent
 tombstones, and a permanent specification reference for every Stable assignment.
-Create the extension-ID registry and its allocation policy; it may be empty.
-`REGISTRY_POLICY.md` still describes the extension envelope as unfrozen and must
-be reconciled with Wire, which has since implemented and specified it.
+The extension registry governs Candidate/Experimental extension work in v1.0.
+No extension bytes or identifiers are claimed Stable until a separately
+promoted specification and independent implementation exist.
 
 ### 5.3 Disposition every Link frame class
 **Done** — `mcl-link/spec/link-class-disposition-v1.md`.
@@ -684,8 +685,8 @@ The independent implementation in `conformance/independent/` shares no code, no
 language and no build system with the reference C, and it found three real
 specification-reading defects — which is precisely why the fourth line above is
 written as it is. A reader who is not the author will find more. The errata
-process exists for exactly that, and the first external implementation report is
-a v1.1 event, tracked as errata, not a reason to withhold v1.0.
+process exists for exactly that. Public external review is required before the
+Stable v1.0.0 tag; later implementation reports may be tracked as v1.1 errata.
 
 #### What would change the claim
 

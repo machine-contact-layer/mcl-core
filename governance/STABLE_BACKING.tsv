@@ -23,6 +23,7 @@
 Common header at major 1	mcl-wire/spec/common-header-v0.2.md
 Stable Tier-0 object body layouts	mcl-wire/spec/tier0-layout-v0.2.md
 Canonical encoding rules	mcl-wire/spec/wire-v0.md
+Duration encoding for Stable objects	mcl-wire/spec/duration-v0.1.md
 Link frame canonical layout at major 1	mcl-link/spec/link-v0.md
 Link frame class dispositions	mcl-link/spec/link-class-disposition-v1.md
 Minimum capability / version negotiation	mcl-link/spec/link-negotiation-v1.md

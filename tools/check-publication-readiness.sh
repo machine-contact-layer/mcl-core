@@ -63,7 +63,7 @@ echo
 echo "-- no absolute user paths in tracked scripts (FATAL)"
 hits=""
 for repo in $REPOS; do
-    hit=$(git -C "$ROOT/$repo" grep -lIE '[A-Za-z]:\\Users\\[A-Za-z0-9_.-]+|/home/[A-Za-z0-9_.-]+/' -- \
+    hit=$(git -C "$ROOT/$repo" grep -lIE '[A-Za-z]:\\Users\\[A-Za-z0-9_.-]+|/home/[A-Za-z0-9_.-]+|/mnt/[a-z]/Users/[A-Za-z0-9_.-]+/' -- \
         '*.sh' '*.ps1' '*.py' '*.c' '*.h' '*.cmd' '*.bat' 'CMakeLists.txt' \
         ':!*/evidence/*' ':!*evidence/*' 2>/dev/null | sed "s|^|$repo/|" || true)
     [ -n "$hit" ] && hits="$hits$hit
@@ -83,8 +83,8 @@ echo
 echo "-- absolute user paths inside EVIDENCE (a decision, never an edit)"
 ev=""
 for repo in $REPOS; do
-    hit=$(git -C "$ROOT/$repo" grep -lIE '[A-Za-z]:\\Users\\[A-Za-z0-9_.-]+|/home/[A-Za-z0-9_.-]+/' -- \
-        '*evidence/*' 2>/dev/null | sed "s|^|$repo/|" || true)
+    hit=$(git -C "$ROOT/$repo" grep -lIE '[A-Za-z]:\\Users\\[A-Za-z0-9_.-]+|/home/[A-Za-z0-9_.-]+|/mnt/[a-z]/Users/[A-Za-z0-9_.-]+/' -- \
+        '*evidence/*' 'conformance/independent/20260910-private-rc/*' 2>/dev/null | sed "s|^|$repo/|" || true)
     [ -n "$hit" ] && ev="$ev$hit
 "
 done
@@ -107,7 +107,7 @@ ids=""
 for repo in $REPOS; do
     hit=$(git -C "$ROOT/$repo" grep -lIE \
         '(Android device:|device serial|serial number|(^|[^A-Za-z])MAC([ :=]| address)|BSSID|192\.168\.[0-9]+\.[0-9]+)' \
-        -- '*evidence/*' '*/runs/*' 2>/dev/null | sed "s|^|$repo/|" || true)
+        -- '*evidence/*' '*/runs/*' 'conformance/independent/20260910-private-rc/*' 2>/dev/null | sed "s|^|$repo/|" || true)
     [ -n "$hit" ] && ids="$ids$hit
 "
 done

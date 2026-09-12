@@ -168,13 +168,11 @@ bootstrap profile is not frozen — `MCL_CONFORMANCE_CAVEAT_BOOTSTRAP_CANDIDATE`
 in `mcl-sdk/include/mcl/conformance.h`, so the qualification travels in code and
 not only in prose.
 
-The reason is stated in §11 of the profile and is not a documentation gap: every
-measurement of that waveform comes from **one transmitter class**, and there is
-direct evidence the choice does not travel — a laptop speaker with a measured
-notch at one of the two tones recovered 1 of 3 where the reference transmitter
-recovers 9 of 15. Promotion needs a band swept on transmitters that are not the
-reference one, a clean-room receiver, PCM vectors, a contention campaign and an
-assigned identifier.
+The Candidate boundary is not a documentation gap. Retained later physical
+campaigns closed the private v1 contention floor, while the earlier
+one-transmitter and damaged-speaker results remain important historical
+evidence. Promotion still needs independent external implementation/review and
+an assigned Stable identifier; neither is substituted by private campaign work.
 
 Granting the claim outright would overstate it; refusing it now would understate
 it, because the specification a builder needs is in the tree and implementable.

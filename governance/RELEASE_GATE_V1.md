@@ -61,7 +61,7 @@ and non-overclaiming* is itself the requirement.
 | 27 | Public Candidate release | `EXTERNAL` | Everything a repository can carry is present and checked: `check-publication-readiness.sh` (front doors, absolute paths, secrets, claim boundary, no hosted CI) and `governance/PUBLISHING.md` (the order, and the evidence-disclosure decisions the owner takes). **The remaining act is one step and is not in this tree: making the eight repositories readable by other people.** |
 | 28 | Interoperability gate | `DONE` | `V1_SCOPE.md` §5.9 defines what v1.0 requires, in three mandatory parts, and all three are met: (a) two implementations independent of each other's code cross-decoding, C4 803 + C5 108; (b) over-air between distinct devices on IP, BLE and acoustic; (c) the stack compiled by a different toolchain for a different architecture, running on an ESP32-S3 and interoperating over air — `mcl-ap/experiments/008-embedded-node/`. **See the note below: this row was narrowed by an explicit scope decision, and what it no longer covers is stated in the release.** |
 | 29 | Errata and defect-report process | `DONE` | `REPORTING.md` (what a useful report is, and what happens to it) and `errata/README.md` (the list, empty at v1.0.0 by design, with the format and the never-silently-rewrite rule). `GOVERNANCE.md` §6 defines the process; these make it usable by someone who has just found a defect. |
-| 30 | Final release bundle | `DONE` | Frozen developer archive built from the eight revisions in `releases/v1.0.0/commits.txt`; the artifact inventory is the source of truth. Private candidate only. Final audit metadata is sealed after execution without rebuilding the SDK archive. |
+| 30 | Final release bundle | `DONE` | Frozen developer archive built from the eight revisions in `releases/v1.0.0/commits.txt`; the artifact inventory is the source of truth. Release-candidate only until public review and Stable promotion. Final audit metadata is sealed after execution without rebuilding the SDK archive. |
 | 31 | Reconstructability check | `DONE` | Bundle reconstruction passed in the 2026-09-10 rehearsal, including extracted SDK build and contract test. See `conformance/independent/20260910-private-rc/posix-rehearsal.log`. |
 | 32 | Final clean-room release rehearsal | `DONE` | 2026-09-10 POSIX rehearsal: 20 passed; MSVC: 43 test targets passed. Receipts in `conformance/independent/20260910-private-rc/`. Source revisions are frozen in the bundle; later closure metadata changes no executable source. |
 | 33 | Final go/no-go audit | `DONE` | 2026-09-10 go/no-go: no fatal findings; retained informational hits reviewed as historical evidence, reserved vocabulary and Experimental Use identifiers. See `conformance/independent/20260910-private-rc/go-no-go.log`. Public visibility and external review remain open. |
@@ -100,7 +100,8 @@ loses the statement.
 The clean-room implementation is independent *of the reference code* — no shared
 source, language or build system — and it found three real
 specification-reading defects. It was written by the same author. E6 remains
-**not reached**, and the first external implementation report is a v1.1 event.
+**not reached**. Public external review is required before Stable tagging;
+later external implementation reports may inform v1.1.
 
 ## What remains
 

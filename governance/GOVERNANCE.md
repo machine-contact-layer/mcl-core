@@ -192,7 +192,7 @@ Stated plainly, because governance that overstates its own reach is the failure
 mode this document is trying to avoid:
 
 - **It cannot substitute for independent review.** One maintainer reviewing
-  their own work is not review. External review is release gate item 29 and is
+  their own work is not review. External review is release gate item 36 and is
   the one row that no amount of work inside this repository can close.
 - **It cannot make MCL a standards body.** MCL is not incorporated, holds no
   trademark, and cannot certify conformance. `ORGANIZATION_MODEL.md` describes
