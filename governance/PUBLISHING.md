@@ -3,8 +3,9 @@
 Release gate item 27. This document exists so that the act of publishing is a
 decision someone takes in one step, with everything else already true.
 
-**Nothing in this tree can make a repository readable by other people.** That
-is the whole of what remains external, and it belongs to the maintainer.
+**Nothing in this tree can make a repository readable by other people.** Public
+visibility is the remaining owner-controlled external act; charter-required
+public review follows publication.
 
 ## What must be true first
 
