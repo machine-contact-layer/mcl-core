@@ -2,7 +2,7 @@
   "generated_by": "mcl-core/tools/build-release-bundle.sh",
   "version": "v1.0.0",
   "source_commits": {
-    "mcl-core": "658c7bda4f03951d43b373c295baa4a65d12c024",
+    "mcl-core": "10e577b5203dcac33633e76c25ec83e6abf00f3b",
     "mcl-wire": "6a839010ff44c0087fcbbb5b5acc0a1f480271a1",
     "mcl-link": "861cc73adc1b93e0547aa774be11217ebd0eb763",
     "mcl-sdk": "d1c5f1c44ed14568ff6a8d38ed3e737e5a7aad42",
@@ -46,13 +46,13 @@
       "claim": "row35",
       "path": "mcl-core/conformance/independent/20260910-private-rc/ROW35.json",
       "sha256": "15a86cd97d3a27a9bb8d1042c01fa34c782e8fd2a610b3dce555738a6fcd88fd",
-      "repository_commit": "658c7bda4f03951d43b373c295baa4a65d12c024"
+      "repository_commit": "10e577b5203dcac33633e76c25ec83e6abf00f3b"
     },
     {
       "claim": "row35_verifier",
       "path": "mcl-core/conformance/independent/20260910-private-rc/verify_row35.py",
       "sha256": "e9ec451f4cf3262ada27db0f054ebd6300fe923ead0e1b95e13d7acbedf62923",
-      "repository_commit": "658c7bda4f03951d43b373c295baa4a65d12c024"
+      "repository_commit": "10e577b5203dcac33633e76c25ec83e6abf00f3b"
     }
   ],
   "wire_major_qualification": {
