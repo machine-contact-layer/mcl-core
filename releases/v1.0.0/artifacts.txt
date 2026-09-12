@@ -61,3 +61,5 @@ mcl-ap/conformance/vectors/07-refuse-truncated.wav
 mcl-ap/conformance/vectors/08-refuse-no-preamble.wav
 mcl-ap/conformance/vectors/09-refuse-silence.wav
 mcl-core/releases/v1.0.0/mcl-developer-sdk.tar.gz
+mcl-core/releases/v1.0.0/EVIDENCE_INDEX.json
+mcl-core/releases/v1.0.0/REPRODUCIBILITY.md

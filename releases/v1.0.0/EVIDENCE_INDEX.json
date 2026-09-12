@@ -1,0 +1,89 @@
+{
+  "generated_by": "mcl-core/tools/build-release-bundle.sh",
+  "version": "v1.0.0",
+  "source_commits": {
+    "mcl-core": "a16fa981faca029783f163f27936d74c07cc4c84",
+    "mcl-wire": "6a839010ff44c0087fcbbb5b5acc0a1f480271a1",
+    "mcl-link": "861cc73adc1b93e0547aa774be11217ebd0eb763",
+    "mcl-sdk": "d1c5f1c44ed14568ff6a8d38ed3e737e5a7aad42",
+    "mcl-ap": "9ee25d60094f795342cb3989cf83b6d709ef5352",
+    "mcl-ip": "17f2cc1180b46b587098c40867f8bcdefd7e792d",
+    "mcl-ble": "7db9a721ac8ad408b909af81960ce270618e53e4",
+    "mcl-uwb": "5d96c22afe00e21df48a334fe9350e7c881990b7"
+  },
+  "claims": [
+    {
+      "claim": "continuity_104_migrations",
+      "path": "mcl-sdk/evidence/e4-dual-transport-migration-20260903/README.md",
+      "sha256": "7e9103ff53a9afb1391daf4455385f73e4932ebdf87347b7807b98c2894f0ace",
+      "repository_commit": "d1c5f1c44ed14568ff6a8d38ed3e737e5a7aad42"
+    },
+    {
+      "claim": "continuity_raw",
+      "path": "mcl-sdk/evidence/e4-dual-transport-migration-20260903/host-output.txt",
+      "sha256": "d6c0216499824cc2ca591adcfbaa0c38d56a298209be29a748a02dbb6bcbd194",
+      "repository_commit": "d1c5f1c44ed14568ff6a8d38ed3e737e5a7aad42"
+    },
+    {
+      "claim": "embedded_wire1_link1_physical",
+      "path": "mcl-ap/experiments/008-embedded-node/README.md",
+      "sha256": "57a635a92f11a96d8d7dadda3671a6f2010470c1ef3e41b8407f490ae7a0644f",
+      "repository_commit": "9ee25d60094f795342cb3989cf83b6d709ef5352"
+    },
+    {
+      "claim": "embedded_wire1_link1_digests",
+      "path": "mcl-ap/experiments/008-embedded-node/evidence/e4-node-board-to-host-frame-20260904/SHA256SUMS.txt",
+      "sha256": "233c79864974e39f7d8118ed67e190948f5fa182eeac16499ce12daf8152432b",
+      "repository_commit": "9ee25d60094f795342cb3989cf83b6d709ef5352"
+    },
+    {
+      "claim": "physical_campaign_digests",
+      "path": "mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-contention-closure/SHA256SUMS.txt",
+      "sha256": "2fb91363516c26bfdba703b8eb7d200292c22d908e228e6e6333d2c204bc1923",
+      "repository_commit": "d1c5f1c44ed14568ff6a8d38ed3e737e5a7aad42"
+    },
+    {
+      "claim": "row35",
+      "path": "mcl-core/conformance/independent/20260910-private-rc/ROW35.json",
+      "sha256": "15a86cd97d3a27a9bb8d1042c01fa34c782e8fd2a610b3dce555738a6fcd88fd",
+      "repository_commit": "a16fa981faca029783f163f27936d74c07cc4c84"
+    },
+    {
+      "claim": "row35_verifier",
+      "path": "mcl-core/conformance/independent/20260910-private-rc/verify_row35.py",
+      "sha256": "e9ec451f4cf3262ada27db0f054ebd6300fe923ead0e1b95e13d7acbedf62923",
+      "repository_commit": "a16fa981faca029783f163f27936d74c07cc4c84"
+    }
+  ],
+  "wire_major_qualification": {
+    "e4-dual-transport-migration-20260903": {
+      "establishes": "Link migration and contact continuity across 104 physical-medium changes",
+      "ordinary_tier0_wire_major": 0,
+      "proves_wire1_migration": false,
+      "note": "Ordinary traffic was major-0 PRESENCE emitted by tools/dual_host_shim.c. The migration controls are the claim; the Wire major of the carried object is not."
+    },
+    "008-embedded-node": {
+      "establishes": "Wire major 1 inside Link major 1, modulated and decoded across a physical acoustic channel on an ESP32-S3-class target",
+      "ordinary_tier0_wire_major": 1,
+      "proves_wire1_migration": false,
+      "note": "Different toolchain and architecture from the host gates. It does not exercise migration."
+    },
+    "combination_not_run": {
+      "description": "Wire 1 + Link 1 under repeated bearer migration",
+      "status": "not run",
+      "disposition": "post-v1 evidence backlog; the constituent layers are evidenced separately above"
+    }
+  },
+  "conformance": {
+    "C4_independent_cross_implementation_checks": 803,
+    "C5_stable_profile_interoperability_checks": 108,
+    "note": "Separate campaigns. They are not summed, and no combined figure is authoritative."
+  },
+  "limitations": [
+    "No external independent organization implementation or review",
+    "AP bootstrap and BLE activation remain Candidate",
+    "Failed 120-second three-machine stress run preserved rather than discarded",
+    "No physical UWB qualification",
+    "No cryptographic profile exists in any repository"
+  ]
+}
