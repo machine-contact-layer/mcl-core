@@ -1,6 +1,33 @@
-# Machine Contact Layer
+<p align="center">
+  <img src=".github/banner.png" alt="OJOBIT" width="100%">
+</p>
 
-**A transport-independent layer for machines to meet, and to keep talking.**
+<h1 align="center">Machine Contact Layer</h1>
+
+<p align="center"><strong>A transport-independent layer for machines to meet, and to keep talking.</strong></p>
+
+<p align="center">
+  <a href="https://github.com/machine-contact-layer/mcl-core/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/machine-contact-layer/mcl-core/actions/workflows/ci.yml/badge.svg"></a>
+  <a href="https://github.com/machine-contact-layer/mcl-core/blob/main/LICENSE"><img alt="License Apache-2.0" src="https://img.shields.io/badge/license-Apache--2.0-blue"></a>
+  <img alt="status" src="https://img.shields.io/badge/status-Public%20Candidate-orange">
+  <img alt="C99 freestanding" src="https://img.shields.io/badge/C99-freestanding-informational">
+  <img alt="repos" src="https://img.shields.io/badge/repositories-8-lightgrey">
+</p>
+
+<p align="center">
+  <a href="https://github.com/machine-contact-layer/mcl-sdk/blob/main/QUICKSTART.md"><b>Quickstart</b></a> ·
+  <a href="https://github.com/machine-contact-layer/mcl-sdk"><b>SDK</b></a> ·
+  <a href="https://github.com/machine-contact-layer/mcl-core/blob/main/conformance/ICS.md"><b>What is claimed</b></a> ·
+  <a href="https://github.com/machine-contact-layer/mcl-core/blob/main/REPORTING.md"><b>Report a defect</b></a>
+</p>
+
+---
+
+> ### Building something? Start with the SDK
+>
+> [**mcl-sdk**](https://github.com/machine-contact-layer/mcl-sdk) is one CMake project with a runnable example and no
+> sibling checkout. This repository is the specification, governance and
+> conformance authority — the thing the SDK implements.
 
 Two machines end up in the same place. They may have been built by different
 companies and never designed to work together; or they may both be yours, and
