@@ -2,7 +2,7 @@
 57641cffc847a28ae30eb9ee3323ee06c8e9e9af178062fa8385bb25161fa039 *mcl-core/SECURITY.md
 973c466bec5ee558052ebde9c2a04d6f0b4e2b4a41cdbf8f90deb3fd6a671f71 *mcl-core/REPORTING.md
 09a5979d00893a8241c4f8a62c9c90da2e8147409dcfbc5919ae728613cb30d8 *mcl-core/errata/README.md
-d0e3ab0077e71fbbab1f09da18376192ff2ad6338fb3e9416152aaa24bf28e05 *mcl-core/governance/PUBLISHING.md
+98f7edfdb87642f0970f8052d80391188d6d9a6e146e8c9f0636f04c2563adaa *mcl-core/governance/PUBLISHING.md
 207eed90edb52ea1b81bafdae5a7c9e7a0a319a63939dd821888e54fb8fb4ec0 *mcl-core/LICENSING.md
 903309ba2b10b31c5e60519268f9b113cd447005757bb06b81e8b8503db39b76 *mcl-core/CONTRIBUTING.md
 dfe844e21b6db6673139254355a9ec3c41e2f412a4df1a79578b046ef45b3deb *mcl-core/governance/V1_SCOPE.md
@@ -46,4 +46,4 @@ dae8bf448dd691c703ec6b6f531614242d31e35b81834c1d0d500e30e1b8d465 *mcl-ap/conform
 5a2d3a81f168bbbf8b3c57e925dd25f606a78566927a0a791faf7bc4c274598e *mcl-ap/conformance/vectors/07-refuse-truncated.wav
 096eac6b0d63663629dbdf5b130f46a50b2577b6e11779f2fb64c8bdfe69f8a4 *mcl-ap/conformance/vectors/08-refuse-no-preamble.wav
 e294409b36a8ac1893b23336eeab5202d3e84ce4f66c7572aa1589c43d43c1ff *mcl-ap/conformance/vectors/09-refuse-silence.wav
-394d489c2d048fed4296969ebae3c85267e5658c4b9417f8e2e3936c64342916 *mcl-core/releases/v1.0.0/mcl-developer-sdk.tar.gz
+4bea4e788168accd88e5d0ef60edee28aa49677b39df0816aff5f4cc85b7c664 *mcl-core/releases/v1.0.0/mcl-developer-sdk.tar.gz
