@@ -156,20 +156,59 @@ for f in "mcl-core/README.md" "mcl-core/conformance/ICS.md" \
     fi
 done
 
-# --------------------------------------------------------------- 7. no CI
+# ------------------------------------------------------------- 7. CI policy
+#
+# This section used to fail the release if ANY workflow existed. That rule was
+# correct while the project was private and every gate was run by hand, and it
+# became wrong the moment the repositories were prepared for public
+# contribution: from a contributor nobody knows, "the gates passed locally" is
+# an assertion the project cannot check.
+#
+# What is enforced now is the policy in CONTRIBUTING.md, mechanically:
+#
+#   - only GitHub Actions. A second CI system means two definitions of "green".
+#   - every workflow declares an explicit `permissions:` block. Without one the
+#     job inherits whatever the repository default happens to be, which is a
+#     token that can write to the repository.
+#   - no `pull_request_target`. It runs fork-authored code with repository
+#     credentials, which is the one trigger that turns a public PR into a
+#     supply-chain hole.
+#   - no `secrets` in anything triggered by `pull_request`. A public PR must
+#     not be able to read them even indirectly.
 echo
-echo "-- no hosted CI configuration (this project uses none, deliberately)"
+echo "-- CI policy (hosted CI is required; only reviewed project workflows)"
 ci=0
 for repo in $REPOS; do
-    for d in .github/workflows .gitlab-ci.yml .circleci azure-pipelines.yml; do
+    for d in .gitlab-ci.yml .circleci azure-pipelines.yml; do
         if [ -e "$ROOT/$repo/$d" ]; then
-            echo "  FAIL $repo/$d exists"
+            echo "  FAIL $repo/$d exists; GitHub Actions is the only CI system"
             FATAL=$((FATAL + 1))
             ci=1
         fi
     done
+
+    wf_dir="$ROOT/$repo/.github/workflows"
+    [ -d "$wf_dir" ] || continue
+
+    for wf in "$wf_dir"/*.yml "$wf_dir"/*.yaml; do
+        [ -e "$wf" ] || continue
+        rel="$repo/.github/workflows/$(basename "$wf")"
+
+        if ! grep -q '^[[:space:]]*permissions:' "$wf"; then
+            echo "  FAIL $rel declares no permissions: block"
+            FATAL=$((FATAL + 1)); ci=1
+        fi
+        if grep -q '^[[:space:]]*pull_request_target:' "$wf"; then
+            echo "  FAIL $rel uses pull_request_target, which runs fork code with repository credentials"
+            FATAL=$((FATAL + 1)); ci=1
+        fi
+        if grep -q '^[[:space:]]*pull_request:' "$wf" && grep -q 'secrets\.' "$wf"; then
+            echo "  FAIL $rel exposes secrets to a pull_request trigger"
+            FATAL=$((FATAL + 1)); ci=1
+        fi
+    done
 done
-[ "$ci" -eq 0 ] && echo "  ok   none"
+[ "$ci" -eq 0 ] && echo "  ok   policy satisfied"
 
 # ---------------------------------------------------------------- summary
 echo

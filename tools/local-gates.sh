@@ -261,6 +261,24 @@ else
   fail "reference deployment"; grep -E 'FAIL' "$WORK/dep.log"
 fi
 
+# ---------------------------------------------------------------- 9b. base deployment
+note "base deployment: document vs SDK"
+if sh "$ROOT/mcl-core/tools/check-base-deployment.sh" > "$WORK/basedep.log" 2>&1; then
+  printf '  %s
+' "$(grep 'SDK        wire major' "$WORK/basedep.log")"
+else
+  fail "base deployment"; grep -E 'FAIL' "$WORK/basedep.log"
+fi
+
+# ---------------------------------------------------------------- 9c. evidence digests
+note "evidence digests"
+if sh "$ROOT/mcl-core/tools/check-evidence-digests.sh" > "$WORK/evid.log" 2>&1; then
+  printf '  %s
+' "$(grep 'checked' "$WORK/evid.log")"
+else
+  fail "evidence digests"; grep -E 'FAIL' "$WORK/evid.log"
+fi
+
 # ---------------------------------------------------------------- 10. provenance
 note "provenance and licensing"
 if sh "$ROOT/mcl-core/tools/check-provenance.sh" > "$WORK/prov.log" 2>&1; then

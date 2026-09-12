@@ -92,12 +92,29 @@ report_fatal "$(tracked_grep '\b(TODO|FIXME|XXX|HACK|TBD)\b' || true)" "no TODO/
 section "placeholder text (FATAL)"
 report_fatal "$(tracked_grep '(FILL ME|PLACEHOLDER|<placeholder>|lorem ipsum|CHANGEME|your-name-here)' || true)" "no placeholders"
 
-section "GitHub Actions (FATAL: this project uses none, deliberately)"
+# Hosted CI is REQUIRED since the repositories were prepared for public
+# contribution; what is audited is that each workflow obeys the policy in
+# CONTRIBUTING.md, not that no workflow exists. See the long note in
+# check-publication-readiness.sh section 7 for why the old rule was dropped.
+section "GitHub Actions policy (FATAL: least privilege, no secrets to forks)"
 gh=""
 for repo in $REPOS; do
-    [ -d "$ROOT/$repo/.github/workflows" ] && gh="$gh$repo/.github/workflows exists\n"
+    wf_dir="$ROOT/$repo/.github/workflows"
+    [ -d "$wf_dir" ] || continue
+    for wf in "$wf_dir"/*.yml "$wf_dir"/*.yaml; do
+        [ -e "$wf" ] || continue
+        rel="$repo/.github/workflows/$(basename "$wf")"
+        grep -q '^[[:space:]]*permissions:' "$wf" || \
+            gh="$gh$rel declares no permissions: block\n"
+        if grep -q '^[[:space:]]*pull_request_target:' "$wf"; then
+            gh="$gh$rel uses pull_request_target\n"
+        fi
+        if grep -q '^[[:space:]]*pull_request:' "$wf" && grep -q 'secrets\.' "$wf"; then
+            gh="$gh$rel exposes secrets to a pull_request trigger\n"
+        fi
+    done
 done
-report_fatal "$(printf '%b' "$gh" | sed '/^$/d')" "no workflow directories"
+report_fatal "$(printf '%b' "$gh" | sed '/^$/d')" "workflow policy satisfied"
 
 section "hardcoded Tier-0 field counts (FATAL: stale four times already)"
 report_fatal "$(tracked_grep '(Sixteen|Thirteen|[0-9]+) of the (21|twenty-one)' || true)" "no hardcoded field counts"

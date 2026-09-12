@@ -1,0 +1,23 @@
+# Code owners for mcl-core.
+#
+# Every line here is a REVIEW requirement, not a claim of authorship. It takes
+# effect only once branch protection requires code-owner review, which is
+# applied after the repositories become public -- GitHub Free does not offer
+# protection on a private repository.
+#
+# The last matching pattern wins, so the specific paths below override the
+# catch-all.
+
+* @0j0bit @sed-boi
+
+# The authorities. These decide what MCL v1.0 IS, and a change here can
+# invalidate evidence, conformance claims or a published profile without
+# touching a line of C.
+/governance/    @0j0bit
+/spec/          @0j0bit
+/registries/    @0j0bit
+/deployments/   @0j0bit
+/conformance/   @0j0bit
+/releases/      @0j0bit
+/errata/        @0j0bit
+/tools/         @0j0bit

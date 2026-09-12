@@ -195,6 +195,179 @@ for repo in $REPOS; do
         >> "$BUNDLE/commits.txt"
 done
 
+# ------------------------------------------------- EVIDENCE_INDEX.json
+#
+# GENERATED, never hand-maintained. The manuscript says an evidence index binds
+# every empirical claim to a revision, a path and a digest; a copy of that
+# binding typed by hand is a copy that goes stale silently, which is the exact
+# failure this project has already had four times on derivable numbers.
+#
+# WHY EACH CLAIM CARRIES A WIRE MAJOR. The 104-migration continuity campaign
+# ran its ordinary Tier-0 traffic at Wire major 0: tools/dual_host_shim.c
+# configures mask 0 and populates machine_class, a field major 1 removed. That
+# does not weaken what the campaign establishes -- one contact surviving 104
+# physical-medium changes, with path validation, COMMIT/CONFIRM, retransmission
+# recovery and wrong-transport refusal -- but it is NOT evidence that Wire
+# major 1 survived 104 migrations, and the two claims must not be merged by a
+# reader. Experiment 008 is what carries Wire 1 inside Link 1 across a physical
+# medium. The combination, Wire1+Link1 under migration, has not been run, and
+# proves_wire1_migration says so on the record rather than in a footnote.
+
+sha_of() {
+    if [ -f "$ROOT/$1" ]; then
+        sha256sum "$ROOT/$1" | cut -d" " -f1
+    else
+        echo "MISSING"
+    fi
+}
+
+commit_of() {
+    git -C "$ROOT/$1" rev-parse HEAD
+}
+
+claim() {
+    # claim <name> <path> <repo> <trailing-comma-or-empty>
+    {
+        printf '    {\n'
+        printf '      "claim": "%s",\n' "$1"
+        printf '      "path": "%s",\n' "$2"
+        printf '      "sha256": "%s",\n' "$(sha_of "$2")"
+        printf '      "repository_commit": "%s"\n' "$(commit_of "$3")"
+        printf '    }%s\n' "$4"
+    } >> "$BUNDLE/EVIDENCE_INDEX.json"
+}
+
+{
+    printf '{\n'
+    printf '  "generated_by": "mcl-core/tools/build-release-bundle.sh",\n'
+    printf '  "version": "%s",\n' "$VERSION"
+    printf '  "source_commits": {\n'
+} > "$BUNDLE/EVIDENCE_INDEX.json"
+
+ev_first=1
+for repo in $REPOS; do
+    if [ "$ev_first" -eq 1 ]; then
+        ev_first=0
+    else
+        printf ',\n' >> "$BUNDLE/EVIDENCE_INDEX.json"
+    fi
+    printf '    "%s": "%s"' "$repo" "$(commit_of "$repo")" \
+        >> "$BUNDLE/EVIDENCE_INDEX.json"
+done
+printf '\n  },\n  "claims": [\n' >> "$BUNDLE/EVIDENCE_INDEX.json"
+
+claim continuity_104_migrations \
+      mcl-sdk/evidence/e4-dual-transport-migration-20260903/README.md mcl-sdk ,
+claim continuity_raw \
+      mcl-sdk/evidence/e4-dual-transport-migration-20260903/host-output.txt mcl-sdk ,
+claim embedded_wire1_link1_physical \
+      mcl-ap/experiments/008-embedded-node/README.md mcl-ap ,
+claim embedded_wire1_link1_digests \
+      mcl-ap/experiments/008-embedded-node/evidence/e4-node-board-to-host-frame-20260904/SHA256SUMS.txt mcl-ap ,
+claim physical_campaign_digests \
+      mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-contention-closure/SHA256SUMS.txt mcl-sdk ,
+claim row35 \
+      mcl-core/conformance/independent/20260910-private-rc/ROW35.json mcl-core ,
+claim row35_verifier \
+      mcl-core/conformance/independent/20260910-private-rc/verify_row35.py mcl-core ""
+
+cat >> "$BUNDLE/EVIDENCE_INDEX.json" <<'EVJSON'
+  ],
+  "wire_major_qualification": {
+    "e4-dual-transport-migration-20260903": {
+      "establishes": "Link migration and contact continuity across 104 physical-medium changes",
+      "ordinary_tier0_wire_major": 0,
+      "proves_wire1_migration": false,
+      "note": "Ordinary traffic was major-0 PRESENCE emitted by tools/dual_host_shim.c. The migration controls are the claim; the Wire major of the carried object is not."
+    },
+    "008-embedded-node": {
+      "establishes": "Wire major 1 inside Link major 1, modulated and decoded across a physical acoustic channel on an ESP32-S3-class target",
+      "ordinary_tier0_wire_major": 1,
+      "proves_wire1_migration": false,
+      "note": "Different toolchain and architecture from the host gates. It does not exercise migration."
+    },
+    "combination_not_run": {
+      "description": "Wire 1 + Link 1 under repeated bearer migration",
+      "status": "not run",
+      "disposition": "post-v1 evidence backlog; the constituent layers are evidenced separately above"
+    }
+  },
+  "conformance": {
+    "C4_independent_cross_implementation_checks": 803,
+    "C5_stable_profile_interoperability_checks": 108,
+    "note": "Separate campaigns. They are not summed, and no combined figure is authoritative."
+  },
+  "limitations": [
+    "No external independent organization implementation or review",
+    "AP bootstrap and BLE activation remain Candidate",
+    "Failed 120-second three-machine stress run preserved rather than discarded",
+    "No physical UWB qualification",
+    "No cryptographic profile exists in any repository"
+  ]
+}
+EVJSON
+
+# --------------------------------------------------- REPRODUCIBILITY.md
+
+cat > "$BUNDLE/REPRODUCIBILITY.md" <<REPRO
+# Reproducing the MCL $VERSION research artifacts
+
+Generated by \`mcl-core/tools/build-release-bundle.sh\`. Do not edit by hand:
+the next bundle build overwrites it.
+
+The paper version is distinct from a Stable specification or a Git tag.
+\`commits.txt\` records the eight source revisions that constitute this
+release, and \`EVIDENCE_INDEX.json\` maps each reported result to an immutable
+receipt with its SHA-256.
+
+## What a rebuild does and does not repeat
+
+Rebuilding the software repeats the software. It does **not** repeat the
+physical experiments: the acoustic, BLE and dual-radio campaigns ran on
+specific hardware in a specific room, and their firmware and APK identities
+belong to those retained receipts. A green gate run today says nothing about
+them.
+
+## Checking out this release
+
+Clone the eight repositories from https://github.com/machine-contact-layer into
+sibling directories, then check out each revision in \`commits.txt\`.
+mcl-core records the commit the bundle was BUILT FROM; it cannot record the
+commit that contains it, because writing the hash changes the hash.
+
+## Rebuilding
+
+From the sibling-repository root, under a POSIX toolchain:
+
+\`\`\`sh
+sh mcl-core/tools/build-release-bundle.sh --verify $VERSION
+sh mcl-core/tools/release-rehearsal.sh
+\`\`\`
+
+On Windows, also run:
+
+\`\`\`powershell
+powershell -NoProfile -File mcl-core/tools/local-gates-msvc.ps1
+\`\`\`
+
+Both halves are the gates. A change passing one and breaking the other has
+broken the build.
+
+## The standalone developer SDK
+
+Extract \`mcl-developer-sdk.tar.gz\`, verify its internal \`SHA256SUMS.txt\`,
+then follow its README and CMake instructions. It requires no sibling checkout.
+\`examples/base_arranged_bearer.c\` is MCL Base 1 end to end: Wire major 1
+inside Link major 1 on a bearer that is already there, with no rendezvous.
+
+## What is not settled by any of this
+
+Public visibility, external review and errata, and Stable promotion are
+separate steps governed by \`governance/RELEASE_GATE_V1.md\` and
+\`governance/PUBLISHING.md\`. No DOI and no public tag is invented by this pack.
+REPRO
+
+
 cat > "$BUNDLE/artifacts.txt" <<'ARTIFACTS'
 # Normative specifications and conformance artifacts that constitute this
 # release. Paths are relative to the eight-repository root.
@@ -260,6 +433,12 @@ mcl-ap/conformance/vectors/08-refuse-no-preamble.wav
 mcl-ap/conformance/vectors/09-refuse-silence.wav
 ARTIFACTS
 printf 'mcl-core/releases/%s/mcl-developer-sdk.tar.gz\n' "$VERSION" \
+    >> "$BUNDLE/artifacts.txt"
+printf 'mcl-core/releases/%s/EVIDENCE_INDEX.json
+' "$VERSION" \
+    >> "$BUNDLE/artifacts.txt"
+printf 'mcl-core/releases/%s/REPRODUCIBILITY.md
+' "$VERSION" \
     >> "$BUNDLE/artifacts.txt"
 
 {

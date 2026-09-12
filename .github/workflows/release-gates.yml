@@ -1,0 +1,108 @@
+# The heavy half of the gates.
+#
+# ci.yml runs on every pull request and stays cheap: one repository, two
+# compilers, build and test. This workflow is the multi-toolchain, sanitizer,
+# cross-compile, packaging and conformance pass, and it needs all eight
+# repositories checked out as siblings because that is the layout
+# tools/local-gates.sh reads.
+#
+# It does not run on pull requests. A documentation typo should not spend
+# fifteen minutes rebuilding four toolchains, and a fork pull request cannot be
+# allowed to drive a job this broad.
+#
+# WHAT THIS IS NOT. Physical evidence is not produced here and never will be.
+# The acoustic, BLE and dual-radio campaigns ran on real hardware in a real
+# room; a hosted runner cannot repeat them, and a green tick on this workflow
+# says nothing whatever about them.
+#
+# Policy, enforced by tools/check-publication-readiness.sh:
+#
+#   - least-privilege token: contents: read, nothing else
+#   - no pull_request_target
+#   - no secrets reachable from a pull_request trigger (there is no
+#     pull_request trigger here at all)
+
+name: release-gates
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-gates-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  posix-gates:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out mcl-core
+        uses: actions/checkout@v4
+        with:
+          path: mcl-core
+
+      - name: Check out mcl-wire
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/mcl-wire
+          path: mcl-wire
+
+      - name: Check out mcl-link
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/mcl-link
+          path: mcl-link
+
+      - name: Check out mcl-sdk
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/mcl-sdk
+          path: mcl-sdk
+
+      - name: Check out mcl-ap
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/mcl-ap
+          path: mcl-ap
+
+      - name: Check out mcl-ip
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/mcl-ip
+          path: mcl-ip
+
+      - name: Check out mcl-ble
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/mcl-ble
+          path: mcl-ble
+
+      - name: Check out mcl-uwb
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository_owner }}/mcl-uwb
+          path: mcl-uwb
+
+      # The cross-compile stages need bare-metal ARM and RISC-V toolchains.
+      # Python is for the clean-room independent implementation used by the
+      # C4/C5 interoperability checks.
+      - name: Install toolchains
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            clang gcc-arm-none-eabi gcc-riscv64-unknown-elf python3
+
+      # The authoritative gate implementation. CI invokes it; it does not
+      # reimplement it. If this disagrees with a developer's laptop, the script
+      # is what both of them are wrong about.
+      - name: Run the POSIX gates
+        run: sh mcl-core/tools/local-gates.sh
+
+      - name: Deployment profiles agree with the SDK
+        run: |
+          sh mcl-core/tools/check-reference-deployment.sh
+          sh mcl-core/tools/check-base-deployment.sh

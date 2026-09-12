@@ -20,7 +20,8 @@ FIRST CONTACT ............ presence, capabilities, hazards
       ▼
 CONTINUING CONTACT ....... often richer or more private — or still acoustic
       │
-      ├─▶ STAY ON MCL ......... MCL remains the channel, indefinitely
+      ├─▶ STAY ON MCL ......... MCL keeps the contact: presence, capability,
+      │                         migration and refusal. NOT your payloads
       ├─▶ SECURITY PROFILE .... optional: establish who you are talking to
       └─▶ HAND OFF ............ your own protocol takes over
 ```
@@ -61,7 +62,9 @@ What you configure:
   stack or your secure element, and MCL never holds a private key. **That
   interface does not exist yet.** No `sign`, `verify`, `aead` or credential
   lookup callback ships in any repository today
-- **Whether you hand off**, or keep MCL as the ongoing channel
+- **Whether you hand off**, or keep the contact on MCL. Keeping it means MCL
+  continues to carry contact and control objects; it does not mean MCL carries
+  your application data, and there is no Stable API that would
 
 ## Three ways people use it
 
@@ -86,23 +89,34 @@ how to reach each other over BLE or Wi-Fi, and complete verification there.
 > one needs. **The security profile itself does not exist yet** — no
 > cryptography is implemented in any repository. See [`SECURITY.md`](SECURITY.md).
 
-> **MCL Base 1 is the v1.0 stable floor.** It covers regular communication
-> between machines that already share a bearer, including provisioned fleets,
+> **MCL Base 1 is the v1.0 stable floor.** It covers the ordinary case of
+> machines that already share a bearer, including provisioned fleets,
 > manufacture-paired products and fixed deployments. Discovery, microphone/
 > speaker rendezvous and cryptography are not Base 1 requirements.
+>
+> **What "communication" means here.** Base 1 establishes, maintains,
+> validates, refuses and migrates a contact, and the objects it exchanges are
+> the Stable Tier-0 kernel: `PRESENCE`, `TRANSPORT_OFFER`, `TRANSPORT_ACCEPT`.
+> It is not a general application payload channel and v1.0 does not ship one.
+> An application with its own messages hands off to its own protocol; that is
+> the third ending above, not a gap.
 >
 > **MCL Stranger-Contact 1 extends Base 1.** It provides an optional zero-prior
 > ingress path when no bearer is shared. Its AP/BLE profile remains Candidate,
 > with the physical evidence and caveats recorded in the release receipt. A
-> contact may remain on MCL, migrate, or be handed to a richer protocol.
+> contact may remain on MCL as a contact, migrate, or be handed to a richer
+> protocol.
 
 ## What makes this different from just picking a protocol
 
-MCL Base 1 is the v1.0 stable floor for regular communication between
-machines that already share a bearer. Stranger-Contact 1 is an optional
-Candidate ingress profile for zero-prior rendezvous; it extends Base 1 and
-does not redefine MCL. A contact may remain on MCL, migrate, or be handed to a
-richer protocol.
+MCL Base 1 is the v1.0 stable floor for contact between machines that already
+share a bearer. Stranger-Contact 1 is an optional Candidate ingress profile for
+zero-prior rendezvous; it extends Base 1 and does not redefine MCL. A contact
+may remain on MCL, migrate, or be handed to a richer protocol.
+
+`mcl-sdk/examples/base_arranged_bearer.c` is Base 1 end to end: two machines on
+a bearer that is already there, Wire major 1 inside Link major 1, no
+rendezvous and no bearer to open.
 
 **A Stranger-Contact deployment requires no prior relationship — Base 1 does
 not forbid one.** No shared network, no common PKI, no pairing step someone

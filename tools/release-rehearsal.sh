@@ -111,6 +111,10 @@ run "deployment profiles" \
     sh "$ROOT/mcl-core/tools/check-deployment-profiles.sh"
 run "reference deployment: document vs SDK" \
     sh "$ROOT/mcl-core/tools/check-reference-deployment.sh"
+run "base deployment: document vs SDK" \
+    sh "$ROOT/mcl-core/tools/check-base-deployment.sh"
+run "evidence digests" \
+    sh "$ROOT/mcl-core/tools/check-evidence-digests.sh"
 run "clean-checkout adoption path" \
     sh "$ROOT/mcl-core/tools/check-adoption-path.sh"
 run "provenance and licensing" \

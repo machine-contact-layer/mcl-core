@@ -102,7 +102,7 @@ registry value the document assigns.
 | Document | Purpose |
 |---|---|
 | [`governance/V1_SCOPE.md`](governance/V1_SCOPE.md) | What v1.0 claims. The authority for every disposition. |
-| [`governance/RELEASE_GATE_V1.md`](governance/RELEASE_GATE_V1.md) | The 36 rows that must close before a tag exists. |
+| [`governance/RELEASE_GATE_V1.md`](governance/RELEASE_GATE_V1.md) | The 37 rows that must close before a tag exists. |
 | [`governance/GOVERNANCE.md`](governance/GOVERNANCE.md) | How the project operates today, and what it cannot do. |
 | [`governance/ARCHITECTURE_CHARTER.md`](governance/ARCHITECTURE_CHARTER.md) | The invariants no layer may violate. |
 | [`governance/REGISTRY_POLICY.md`](governance/REGISTRY_POLICY.md) | Allocation policy shared by every registry. |

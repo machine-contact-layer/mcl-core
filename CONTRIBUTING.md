@@ -14,9 +14,38 @@ mcl-core/tools/local-gates-msvc.ps1  # MSVC /W4 /WX
 **Neither run alone is "the gates".** A change that passes one and breaks the
 other has broken the build.
 
-**There is no CI.** This project deliberately uses no GitHub Actions; gates are
-run locally by whoever proposes the change. That places the obligation on you
-rather than on a machine, which is the point.
+**Run them anyway, even though CI will.** Hosted CI runs the same scripts on
+your pull request, but a red CI run after the fact is a slower and more public
+way to learn what one local command would have told you.
+
+### The CI policy
+
+Until the first public candidate this project deliberately had no hosted CI:
+gates were run locally by whoever proposed the change, which placed the
+obligation on a person rather than a machine. **That rule was superseded when
+the repositories were prepared for public contribution**, for one reason: from
+a contributor nobody knows, "both gates passed locally" is an assertion, not
+evidence, and a public project cannot merge on an assertion it has no way to
+check.
+
+The local scripts remain the authoritative implementation. CI does not
+reimplement them, it invokes them. So:
+
+- **Hosted CI is required** on every pull request and on `main`.
+- **Only reviewed project workflows** may run. Workflows live under
+  `.github/workflows/` and are owned by the code owners like any other
+  authority file.
+- **Least-privilege tokens.** Every workflow declares an explicit
+  `permissions:` block. The default is `contents: read` and nothing else.
+- **Public pull requests receive no secrets.** `pull_request_target` is
+  forbidden, because it runs fork code with repository credentials. Workflows
+  triggered by `pull_request` must not reference `secrets`.
+- **CI invokes the same repository-controlled gates** used locally. A check
+  that exists only in a workflow file is a check nobody can run before pushing.
+
+`tools/check-publication-readiness.sh` and `tools/go-no-go-audit.sh` enforce
+these mechanically. They previously failed the release if any workflow existed
+at all; they now fail it if a workflow violates the policy above.
 
 ## What contributions are licensed under
 
