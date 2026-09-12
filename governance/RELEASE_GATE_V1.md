@@ -106,7 +106,7 @@ later external implementation reports may inform v1.1.
 ## What remains
 
 Row 35 is DONE under the original invariant; see the executable private-RC
-receipt. Rows 30-33 are DONE for the frozen private candidate: bundle, reconstruction,
+receipt. Rows 30-33 are DONE for the frozen release candidate: bundle, reconstruction,
 both compiler rehearsals and final audit have passing receipts. Row 27 requires owner-controlled public visibility;
 row 36 requires actual external review and disposition of findings. Row 34
 waits on those gates. Candidate-profile caveats remain in force.
