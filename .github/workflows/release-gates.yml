@@ -38,6 +38,13 @@ concurrency:
 
 jobs:
   posix-gates:
+    # All eight repositories are checked out as siblings, which the automatic
+    # GITHUB_TOKEN cannot do while they are private -- it is scoped to this
+    # repository alone. A valid token can read any PUBLIC repository, so this
+    # job begins working at the visibility flip. Until then the same gates are
+    # run locally by tools/local-gates.sh and tools/release-rehearsal.sh, which
+    # is what this workflow invokes anyway.
+    if: github.event.repository.private == false
     runs-on: ubuntu-latest
     steps:
       - name: Check out mcl-core
