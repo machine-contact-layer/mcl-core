@@ -1,5 +1,5 @@
 === MCL final private-closure POSIX rehearsal
-=== date   2026-09-12T13:48:57Z
+=== date   2026-09-12T14:51:54Z
 === user   <builder> uid=1000
 === tmpdir <user-home>/.mcl-final-tmp (private, empty at start)
 === gcc    gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
@@ -9,13 +9,13 @@
 root: <repo-root>
 
 -- the eight repositories are at their release commits
-   mcl-core  7a0a459
+   mcl-core  7f9b67f
    mcl-wire  6a83901
    mcl-link  861cc73
    mcl-sdk   d1c5f1c
    mcl-ap    9ee25d6
-   mcl-ip    17f2cc1
-   mcl-ble   7db9a72
+   mcl-ip    be9a5d1
+   mcl-ble   0fa349a
    mcl-uwb   5d96c22
 
 local gates (GCC/Clang/sanitizers/cross)   PASS

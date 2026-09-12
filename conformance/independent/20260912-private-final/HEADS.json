@@ -1,7 +1,7 @@
 {
   "receipt": "20260912-private-final",
   "purpose": "Final private-closure gate receipts. Supersedes 20260910-private-rc as the evidence for release gate rows 31, 32 and 33.",
-  "generated_utc": "2026-09-12T14:01:16Z",
+  "generated_utc": "2026-09-12T15:03:11Z",
   "results": {
     "posix_rehearsal_checks_passed": 22,
     "posix_rehearsal_checks_failed": 0,
@@ -11,19 +11,20 @@
     "reconstruction": "VERIFIED"
   },
   "environment": {
-    "posix": "WSL Ubuntu-24.04, gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "posix": "WSL Ubuntu-24.04, gcc 13.3.0, clang 18.1.3",
     "posix_user": "unprivileged (uid 1000), private empty TMPDIR",
     "windows": "MSVC /W4 /WX"
   },
   "heads": {
-    "mcl-core": "7a0a4596ec74d4518b51de5f15a00dc6669ae488",
+    "mcl-core": "7f9b67f58e88c261c16841dee3ab8dba0a9a78d8",
     "mcl-wire": "6a839010ff44c0087fcbbb5b5acc0a1f480271a1",
     "mcl-link": "861cc73adc1b93e0547aa774be11217ebd0eb763",
     "mcl-sdk": "d1c5f1c44ed14568ff6a8d38ed3e737e5a7aad42",
     "mcl-ap": "9ee25d60094f795342cb3989cf83b6d709ef5352",
-    "mcl-ip": "17f2cc1180b46b587098c40867f8bcdefd7e792d",
-    "mcl-ble": "7db9a721ac8ad408b909af81960ce270618e53e4",
+    "mcl-ip": "be9a5d12e02c184c3b075a0eabbb681a200f4dbb",
+    "mcl-ble": "0fa349a5c851eb255f64145baaa12f0d24e130f5",
     "mcl-uwb": "5d96c22afe00e21df48a334fe9350e7c881990b7"
   },
+  "heads_note": "mcl-core is the commit these gates RAN AGAINST. The commit that seals this directory is its child and cannot be named here: writing the hash changes the hash. That sealing commit adds receipts only and changes no executable source. Same convention as releases/v1.0.0/manifest.txt.",
   "all_trees_clean_at_run": true
 }

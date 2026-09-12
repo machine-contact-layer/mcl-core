@@ -1,16 +1,16 @@
 === MCL final release bundle reconstruction (--verify v1.0.0)
-=== date 2026-09-12T13:58:41Z  user <builder>
+=== date 2026-09-12T15:01:39Z  user <builder>
 
 === reconstructing v1.0.0 from its bundle alone ===
 
 -- every named commit exists and is what the manifest says
-  ok   mcl-core a16fa981faca
+  ok   mcl-core 10e577b5203d
   ok   mcl-wire 6a839010ff44
   ok   mcl-link 861cc73adc1b
   ok   mcl-sdk d1c5f1c44ed1
   ok   mcl-ap 9ee25d60094f
-  ok   mcl-ip 17f2cc1180b4
-  ok   mcl-ble 7db9a721ac8a
+  ok   mcl-ip be9a5d12e02c
+  ok   mcl-ble 0fa349a5c851
   ok   mcl-uwb 5d96c22afe00
 
 -- checksums match the artifacts they name
@@ -70,8 +70,8 @@
   ok   mcl-core/releases/v1.0.0/REPRODUCIBILITY.md
 
 -- bundled developer SDK builds and runs its contract test
-Internal ctest changing into directory: <user-home>/.mcl-final-tmp2/tmp.IB1rfnvirE/build
-Test project <user-home>/.mcl-final-tmp2/tmp.IB1rfnvirE/build
+Internal ctest changing into directory: <user-home>/.mcl-final-tmp2/tmp.FdoahOHhwo/build
+Test project <user-home>/.mcl-final-tmp2/tmp.FdoahOHhwo/build
     Start 1: mcl_machine_contract
 1/1 Test #1: mcl_machine_contract .............   Passed    0.00 sec
 

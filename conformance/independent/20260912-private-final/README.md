@@ -76,6 +76,27 @@ That scan did not previously cover this directory: it named the 2026-09-10
 receipt directory explicitly, so each new receipt set went unchecked. It now
 matches any directory under `conformance/independent/`.
 
+## Why the digests are sealed last
+
+`check-evidence-digests.sh` verifies this directory, and that creates a
+self-reference: a transcript cannot be digested and then regenerated. Seal
+the digests first and the next capture invalidates them; capture first and
+the transcript records a directory whose digests are stale.
+
+The order is therefore fixed. The four gates run against the tree at the
+revisions in `HEADS.json`, with no `SHA256SUMS.txt` present. The transcripts
+are then scrubbed, `SHA256SUMS.txt` is written over them, and one commit
+seals the directory. From that point the gate verifies these files on every
+run and keeps verifying, because nothing regenerates them again.
+
+So the transcripts show 22 POSIX checks and 44 MSVC targets passing on a
+tree that did not yet contain this directory's digest file. That is the only
+difference between the tree they describe and the tree they are committed
+in, and the sealing commit adds no executable source.
+
+The 2026-09-10 receipt directory sidestepped this by shipping no digest file
+at all. Shipping one is better, and it costs this paragraph.
+
 ## What these receipts do not establish
 
 Every check here was written by this project, including the ones that check
