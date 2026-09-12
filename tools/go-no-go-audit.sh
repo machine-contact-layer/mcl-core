@@ -36,15 +36,25 @@ STRICT=0
 # Evidence directories are excluded for a different reason: they record what was
 # measured on a date and are never edited, so a marker inside one is history
 # rather than unfinished work.
+# WHY GATE TRANSCRIPTS ARE EXCLUDED
+#
+# A receipt under conformance/independent/ is a recording of a gate run, not
+# source. This audit's own transcript necessarily contains the line
+# "no TODO/FIXME/XXX/HACK/TBD", so committing a passing go-no-go.log made the
+# NEXT run report it as a fatal unfinished-work marker: the audit failing on
+# the evidence that it had passed.
+#
+# These exclusions used to name one dated directory, so every new receipt set
+# silently re-armed the trap until someone added four more lines. The pattern
+# is now the shape of the path, and a receipt directory created in a year
+# behaves like this one. Only *.log is excluded -- README.md and the JSON
+# receipts in those directories are authored content and are still audited.
 tracked_grep() {
     pattern=$1
     for repo in $REPOS; do
         git -C "$ROOT/$repo" grep -nIE "$pattern" -- \
             ':!*/evidence/*' ':!*evidence/*' \
-            ':!conformance/independent/20260910-private-rc/*-rehearsal.log' \
-            ':!conformance/independent/20260910-private-rc/msvc-gates.log' \
-            ':!conformance/independent/20260910-private-rc/go-no-go.log' \
-            ':!conformance/independent/20260910-private-rc/reconstruction.log' \
+            ':!conformance/independent/*/*.log' \
             ':!*go-no-go-audit.sh' 2>/dev/null \
             | sed "s|^|$repo/|" || true
     done
@@ -144,10 +154,7 @@ prose_grep() {
     for repo in $REPOS; do
         git -C "$ROOT/$repo" grep -nIE "$1" -- 'governance/*.md' \
             ':!*/evidence/*' ':!*evidence/*' ':!*/releases/*' \
-            ':!conformance/independent/20260910-private-rc/posix-rehearsal.log' \
-            ':!conformance/independent/20260910-private-rc/msvc-gates.log' \
-            ':!conformance/independent/20260910-private-rc/go-no-go.log' \
-            ':!conformance/independent/20260910-private-rc/reconstruction.log' 2>/dev/null \
+            ':!conformance/independent/*/*.log' 2>/dev/null \
             | sed "s|^|$repo/|" || true
     done
 }

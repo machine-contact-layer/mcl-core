@@ -1,10 +1,10 @@
 === MCL final private-closure MSVC gates
 === date 2026-09-12T13:59:34Z
-=== host DEX  user marsm
+=== host <workstation>  user <builder>
 
 
 === MSVC /W4 /WX, all eight repositories ===
-root: C:\Users\marsm\Downloads\mcl
+root: <repo-root>
 
 -- mcl-core
    OK

@@ -52,6 +52,30 @@ configuration than the run it replaces: root could write over anything it
 found, so a root run cannot distinguish a gate that rebuilt from a gate that
 reused. Prefer this configuration for future rehearsals.
 
+## One edit to the captured logs
+
+`check-publication-readiness.sh` scans retained records for absolute user
+paths and device identifiers, because a public repository should not ship a
+builder's home directory. It found three of these logs carrying one. The
+following substitutions were applied to the captured text, and nothing else
+was changed:
+
+```text
+/mnt/c/Users/<builder>/Downloads/mcl   ->  <repo-root>
+C:\Users\<builder>\Downloads\mcl      ->  <repo-root>
+/home/<builder>                        ->  <user-home>
+the workstation hostname               ->  <workstation>
+the account name                       ->  <builder>
+```
+
+No gate name, result, count or exit status was touched. The digests in
+`SHA256SUMS.txt` are taken over the scrubbed text, which is the text
+committed.
+
+That scan did not previously cover this directory: it named the 2026-09-10
+receipt directory explicitly, so each new receipt set went unchecked. It now
+matches any directory under `conformance/independent/`.
+
 ## What these receipts do not establish
 
 Every check here was written by this project, including the ones that check

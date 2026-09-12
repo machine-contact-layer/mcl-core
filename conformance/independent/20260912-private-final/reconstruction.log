@@ -1,5 +1,5 @@
 === MCL final release bundle reconstruction (--verify v1.0.0)
-=== date 2026-09-12T13:58:41Z  user marsm
+=== date 2026-09-12T13:58:41Z  user <builder>
 
 === reconstructing v1.0.0 from its bundle alone ===
 
@@ -70,8 +70,8 @@
   ok   mcl-core/releases/v1.0.0/REPRODUCIBILITY.md
 
 -- bundled developer SDK builds and runs its contract test
-Internal ctest changing into directory: /home/marsm/.mcl-final-tmp2/tmp.IB1rfnvirE/build
-Test project /home/marsm/.mcl-final-tmp2/tmp.IB1rfnvirE/build
+Internal ctest changing into directory: <user-home>/.mcl-final-tmp2/tmp.IB1rfnvirE/build
+Test project <user-home>/.mcl-final-tmp2/tmp.IB1rfnvirE/build
     Start 1: mcl_machine_contract
 1/1 Test #1: mcl_machine_contract .............   Passed    0.00 sec
 

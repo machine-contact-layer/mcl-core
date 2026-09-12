@@ -1,12 +1,12 @@
 === MCL final private-closure POSIX rehearsal
 === date   2026-09-12T13:48:57Z
-=== user   marsm uid=1000
-=== tmpdir /home/marsm/.mcl-final-tmp (private, empty at start)
+=== user   <builder> uid=1000
+=== tmpdir <user-home>/.mcl-final-tmp (private, empty at start)
 === gcc    gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0
 === clang  Ubuntu clang version 18.1.3 (1ubuntu1)
 
 === MCL release rehearsal ===
-root: /mnt/c/Users/marsm/Downloads/mcl
+root: <repo-root>
 
 -- the eight repositories are at their release commits
    mcl-core  7a0a459
