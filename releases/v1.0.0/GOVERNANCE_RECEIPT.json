@@ -1,0 +1,403 @@
+{
+  "generated_by": "mcl-core/tools/apply-github-governance.ps1",
+  "organization": "machine-contact-layer",
+  "note": "Organisation-wide rulesets are intentionally absent: they require GitHub Team, and visibility does not unlock them. Per-repository rulesets are the v1 mechanism.",
+  "receipt_kind": "read-back of live API state, with every asserted setting recorded as its observed value",
+  "release_repositories": [
+    "mcl-core",
+    "mcl-wire",
+    "mcl-link",
+    "mcl-sdk",
+    "mcl-ap",
+    "mcl-ip",
+    "mcl-ble",
+    "mcl-uwb"
+  ],
+  "infrastructure_repositories": [
+    ".github"
+  ],
+  "scope_note": "The MCL v1 release is exactly the eight release repositories. Infrastructure repositories are governed here but are NOT release components: they are absent from the v1.0.0 manifest, the synchronized tags and the canonical Release. Row 37 is satisfied by the eight.",
+  "asserted_release": [
+    "branch ruleset active on ~DEFAULT_BRANCH",
+    "deletion and non_fast_forward blocked on the default branch",
+    "pull request required, >= 1 approving review",
+    "code-owner review required, and a CODEOWNERS file exists",
+    "conversation resolution required",
+    "stale reviews dismissed on push",
+    "strict required status checks, including build (gcc) and build (clang)",
+    "tag ruleset active on refs/tags/v*, blocking deletion, force-update and mutation"
+  ],
+  "asserted_infrastructure": [
+    "branch ruleset active on ~DEFAULT_BRANCH",
+    "deletion and non_fast_forward blocked on the default branch",
+    "pull request required, >= 1 approving review",
+    "code-owner review required, and a CODEOWNERS file exists",
+    "conversation resolution required",
+    "stale reviews dismissed on push",
+    "required status checks ABSENT -- a required context no workflow reports would make every pull request unmergeable",
+    "tag ruleset ABSENT -- nothing here is released under a v* tag"
+  ],
+  "repositories": [
+    {
+      "repository": "mcl-core",
+      "repository_class": "release",
+      "private": false,
+      "default_branch": "main",
+      "observed": {
+        "branch_ruleset_enforcement": "active",
+        "branch_ref_include": [
+          "~DEFAULT_BRANCH"
+        ],
+        "branch_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "pull_request",
+          "required_status_checks"
+        ],
+        "required_approving_review_count": 1,
+        "require_code_owner_review": true,
+        "required_review_thread_resolution": true,
+        "dismiss_stale_reviews_on_push": true,
+        "require_last_push_approval": false,
+        "strict_required_status_checks_policy": true,
+        "required_status_check_contexts": [
+          "build (clang)",
+          "build (gcc)"
+        ],
+        "tag_ruleset_enforcement": "active",
+        "tag_ref_include": [
+          "refs/tags/v*"
+        ],
+        "tag_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "update"
+        ]
+      },
+      "codeowners_sha": "bb8ec7c37fe51e70a750db3f6dd3bb6d79b0cbd7",
+      "verified": true,
+      "failures": [],
+      "verified_utc": "2026-09-13T02:21:59Z"
+    },
+    {
+      "repository": "mcl-wire",
+      "repository_class": "release",
+      "private": false,
+      "default_branch": "main",
+      "observed": {
+        "branch_ruleset_enforcement": "active",
+        "branch_ref_include": [
+          "~DEFAULT_BRANCH"
+        ],
+        "branch_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "pull_request",
+          "required_status_checks"
+        ],
+        "required_approving_review_count": 1,
+        "require_code_owner_review": true,
+        "required_review_thread_resolution": true,
+        "dismiss_stale_reviews_on_push": true,
+        "require_last_push_approval": false,
+        "strict_required_status_checks_policy": true,
+        "required_status_check_contexts": [
+          "build (clang)",
+          "build (gcc)"
+        ],
+        "tag_ruleset_enforcement": "active",
+        "tag_ref_include": [
+          "refs/tags/v*"
+        ],
+        "tag_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "update"
+        ]
+      },
+      "codeowners_sha": "85c37a978802417735dfbc9331d12c400a475756",
+      "verified": true,
+      "failures": [],
+      "verified_utc": "2026-09-13T02:22:05Z"
+    },
+    {
+      "repository": "mcl-link",
+      "repository_class": "release",
+      "private": false,
+      "default_branch": "main",
+      "observed": {
+        "branch_ruleset_enforcement": "active",
+        "branch_ref_include": [
+          "~DEFAULT_BRANCH"
+        ],
+        "branch_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "pull_request",
+          "required_status_checks"
+        ],
+        "required_approving_review_count": 1,
+        "require_code_owner_review": true,
+        "required_review_thread_resolution": true,
+        "dismiss_stale_reviews_on_push": true,
+        "require_last_push_approval": false,
+        "strict_required_status_checks_policy": true,
+        "required_status_check_contexts": [
+          "build (clang)",
+          "build (gcc)"
+        ],
+        "tag_ruleset_enforcement": "active",
+        "tag_ref_include": [
+          "refs/tags/v*"
+        ],
+        "tag_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "update"
+        ]
+      },
+      "codeowners_sha": "edca3c729b0d7d8a0a35ab0084feed9300f6bcd5",
+      "verified": true,
+      "failures": [],
+      "verified_utc": "2026-09-13T02:22:10Z"
+    },
+    {
+      "repository": "mcl-sdk",
+      "repository_class": "release",
+      "private": false,
+      "default_branch": "main",
+      "observed": {
+        "branch_ruleset_enforcement": "active",
+        "branch_ref_include": [
+          "~DEFAULT_BRANCH"
+        ],
+        "branch_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "pull_request",
+          "required_status_checks"
+        ],
+        "required_approving_review_count": 1,
+        "require_code_owner_review": true,
+        "required_review_thread_resolution": true,
+        "dismiss_stale_reviews_on_push": true,
+        "require_last_push_approval": false,
+        "strict_required_status_checks_policy": true,
+        "required_status_check_contexts": [
+          "build (clang)",
+          "build (gcc)"
+        ],
+        "tag_ruleset_enforcement": "active",
+        "tag_ref_include": [
+          "refs/tags/v*"
+        ],
+        "tag_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "update"
+        ]
+      },
+      "codeowners_sha": "71a3ebb9a2e35338dbc33afea9b1fa8af5c8ad6d",
+      "verified": true,
+      "failures": [],
+      "verified_utc": "2026-09-13T02:22:16Z"
+    },
+    {
+      "repository": "mcl-ap",
+      "repository_class": "release",
+      "private": false,
+      "default_branch": "main",
+      "observed": {
+        "branch_ruleset_enforcement": "active",
+        "branch_ref_include": [
+          "~DEFAULT_BRANCH"
+        ],
+        "branch_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "pull_request",
+          "required_status_checks"
+        ],
+        "required_approving_review_count": 1,
+        "require_code_owner_review": true,
+        "required_review_thread_resolution": true,
+        "dismiss_stale_reviews_on_push": true,
+        "require_last_push_approval": false,
+        "strict_required_status_checks_policy": true,
+        "required_status_check_contexts": [
+          "build (clang)",
+          "build (gcc)"
+        ],
+        "tag_ruleset_enforcement": "active",
+        "tag_ref_include": [
+          "refs/tags/v*"
+        ],
+        "tag_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "update"
+        ]
+      },
+      "codeowners_sha": "af01b1a32c73eda01e16537bb8f7f699a3a1b556",
+      "verified": true,
+      "failures": [],
+      "verified_utc": "2026-09-13T02:22:21Z"
+    },
+    {
+      "repository": "mcl-ip",
+      "repository_class": "release",
+      "private": false,
+      "default_branch": "main",
+      "observed": {
+        "branch_ruleset_enforcement": "active",
+        "branch_ref_include": [
+          "~DEFAULT_BRANCH"
+        ],
+        "branch_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "pull_request",
+          "required_status_checks"
+        ],
+        "required_approving_review_count": 1,
+        "require_code_owner_review": true,
+        "required_review_thread_resolution": true,
+        "dismiss_stale_reviews_on_push": true,
+        "require_last_push_approval": false,
+        "strict_required_status_checks_policy": true,
+        "required_status_check_contexts": [
+          "build (clang)",
+          "build (gcc)"
+        ],
+        "tag_ruleset_enforcement": "active",
+        "tag_ref_include": [
+          "refs/tags/v*"
+        ],
+        "tag_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "update"
+        ]
+      },
+      "codeowners_sha": "5be59247ab5e23a322e4ea825eca87b25edf00cb",
+      "verified": true,
+      "failures": [],
+      "verified_utc": "2026-09-13T02:22:27Z"
+    },
+    {
+      "repository": "mcl-ble",
+      "repository_class": "release",
+      "private": false,
+      "default_branch": "main",
+      "observed": {
+        "branch_ruleset_enforcement": "active",
+        "branch_ref_include": [
+          "~DEFAULT_BRANCH"
+        ],
+        "branch_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "pull_request",
+          "required_status_checks"
+        ],
+        "required_approving_review_count": 1,
+        "require_code_owner_review": true,
+        "required_review_thread_resolution": true,
+        "dismiss_stale_reviews_on_push": true,
+        "require_last_push_approval": false,
+        "strict_required_status_checks_policy": true,
+        "required_status_check_contexts": [
+          "build (clang)",
+          "build (gcc)"
+        ],
+        "tag_ruleset_enforcement": "active",
+        "tag_ref_include": [
+          "refs/tags/v*"
+        ],
+        "tag_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "update"
+        ]
+      },
+      "codeowners_sha": "186adde0fd87dc930376dd4b5f9ab615b19f53b0",
+      "verified": true,
+      "failures": [],
+      "verified_utc": "2026-09-13T02:22:32Z"
+    },
+    {
+      "repository": "mcl-uwb",
+      "repository_class": "release",
+      "private": false,
+      "default_branch": "main",
+      "observed": {
+        "branch_ruleset_enforcement": "active",
+        "branch_ref_include": [
+          "~DEFAULT_BRANCH"
+        ],
+        "branch_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "pull_request",
+          "required_status_checks"
+        ],
+        "required_approving_review_count": 1,
+        "require_code_owner_review": true,
+        "required_review_thread_resolution": true,
+        "dismiss_stale_reviews_on_push": true,
+        "require_last_push_approval": false,
+        "strict_required_status_checks_policy": true,
+        "required_status_check_contexts": [
+          "build (clang)",
+          "build (gcc)"
+        ],
+        "tag_ruleset_enforcement": "active",
+        "tag_ref_include": [
+          "refs/tags/v*"
+        ],
+        "tag_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "update"
+        ]
+      },
+      "codeowners_sha": "d9aeb5b81d10bc46af2683486ab769bb9dce3316",
+      "verified": true,
+      "failures": [],
+      "verified_utc": "2026-09-13T02:22:37Z"
+    },
+    {
+      "repository": ".github",
+      "repository_class": "infrastructure",
+      "private": false,
+      "default_branch": "main",
+      "observed": {
+        "branch_ruleset_enforcement": "active",
+        "branch_ref_include": [
+          "~DEFAULT_BRANCH"
+        ],
+        "branch_rule_types": [
+          "deletion",
+          "non_fast_forward",
+          "pull_request"
+        ],
+        "required_approving_review_count": 1,
+        "require_code_owner_review": true,
+        "required_review_thread_resolution": true,
+        "dismiss_stale_reviews_on_push": true,
+        "require_last_push_approval": false,
+        "strict_required_status_checks_policy": null,
+        "required_status_check_contexts": [],
+        "tag_ruleset_enforcement": "MISSING",
+        "tag_ref_include": [
+          null
+        ],
+        "tag_rule_types": []
+      },
+      "codeowners_sha": "aabd802247b7491b826371279f9fe2d44cb14389",
+      "verified": true,
+      "failures": [],
+      "verified_utc": "2026-09-13T02:22:42Z"
+    }
+  ]
+}

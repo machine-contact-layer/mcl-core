@@ -1,0 +1,42 @@
+## repositories (anonymous)
+repo      visib   page actions release tags license  contrib/security
+mcl-core  public  200  200     0       0    200      contributing-from=none security-policy-page=200
+mcl-wire  public  200  200     0       0    200      contributing-from=none security-policy-page=200
+mcl-link  public  200  200     0       0    200      contributing-from=none security-policy-page=200
+mcl-sdk   public  200  200     0       0    200      contributing-from=none security-policy-page=200
+mcl-ap    public  200  200     0       0    200      contributing-from=none security-policy-page=200
+mcl-ip    public  200  200     0       0    200      contributing-from=none security-policy-page=200
+mcl-ble   public  200  200     0       0    200      contributing-from=none security-policy-page=200
+mcl-uwb   public  200  200     0       0    200      contributing-from=none security-policy-page=200
+.github   public  200  200     0       0    404      contributing-from=none security-policy-page=200
+
+## organization profile (anonymous)
+org page http=200  profile-README-rendered=1
+
+## cross-repo links in READMEs on main (anonymous)
+  checked 14 unique links, broken=0
+
+## evidence index claim paths on main (anonymous)
+  checked 7 claim paths, missing=0
+
+## tracked content: credentials and local identity (all 9 repos at main)
+  mcl-core     credential-shaped=0  local-paths(non-evidence)=0  local-paths(retained records)=6
+  mcl-wire     credential-shaped=0  local-paths(non-evidence)=0  local-paths(retained records)=0
+  mcl-link     credential-shaped=0  local-paths(non-evidence)=0  local-paths(retained records)=0
+  mcl-sdk      credential-shaped=0  local-paths(non-evidence)=0  local-paths(retained records)=10
+  mcl-ap       credential-shaped=0  local-paths(non-evidence)=0  local-paths(retained records)=0
+  mcl-ip       credential-shaped=0  local-paths(non-evidence)=0  local-paths(retained records)=0
+  mcl-ble      credential-shaped=0  local-paths(non-evidence)=0  local-paths(retained records)=0
+  mcl-uwb      credential-shaped=0  local-paths(non-evidence)=0  local-paths(retained records)=0
+  org-profile  credential-shaped=0  local-paths(non-evidence)=0  local-paths(retained records)=0
+
+## default community-health files (anonymous)
+community profile mcl-wire: contributing -> https://github.com/machine-contact-layer/.github/blob/main/CONTRIBUTING.md
+community profile mcl-core: contributing -> https://github.com/machine-contact-layer/mcl-core/blob/main/CONTRIBUTING.md
+mcl-wire  security policy page: shows the organization-wide default policy
+mcl-ble   security policy page: shows the organization-wide default policy
+mcl-core  security policy page: shows the mcl-core policy (Release gate item 23)
+mcl-wire  community page links CONTRIBUTING from .github
+mcl-uwb   community page links CONTRIBUTING from .github
+
+.github has no LICENSE: it is organization infrastructure and carries no MCL release content.
