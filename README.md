@@ -25,9 +25,10 @@
 
 > ### Building something? Start with the SDK
 >
-> [**mcl-sdk**](https://github.com/machine-contact-layer/mcl-sdk) is one CMake project with a runnable example and no
-> sibling checkout. This repository is the specification, governance and
-> conformance authority — the thing the SDK implements.
+> [**mcl-sdk**](https://github.com/machine-contact-layer/mcl-sdk) has the quickstart and the examples, and the release
+> ships a self-contained developer SDK — one CMake project, no sibling checkout.
+> This repository is the specification, governance and conformance authority —
+> the thing the SDK implements.
 
 Two machines end up in the same place. They may have been built by different
 companies and never designed to work together; or they may both be yours, and
