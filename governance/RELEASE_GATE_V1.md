@@ -93,9 +93,9 @@ NOT claimed: anyone outside this project has reviewed them
 NOT claimed: the specifications are free of defects a fresh reader would find
 ```
 
-Those four lines appear in `README.md`, `ICS.md`, `V1_SCOPE.md` §5.9 and the
-release manifest, in the same words, so a reader cannot find a weaker version by
-looking somewhere else. `check-publication-readiness.sh` fails if any of them
+Those four lines appear in `ICS.md`, `V1_SCOPE.md` §5.9 and the release
+manifest, in the same words, so a reader cannot find a weaker version by looking
+somewhere else. `check-publication-readiness.sh` fails if any of them
 loses the statement.
 
 The clean-room implementation is independent *of the reference code* — no shared

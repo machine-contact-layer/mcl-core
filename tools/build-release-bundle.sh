@@ -485,9 +485,9 @@ printf 'mcl-core/releases/%s/REPRODUCIBILITY.md
     echo
     echo "WHAT THIS RELEASE DOES NOT CLAIM"
     echo
-    echo "  Stated here in the same words as mcl-core/README.md,"
-    echo "  conformance/ICS.md and governance/V1_SCOPE.md section 5.9, so that"
-    echo "  a reader cannot find a weaker version by looking somewhere else."
+    echo "  Stated here in the same words as conformance/ICS.md and"
+    echo "  governance/V1_SCOPE.md section 5.9, so that a reader cannot find"
+    echo "  a weaker version by looking somewhere else."
     echo
     echo "  NOT claimed: two ORGANISATIONS have interoperated"
     echo "  NOT claimed: anyone outside this project has implemented these"
