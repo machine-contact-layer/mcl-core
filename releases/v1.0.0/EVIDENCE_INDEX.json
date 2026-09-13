@@ -2,57 +2,57 @@
   "generated_by": "mcl-core/tools/build-release-bundle.sh",
   "version": "v1.0.0",
   "source_commits": {
-    "mcl-core": "7e75f279c9ae298d16f7185d9bee3f78f678e33b",
-    "mcl-wire": "415f110e55ed00ddd9c7e4c2c6a241dcdfb17a6e",
-    "mcl-link": "59214bc1c65295a1cbd0940af3ba223cef4f1b7c",
-    "mcl-sdk": "3fd3b931d66ab9f3d487091b8fb60b8df4155f54",
-    "mcl-ap": "686908093cc4f0ca04a295492e81b9c8d5c2945e",
-    "mcl-ip": "adbe2e64db7ffb7c0b7419ea77cc552d8154913c",
-    "mcl-ble": "9d35ff05e3ffa83292f71e59f22cd45214ae93fd",
-    "mcl-uwb": "4ddd18bcf39f1e6778f76ea4572ef53c3e30fe3c"
+    "mcl-core": "36d6cbeb1224ca0c6e352a0b3d9de67deecd984a",
+    "mcl-wire": "01168748425546627a7245ee31d0fc3473237f06",
+    "mcl-link": "57096d964a261b34b77d2f6860fc89c9b12d2dff",
+    "mcl-sdk": "125461325d99924d735c9ae1057151f68fd0b3df",
+    "mcl-ap": "07bd494f83fbc2567ee377c4b4563c429551f5f1",
+    "mcl-ip": "26f37a79fa24af0ea8e8cf5d86ac2794c4076047",
+    "mcl-ble": "33d6a8a43d40ce0513e1924fbe8d5679b1302d23",
+    "mcl-uwb": "a56a86b9ea919cdbb6062cab02cdd60a4bb55609"
   },
   "claims": [
     {
       "claim": "continuity_104_migrations",
       "path": "mcl-sdk/evidence/e4-dual-transport-migration-20260903/README.md",
       "sha256": "7e9103ff53a9afb1391daf4455385f73e4932ebdf87347b7807b98c2894f0ace",
-      "repository_commit": "3fd3b931d66ab9f3d487091b8fb60b8df4155f54"
+      "repository_commit": "125461325d99924d735c9ae1057151f68fd0b3df"
     },
     {
       "claim": "continuity_raw",
       "path": "mcl-sdk/evidence/e4-dual-transport-migration-20260903/host-output.txt",
       "sha256": "d6c0216499824cc2ca591adcfbaa0c38d56a298209be29a748a02dbb6bcbd194",
-      "repository_commit": "3fd3b931d66ab9f3d487091b8fb60b8df4155f54"
+      "repository_commit": "125461325d99924d735c9ae1057151f68fd0b3df"
     },
     {
       "claim": "embedded_wire1_link1_physical",
       "path": "mcl-ap/experiments/008-embedded-node/README.md",
       "sha256": "57a635a92f11a96d8d7dadda3671a6f2010470c1ef3e41b8407f490ae7a0644f",
-      "repository_commit": "686908093cc4f0ca04a295492e81b9c8d5c2945e"
+      "repository_commit": "07bd494f83fbc2567ee377c4b4563c429551f5f1"
     },
     {
       "claim": "embedded_wire1_link1_digests",
       "path": "mcl-ap/experiments/008-embedded-node/evidence/e4-node-board-to-host-frame-20260904/SHA256SUMS.txt",
       "sha256": "233c79864974e39f7d8118ed67e190948f5fa182eeac16499ce12daf8152432b",
-      "repository_commit": "686908093cc4f0ca04a295492e81b9c8d5c2945e"
+      "repository_commit": "07bd494f83fbc2567ee377c4b4563c429551f5f1"
     },
     {
       "claim": "physical_campaign_digests",
       "path": "mcl-sdk/hardware/dfr1154-autonomous-node/runs/20260909-contention-closure/SHA256SUMS.txt",
       "sha256": "2fb91363516c26bfdba703b8eb7d200292c22d908e228e6e6333d2c204bc1923",
-      "repository_commit": "3fd3b931d66ab9f3d487091b8fb60b8df4155f54"
+      "repository_commit": "125461325d99924d735c9ae1057151f68fd0b3df"
     },
     {
       "claim": "row35",
       "path": "mcl-core/conformance/independent/20260910-private-rc/ROW35.json",
       "sha256": "15a86cd97d3a27a9bb8d1042c01fa34c782e8fd2a610b3dce555738a6fcd88fd",
-      "repository_commit": "7e75f279c9ae298d16f7185d9bee3f78f678e33b"
+      "repository_commit": "36d6cbeb1224ca0c6e352a0b3d9de67deecd984a"
     },
     {
       "claim": "row35_verifier",
       "path": "mcl-core/conformance/independent/20260910-private-rc/verify_row35.py",
       "sha256": "e9ec451f4cf3262ada27db0f054ebd6300fe923ead0e1b95e13d7acbedf62923",
-      "repository_commit": "7e75f279c9ae298d16f7185d9bee3f78f678e33b"
+      "repository_commit": "36d6cbeb1224ca0c6e352a0b3d9de67deecd984a"
     }
   ],
   "wire_major_qualification": {
