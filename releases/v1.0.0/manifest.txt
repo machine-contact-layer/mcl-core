@@ -1,5 +1,5 @@
 MCL v1.0.0 release manifest
-built: 2026-09-13T03:15:36Z
+built: 2026-09-13T03:27:26Z
 
 COMMITS
 
@@ -12,7 +12,7 @@ COMMITS
   exactly this and recorded a stale mcl-core hash. Stating which
   entry is which is the honest fix; claiming to know it is not.
 
-  mcl-core 36d6cbeb1224ca0c6e352a0b3d9de67deecd984a
+  mcl-core 03ffbf21e6106422f649e98a2e7aa0b00564cd93
   mcl-wire 01168748425546627a7245ee31d0fc3473237f06
   mcl-link 57096d964a261b34b77d2f6860fc89c9b12d2dff
   mcl-sdk 125461325d99924d735c9ae1057151f68fd0b3df
