@@ -1,0 +1,16 @@
+{
+  "release_repositories_at_public_qualification": {
+    "mcl-core": "66c838b7dbf6a4c7c92ab006b53366f22667d955",
+    "mcl-wire": "415f110e55ed00ddd9c7e4c2c6a241dcdfb17a6e",
+    "mcl-link": "59214bc1c65295a1cbd0940af3ba223cef4f1b7c",
+    "mcl-sdk": "3fd3b931d66ab9f3d487091b8fb60b8df4155f54",
+    "mcl-ap": "686908093cc4f0ca04a295492e81b9c8d5c2945e",
+    "mcl-ip": "adbe2e64db7ffb7c0b7419ea77cc552d8154913c",
+    "mcl-ble": "9d35ff05e3ffa83292f71e59f22cd45214ae93fd",
+    "mcl-uwb": "4ddd18bcf39f1e6778f76ea4572ef53c3e30fe3c"
+  },
+  "organization_infrastructure": {
+    ".github": "4d35d0cdd372"
+  },
+  "note": "These are the heads public CI and the audit qualified. They are NOT the frozen Public Candidate: mcl-core moves when this closure merges, and the Candidate is sealed later on the final heads. .github is recorded for operations only and is never part of the release manifest."
+}

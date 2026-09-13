@@ -1,0 +1,70 @@
+{
+  "receipt": "20260913-public-candidate",
+  "event": "workflow_dispatch on main, after mcl-ap #1 and mcl-core #1 merged",
+  "ci": {
+    "mcl-core": {
+      "run": 34732269868,
+      "head": "66c838b7dbf6",
+      "build (gcc)": "success",
+      "build (clang)": "success"
+    },
+    "mcl-wire": {
+      "run": 34732271489,
+      "head": "415f110e55ed",
+      "build (gcc)": "success",
+      "build (clang)": "success"
+    },
+    "mcl-link": {
+      "run": 34732273058,
+      "head": "59214bc1c652",
+      "build (gcc)": "success",
+      "build (clang)": "success"
+    },
+    "mcl-sdk": {
+      "run": 34732274496,
+      "head": "3fd3b931d66a",
+      "build (gcc)": "success",
+      "build (clang)": "success"
+    },
+    "mcl-ap": {
+      "run": 34732275914,
+      "head": "686908093cc4",
+      "build (gcc)": "success",
+      "build (clang)": "success"
+    },
+    "mcl-ip": {
+      "run": 34732277584,
+      "head": "adbe2e64db7f",
+      "build (gcc)": "success",
+      "build (clang)": "success"
+    },
+    "mcl-ble": {
+      "run": 34732279462,
+      "head": "9d35ff05e3ff",
+      "build (gcc)": "success",
+      "build (clang)": "success"
+    },
+    "mcl-uwb": {
+      "run": 34732281385,
+      "head": "4ddd18bcf39f",
+      "build (gcc)": "success",
+      "build (clang)": "success"
+    }
+  },
+  "release-gates": {
+    "repository": "mcl-core",
+    "run": 34732282757,
+    "head": "66c838b7dbf6",
+    "posix-gates": "success",
+    "cross_repository_checkout": "all eight release repositories, public"
+  },
+  "superseded_failure": {
+    "release-gates run": 34708065754,
+    "conclusion": "failure",
+    "cause": "two mcl-ap/experiments/011 run.log digests recorded over Windows CRLF working-tree bytes; corrected by mcl-ap #1, gate hardened by mcl-core #1"
+  },
+  "local_exact_head": {
+    "posix_rehearsal_checks_passed": 22,
+    "msvc_test_targets_passed": 44
+  }
+}
