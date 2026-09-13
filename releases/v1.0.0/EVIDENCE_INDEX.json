@@ -2,11 +2,11 @@
   "generated_by": "mcl-core/tools/build-release-bundle.sh",
   "version": "v1.0.0",
   "source_commits": {
-    "mcl-core": "4b34a66fc3a1cbc87c84e6603d6b8732705451a8",
+    "mcl-core": "7e75f279c9ae298d16f7185d9bee3f78f678e33b",
     "mcl-wire": "415f110e55ed00ddd9c7e4c2c6a241dcdfb17a6e",
     "mcl-link": "59214bc1c65295a1cbd0940af3ba223cef4f1b7c",
     "mcl-sdk": "3fd3b931d66ab9f3d487091b8fb60b8df4155f54",
-    "mcl-ap": "24579b3ea3895cdf5ecbed4939d5c62583a92c90",
+    "mcl-ap": "686908093cc4f0ca04a295492e81b9c8d5c2945e",
     "mcl-ip": "adbe2e64db7ffb7c0b7419ea77cc552d8154913c",
     "mcl-ble": "9d35ff05e3ffa83292f71e59f22cd45214ae93fd",
     "mcl-uwb": "4ddd18bcf39f1e6778f76ea4572ef53c3e30fe3c"
@@ -28,13 +28,13 @@
       "claim": "embedded_wire1_link1_physical",
       "path": "mcl-ap/experiments/008-embedded-node/README.md",
       "sha256": "57a635a92f11a96d8d7dadda3671a6f2010470c1ef3e41b8407f490ae7a0644f",
-      "repository_commit": "24579b3ea3895cdf5ecbed4939d5c62583a92c90"
+      "repository_commit": "686908093cc4f0ca04a295492e81b9c8d5c2945e"
     },
     {
       "claim": "embedded_wire1_link1_digests",
       "path": "mcl-ap/experiments/008-embedded-node/evidence/e4-node-board-to-host-frame-20260904/SHA256SUMS.txt",
       "sha256": "233c79864974e39f7d8118ed67e190948f5fa182eeac16499ce12daf8152432b",
-      "repository_commit": "24579b3ea3895cdf5ecbed4939d5c62583a92c90"
+      "repository_commit": "686908093cc4f0ca04a295492e81b9c8d5c2945e"
     },
     {
       "claim": "physical_campaign_digests",
@@ -46,13 +46,13 @@
       "claim": "row35",
       "path": "mcl-core/conformance/independent/20260910-private-rc/ROW35.json",
       "sha256": "15a86cd97d3a27a9bb8d1042c01fa34c782e8fd2a610b3dce555738a6fcd88fd",
-      "repository_commit": "4b34a66fc3a1cbc87c84e6603d6b8732705451a8"
+      "repository_commit": "7e75f279c9ae298d16f7185d9bee3f78f678e33b"
     },
     {
       "claim": "row35_verifier",
       "path": "mcl-core/conformance/independent/20260910-private-rc/verify_row35.py",
       "sha256": "e9ec451f4cf3262ada27db0f054ebd6300fe923ead0e1b95e13d7acbedf62923",
-      "repository_commit": "4b34a66fc3a1cbc87c84e6603d6b8732705451a8"
+      "repository_commit": "7e75f279c9ae298d16f7185d9bee3f78f678e33b"
     }
   ],
   "wire_major_qualification": {
