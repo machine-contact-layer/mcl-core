@@ -692,9 +692,9 @@ Stable v1.0.0 tag; later implementation reports may be tracked as v1.1 errata.
 
 One thing: an implementation built by someone else, interoperating. When that
 happens it is recorded as evidence and the claim widens. Until then the release
-says so in `ICS.md`, in `mcl-core/README.md`, and in the release manifest — in
-the same words, so a reader cannot find a weaker version of the statement by
-looking somewhere else.
+says so in `ICS.md`, in this section, and in the release manifest — in the same
+words, so a reader cannot find a weaker version of the statement by looking
+somewhere else.
 
 ### 5.10 The builder-interoperability floor
 

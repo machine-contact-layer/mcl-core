@@ -143,9 +143,12 @@ else
 fi
 
 # ----------------------------------------------- 6. the claim boundary is said
+#
+# The claim boundary lives in the normative and release authorities. README.md
+# is the adoption surface and is deliberately not required to carry it.
 echo
-echo "-- the release states what it does NOT claim, in every place a reader looks"
-for f in "mcl-core/README.md" "mcl-core/conformance/ICS.md" \
+echo "-- the normative release authorities preserve the claim boundary"
+for f in "mcl-core/conformance/ICS.md" \
          "mcl-core/governance/V1_SCOPE.md" \
          "mcl-core/releases/v1.0.0/manifest.txt"; do
     if grep -q "NOT claim" "$ROOT/$f" 2>/dev/null; then

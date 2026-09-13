@@ -47,9 +47,9 @@ WHAT THIS RELEASE CONTAINS
 
 WHAT THIS RELEASE DOES NOT CLAIM
 
-  Stated here in the same words as mcl-core/README.md,
-  conformance/ICS.md and governance/V1_SCOPE.md section 5.9, so that
-  a reader cannot find a weaker version by looking somewhere else.
+  Stated here in the same words as conformance/ICS.md and
+  governance/V1_SCOPE.md section 5.9, so that a reader cannot find
+  a weaker version by looking somewhere else.
 
   NOT claimed: two ORGANISATIONS have interoperated
   NOT claimed: anyone outside this project has implemented these
