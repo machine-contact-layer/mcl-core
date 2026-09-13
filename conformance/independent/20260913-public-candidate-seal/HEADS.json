@@ -1,0 +1,27 @@
+{
+  "receipt": "20260913-public-candidate-seal",
+  "purpose": "Exact-head software closure on the final Public Candidate heads. Supersedes 20260912-private-final as the evidence for release gate rows 31, 32 and 33.",
+  "release_repositories": {
+    "mcl-core": "36d6cbeb1224ca0c6e352a0b3d9de67deecd984a",
+    "mcl-wire": "01168748425546627a7245ee31d0fc3473237f06",
+    "mcl-link": "57096d964a261b34b77d2f6860fc89c9b12d2dff",
+    "mcl-sdk": "125461325d99924d735c9ae1057151f68fd0b3df",
+    "mcl-ap": "07bd494f83fbc2567ee377c4b4563c429551f5f1",
+    "mcl-ip": "26f37a79fa24af0ea8e8cf5d86ac2794c4076047",
+    "mcl-ble": "33d6a8a43d40ce0513e1924fbe8d5679b1302d23",
+    "mcl-uwb": "a56a86b9ea919cdbb6062cab02cdd60a4bb55609"
+  },
+  "gated_mcl_core_tree": "ff30cd685a2ac585b5ae6d7e77c347bbf12515b6",
+  "mcl_core_note": "mcl-core above is main before this record; the gates ran on it with the rebuilt bundle on top (gated_mcl_core_tree). The Public Candidate mcl-core revision is the merge commit of the pull request that adds this directory. It cannot be written here, because writing it changes it; it is recorded in the row 36 external-review issue.",
+  "organization_infrastructure": {
+    ".github": "954d34e677583e12c61c89daec3e68494340593e"
+  },
+  "infrastructure_note": ".github is recorded for operations only. It is not a release component and is not in commits.txt, the manifest or any release tag.",
+  "results": {
+    "posix_rehearsal_checks_passed": 22,
+    "posix_rehearsal_checks_failed": 0,
+    "msvc_test_targets_passed": 44,
+    "go_no_go_fatal_findings": 0,
+    "reconstruction": "VERIFIED"
+  }
+}
